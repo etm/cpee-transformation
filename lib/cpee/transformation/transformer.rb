@@ -31,18 +31,18 @@ module CPEE
       end
 
       def build_traces #{{{
-        build_extraces source.traces, source.start
-        source.traces
+        build_extraces @source.traces, @source.start
+        @source.traces
       end #}}}
       def build_tree(debug=false) #{{{
-        build_ttree source.tree, source.traces.dup, nil, debug
+        build_ttree @source.tree, @source.traces.dup, nil, debug
         debug_print debug, 'Tree finished'
-        source.tree
+        @source.tree
       end #}}}
 
       def  build_extraces(traces, node) #{{{
         dupt = traces.last.dup
-        source.graph.next_nodes(node).each_with_index do |n,i|
+        @source.graph.next_nodes(node).each_with_index do |n,i|
           traces << dupt.dup if i > 0
           if traces.last.include?(n)
             traces.last << n
@@ -73,7 +73,7 @@ module CPEE
       private :map_node
 
       def print_node(niceid)
-        source.graph.find_node(niceid)
+        @source.graph.find_node(niceid)
       end
 
       def build_ttree(branch,traces,enode=nil,debug=false,down=0)
@@ -90,9 +90,9 @@ module CPEE
               li = if (branch.id == traces.first_node.id)
                 ### for tail controlled loops, use the link from this to next
                 ### if a tasks loops to itself, then second_nodes returns the first
-                source.graph.link(branch.id,traces.second_nodes.first.id)
+                @source.graph.link(branch.id,traces.second_nodes.first.id)
               else
-                source.graph.link(branch.id,traces.first_node.id)
+                @source.graph.link(branch.id,traces.first_node.id)
               end
               unless li.nil?
                 if branch.condition?
@@ -176,7 +176,7 @@ module CPEE
 
       def debug_print(debug,traces) #{{{
         if debug
-          puts '-' * @hl.output_cols, source.tree.to_s
+          puts '-' * @hl.output_cols, @source.tree.to_s
           puts traces.to_s
           @hl.ask('Continue ... '){ |q| q.echo = false }
         end
@@ -184,7 +184,7 @@ module CPEE
       private :debug_print
 
       def generate_model(formater) #{{{
-        formater.new(source.tree).generate
+        formater.new(@source.tree).generate
       end #}}}
 
     end

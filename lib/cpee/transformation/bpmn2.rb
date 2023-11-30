@@ -17,7 +17,6 @@
 # see <http://www.gnu.org/licenses/>.
 
 require_relative 'structures'
-require 'rubygems'
 require 'xml/smart'
 
 module CPEE
