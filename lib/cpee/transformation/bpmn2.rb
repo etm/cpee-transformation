@@ -26,7 +26,7 @@ module CPEE
     module Source
 
       class BPMN2
-        attr_reader :dataelements, :endpoints, :start, :graph
+        attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
 
          def initialize(xml) #{{{
           @tree = Tree.new
