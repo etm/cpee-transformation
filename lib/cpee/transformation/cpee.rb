@@ -79,7 +79,7 @@ module CPEE
         end
 
         def print_Parallel(node,res)
-          s1 = res.add('parallel','wait' => node.wait)
+          s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel)
           node.sub.each do |branch|
             s2 = s1.add('parallel_branch')
             generate_for_list(branch,s2)

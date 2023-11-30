@@ -57,6 +57,13 @@ module CPEE
         @outgoing = outgoing
         @attributes = {}
       end
+
+      def inc_incoming!
+        @incoming += 1
+      end
+      def inc_outgoing!
+        @outgoing += 1
+      end
     end # }}}
     class Link #{{{
       attr_accessor :from, :to
@@ -125,13 +132,14 @@ module CPEE
       include Struct
       include Enumerable
       attr_reader :id, :sub
-      attr_accessor :type, :wait
-      def initialize(id,type,wait='-1')
+      attr_accessor :type, :wait, :cancel
+      def initialize(id,type,wait='-1',cancel='last')
         @container = true
         @id = id
         @type = type
         @sub = []
         @wait = wait
+        @cancel = cancel
       end
       def new_branch
         (@sub << Branch.new(@id)).last
@@ -200,8 +208,18 @@ module CPEE
         @nodes.find_all{|k,n| n.script_id == s}
       end
 
-      def add_node(n)
-        @nodes[n.id] = n
+      def add_node(n,ntype=nil)
+        if @nodes.include?(n.id)
+          case ntype
+            when :outgoing
+              @nodes[n.id].inc_outgoing!
+            when :incoming
+              @nodes[n.id].inc_incoming!
+          end
+          @nodes[n.id]
+        else
+          @nodes[n.id] = n
+        end
       end
 
       def link(f,t)
