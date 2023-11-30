@@ -244,31 +244,31 @@ module CPEE
       end
     end #}}}
 
-      class Tree < Array #{{{
-        def condition?; false; end
+    class Tree < Array #{{{
+      def condition?; false; end
 
-        def to_s(verbose=true)
-          "TREE:\n" << print_tree(self,'  ',verbose)
-        end
+      def to_s(verbose=true)
+        "TREE:\n" << print_tree(self,'  ',verbose)
+      end
 
-        def print_tree(ele,indent='  ',verbose=true)
-          ret = ''
-          ele.each_with_index do |e,i|
-            last  = (i == ele.length - 1)
-            pchar = last ? '└' : '├'
-            if e.container?
-              ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
-              ret << print_tree(e,indent + (last ? '  ' : '│ '),verbose)
-            elsif e.is_a?(Break)
-              ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
-            else
-              ret << indent + pchar + ' ' + e.niceid.to_s + (verbose ? " (#{e.label})" : "") + "\n"
-            end
+      def print_tree(ele,indent='  ',verbose=true)
+        ret = ''
+        ele.each_with_index do |e,i|
+          last  = (i == ele.length - 1)
+          pchar = last ? '└' : '├'
+          if e.container?
+            ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
+            ret << print_tree(e,indent + (last ? '  ' : '│ '),verbose)
+          elsif e.is_a?(Break)
+            ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
+          else
+            ret << indent + pchar + ' ' + e.niceid.to_s + (verbose ? " (#{e.label})" : "") + "\n"
           end
-          ret
         end
-        private :print_tree
-      end #}}}
+        ret
+      end
+      private :print_tree
+    end #}}}
 
       class Traces < Array #{{{
         def initialize_copy(other)
@@ -306,15 +306,15 @@ module CPEE
           self.min_by{|e|e.length}
         end
 
-        def legend
+        def legend(nid=true)
           ret = "Legend:\n"
           a = self.flatten.uniq
-          a.each {|n| ret << "  " +  n.niceid.to_s + ' ' + n.type.to_s + ' ' + n.label.to_s + "\n" }
+          a.each {|n| ret << "  " + (nid ? n.niceid.to_s : n.id.to_s) + ' ' + n.type.to_s + ' ' + n.label.to_s + "\n" }
           ret
         end
 
-        def to_s
-          "TRACES: " + self.collect { |t| t.empty? ? '∅' : t.collect{|n| "%2d" % n.niceid }.join('→ ') }.join("\n        ")
+        def to_s(nid = true)
+          "TRACES: " + self.collect { |t| t.empty? ? '∅' : t.collect{|n| ("%2d" % (nid ? n.niceid : n.id.to_i)) + "(i#{n.incoming},o#{n.outgoing})" }.join(' → ') }.join("\n        ")
         end
 
         def shift_all
@@ -375,6 +375,7 @@ module CPEE
             lo << t if lo.second_nodes.include?(t[1])
           end
           lo.uniq!
+          lo
         end
 
         def eliminate(loops)
