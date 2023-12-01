@@ -34,7 +34,7 @@ module CPEE
       end
     end #}}}
 
-    class Node #{{{
+    class Node #{{ {
       include Container
       @@niceid = {}
       attr_reader :id, :niceid
@@ -177,6 +177,19 @@ module CPEE
       def initialize
         @nodes = {}
         @links = []
+      end
+
+      def to_s
+        s = ''
+        s << "Nodes:\n"
+        @nodes.each do |k,v|
+          s << "  #{v.niceid} -> #{v.id}, #{v.label}\n"
+        end
+        s << "Links:\n"
+        @links.each do |e|
+          s << "  #{e.from} -> #{e.to} #{e.condition ? "(#{e.condition})" : ''}\n"
+        end
+        s
       end
 
       def clean_up(&bl)
