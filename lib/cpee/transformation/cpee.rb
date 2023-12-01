@@ -17,6 +17,7 @@
 # see <http://www.gnu.org/licenses/>.
 
 require File.expand_path(File.dirname(__FILE__) + '/target')
+require 'xml/smart'
 
 module CPEE
 
@@ -37,14 +38,14 @@ module CPEE
 
         def print_Loop(node,res)
           if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
-            s1 = res.add('loop', 'mode' => 'pre_test', 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
+            s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
             s1.attributes['language'] = node.sub[0].condition_type unless node.sub[0].condition_type.nil?
             node.sub[0].attributes.each do |k,v|
               s1.attributes[k] = v
             end
             generate_for_list(node.sub[0],s1)
           else
-            s1 = res.add('loop', 'mode' => 'pre_test', 'condition' => 'true')
+            s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
             if node.sub.length == 1
               generate_for_list(node.sub[0],s1)
             else
@@ -95,7 +96,7 @@ module CPEE
               a.attributes['language'] = branch.condition_type unless branch.condition_type.nil?
               a
             else
-              s1.add('d:otherwise')
+              s1.add('d:alternative', 'condition' => '')
             end
             branch.attributes.each do |k,v|
               s2.attributes[k] = v

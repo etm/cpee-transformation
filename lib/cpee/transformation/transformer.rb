@@ -92,11 +92,16 @@ module CPEE
                 ### if a tasks loops to itself, then second_nodes returns the first
                 @source.graph.link(branch.id,traces.second_nodes.first.id)
               else
-                @source.graph.link(branch.id,traces.first_node.id)
+                if traces.all_tail? && traces.length > 1 && !traces.all_loops?
+                  @source.graph.link(traces.first[-2].id,traces.first[-1].id)
+                else
+                  @source.graph.link(branch.id,traces.first_node.id)
+                end
               end
               unless li.nil?
                 if branch.condition?
                   branch.condition << li.condition unless li.condition.nil?
+                  branch.condition.uniq!
                   branch.condition_type = "text/javascript"
                 end
                 if branch.respond_to?(:attributes)
@@ -114,8 +119,37 @@ module CPEE
                 (branch << n).compact!
               end
             else
-              loops = traces.loops
-              if node.type == :exclusiveGateway || traces.all_loops? # or (infinite loop[s])
+              if node.type == :exclusiveGateway && traces.all_loops? && traces.all_front?
+                loops = traces.loops_only
+                traces.remove(loops)
+
+                ### an infinite loop that can only be left by break is created
+                ### at the output time it is decided wether this can be optimized
+                branch << Loop.new(node.id)
+                branch.last.mode = :post_test if loops.all_tail?
+                ### remove the exclusive gateway because we no longer need it
+                ### if there is non (tail controlled, remove the loop target (last)
+                if node.type == :exclusiveGateway
+                  loops.shift_all
+                  traces.shift_all
+                else
+                  loops.pop_all
+                end
+                ### add the blank conditional to get a break
+                puts '--> down head_loop to ' + (down + 1).to_s if debug
+                if loops.same_first
+                  build_ttree branch.last.new_branch, loops, nil, debug, down + 1
+                else
+                  build_ttree branch, loops, nil, debug, down + 1
+                end
+                puts '--> up head_loop from ' + (down + 1).to_s if debug
+              elsif node.type == :exclusiveGateway && !traces.all_loops? && traces.all_front?
+                loops = traces.loops_only
+                traces.remove(loops)
+                traces.eliminate_front(loops)
+                build_ttree branch, loops, nil, debug, down + 1
+              elsif node.type == :exclusiveGateway && !traces.all_loops? && !traces.all_front?
+                loops = traces.loops_and_partial_loops
                 traces.remove(loops)
 
                 ### an infinite loop that can only be left by break is created
@@ -140,6 +174,8 @@ module CPEE
                 end
                 puts '--> up head_loop from ' + (down + 1).to_s if debug
               else
+                loops = traces.loops_and_partial_loops
+
                 ### throw away the loop traces, remove loop traces from front of all other traces
                 traces.remove(loops)
                 traces.eliminate(loops)

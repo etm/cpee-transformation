@@ -37,9 +37,9 @@ module CPEE
     class Node #{{{
       include Container
       @@niceid = {}
-      attr_reader :id, :label, :niceid
+      attr_reader :id, :niceid
       attr_reader :endpoints, :methods, :parameters, :attributes
-      attr_accessor :script, :script_id, :script_var, :script_type, :incoming, :outgoing, :type
+      attr_accessor :script, :script_id, :script_var, :script_type, :incoming, :outgoing, :type, :label
       def initialize(context,id,type,label,incoming,outgoing)
         @@niceid[context] ||= -1
         @niceid = (@@niceid[context] += 1)
@@ -108,15 +108,15 @@ module CPEE
       include Container
       include Struct
       include Enumerable
-      attr_reader :id, :sub, :mode
-      attr_accessor :type, :condition, :condition_type
+      attr_reader :id, :sub
+      attr_accessor :type, :condition, :condition_type, :mode
       attr_reader :attributes
       def condition?; true; end
       def initialize(id)
         @container = true
         @id = id
         @type = :loop
-        @mode = :exclusive
+        @mode = :pre_test
         @condition = []
         @sub = []
         @condition_type = nil
@@ -215,6 +215,9 @@ module CPEE
               @nodes[n.id].inc_outgoing!
             when :incoming
               @nodes[n.id].inc_incoming!
+          end
+          if @nodes[n.id].label.nil? ||  @nodes[n.id].label.strip == ''
+            @nodes[n.id].label = n.label
           end
           @nodes[n.id]
         else
@@ -356,6 +359,20 @@ module CPEE
           self.each{|n| num += 1 if n.first == n.last }
           num == self.length
         end
+        def all_front?
+          lo = Traces.new self.find_all{ |t| t.first == t.last }
+          lo.uniq!
+          num = 0
+          search = lo.first[-2]
+          self.each{|n| num += 1 if n.include?(search) }
+          num == self.length
+        end
+        def all_tail?
+          num = 0
+          search = self.first[-2]
+          self.each{|n| num += 1 if n[-2] == search }
+          num == self.length
+        end
 
         def add_breaks(context,front=true)
           trueloops = self.find_all{ |t| t.last == t.first }.length
@@ -369,7 +386,12 @@ module CPEE
           end
         end
 
-        def loops
+        def loops_only
+          lo = Traces.new self.find_all{ |t| t.first == t.last }
+          lo.uniq!
+          lo
+        end
+        def loops_and_partial_loops
           lo = Traces.new self.find_all{ |t| t.first == t.last }
           self.each do |t|
             lo << t if lo.second_nodes.include?(t[1])
@@ -378,6 +400,39 @@ module CPEE
           lo
         end
 
+        def eliminate_front(loops)
+          ### find nested loops
+          self.each_with_index do |t,i|
+            maxcut = 0
+            ### find out which common parts the traces share with theloops
+            loops.each do |l|
+              maxcut.upto(l.length) do |i|
+                maxcut = i if t[0...i] == l[0...i]
+              end
+            end
+            ### in case of nested loop (common part occurs at end of loop), include the whole
+            0.upto (maxcut-1) do |j|
+              if self[i][j] == self[i].last
+                loops << self[i].shift(self[i].length)
+              end
+            end
+          end
+          loops.uniq!
+          loops.remove_empty
+          self.remove_empty
+
+          ### cut from non-nested loops
+          self.each_with_index do |t,i|
+            maxcut = 0
+            ### find out which common parts the traces share with theloops
+            loops.each do |l|
+              maxcut.upto(l.length) do |i|
+                maxcut = i if t[0...i] == l[0...i]
+              end
+            end
+            self[i].shift(maxcut)
+          end
+        end
         def eliminate(loops)
           ### find nested loops
           self.each_with_index do |t,i|
