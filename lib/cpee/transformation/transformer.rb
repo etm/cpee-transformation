@@ -110,6 +110,7 @@ module CPEE
                 end
               end
             end
+
             if node == enode
               traces.shift_all
             elsif traces.incoming(node) == 1
@@ -173,6 +174,26 @@ module CPEE
                   build_ttree branch, loops, nil, debug, down + 1
                 end
                 puts '--> up head_loop from ' + (down + 1).to_s if debug
+              elsif node.type != :exclusiveGateway && traces.all_loops? && !traces.all_front?
+                # same as below
+                endnode = traces.find_endnode || enode
+                puts "--> endnode #{endnode.nil? ? 'nil' : endnode.niceid}" if debug
+                tracesgroup, endnode = traces.segment_by endnode
+                tracesgroup.each do |trcs|
+                  next unless branch.last.respond_to?(:new_branch)
+                  nb = branch.last.new_branch
+                  unless trcs.finished?
+                    puts '--> branch down to ' + (down + 1).to_s if debug
+                    build_ttree nb, trcs, endnode, debug, down + 1
+                    puts '--> branch up from ' + (down + 1).to_s if debug
+                  end
+                end
+                # remove all traces that don't start with endnode to account for loops
+                if endnode.nil?
+                  traces.empty!
+                else
+                  traces.remove_by_endnode(endnode)
+                end
               else
                 loops = traces.loops_and_partial_loops
 
@@ -180,8 +201,15 @@ module CPEE
                 traces.remove(loops)
                 traces.eliminate(loops)
                 loops.extend
+
+                branch << Loop.new(node.id)
+
                 puts '--> down tail_loop to ' + (down + 1).to_s if debug
-                build_ttree branch, loops.dup, nil, debug, down + 1
+                if loops.same_first
+                  build_ttree branch.last.new_branch, loops.dup, nil, debug, down + 1
+                else
+                  build_ttree branch, loops.dup, nil, debug, down + 1
+                end
                 puts '--> up tail_loop from ' + (down + 1).to_s if debug
               end
               traces.remove_empty
@@ -214,7 +242,7 @@ module CPEE
         if debug
           puts '-' * @hl.output_cols, @source.tree.to_s
           puts traces.to_s
-          @hl.ask('Continue ... '){ |q| q.echo = false }
+          @hl.ask('Continue ... ')#{ |q| q.echo = false }
         end
       end #}}}
       private :debug_print

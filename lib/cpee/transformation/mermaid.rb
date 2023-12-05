@@ -58,14 +58,17 @@ module CPEE
         def extract_nodelink(text) #{{{
           text.each_line do |line|
             if line =~ /-->/
-              a = line.strip.split(/-->(\|([^|]+)\|)?/)
+              a = line.strip.split(/-->\s*(\|([^|]+)\|)?/)
               if a.length == 2
                 l, r = a
               else
                 l, _, c, r = a
               end
+
               lid, ltype, llabel = l.split(':',3)
               rid, rtype, rlabel = r.split(':',3)
+              lid = lid.to_i.to_s
+              rid = rid.to_i.to_s
 
 							# every line contains a link
 							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s)
