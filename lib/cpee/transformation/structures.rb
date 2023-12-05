@@ -288,8 +288,8 @@ module CPEE
 
       class Traces < Array #{{{
         def initialize_copy(other)
-         super
-         self.map!{ |t| t.dup }
+          super
+          self.map!{ |t| t.dup }
         end
 
         def remove(trcs)

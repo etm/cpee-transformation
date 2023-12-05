@@ -28,6 +28,8 @@ module CPEE
         attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
 
          def initialize(text) #{{{
+          Node.class_variable_set(:@@niceid,  {})
+
           @tree = Tree.new
           @start = nil
 
@@ -61,7 +63,7 @@ module CPEE
 
         def extract_nodelink(text) #{{{
           text.each_line do |line|
-            if line =~ /^\s*"([^"]+)"\[shape=([a-z]+)(\slabel="([^"]*)")?\]\s*;/
+            if line =~ /^\s*"([^"]+)"\[shape=([a-z]+)(\slabel="([^"]*)")?\]\s*;?/
               id = $1
               type = map_nodes($2,$4)
               label = id
@@ -73,7 +75,7 @@ module CPEE
             end
           end
           text.each_line do |line|
-            if line =~ /^\s*"([^"]+)"\s+->\s+"([^"]+)"(\s*\[(label="([^"]*)")?\])?\s*;/
+            if line =~ /^\s*"([^"]+)"\s+->\s+"([^"]+)"(\s*\[(label="([^"]*)")?\])?\s*;?/
               lid = $1
               rid = $2
               cond = $5

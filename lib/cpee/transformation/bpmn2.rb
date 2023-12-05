@@ -29,6 +29,8 @@ module CPEE
         attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
 
          def initialize(xml) #{{{
+          Node.class_variable_set(:@@niceid,  {})
+
           @tree = Tree.new
           @start = nil
 
