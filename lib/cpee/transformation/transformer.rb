@@ -208,7 +208,7 @@ module CPEE
                 if loops.same_first
                   build_ttree branch.last.new_branch, loops.dup, nil, debug, down + 1
                 else
-                  build_ttree branch, loops.dup, nil, debug, down + 1
+                 build_ttree branch, loops.dup, nil, debug, down + 1
                 end
                 puts '--> up tail_loop from ' + (down + 1).to_s if debug
               end

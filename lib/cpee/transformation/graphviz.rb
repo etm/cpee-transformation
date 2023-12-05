@@ -42,13 +42,17 @@ module CPEE
 
 				def map_nodes(shape,label)
 					case [shape,label]
-            when ['rectangle',nil];   :task
-            when ['diamond','AND'];   :parallelGateway
-            when ['diamond','X'];     :exclusiveGateway
-            when ['diamond','*'];     :eventBasedGateway
-            when ['diamond','o'];     :inclusiveGateway
-            when ['circle',''];       :startEvent
-            when ['doublecircle','']; :endEvent
+            when ['rectangle',nil];    :task
+            when ['diamond','AND'];    :parallelGateway
+            when ['diamond','and'];    :parallelGateway
+            when ['diamond','X'];      :exclusiveGateway
+            when ['diamond','x'];      :exclusiveGateway
+            when ['diamond','*'];      :eventBasedGateway
+            when ['diamond','o'];      :inclusiveGateway
+            when ['circle',''];        :startEvent
+            when ['circle',nil];       :startEvent
+            when ['doublecircle',''];  :endEvent
+            when ['doublecircle',nil]; :endEvent
 						else
 							nil
 					end
@@ -57,7 +61,7 @@ module CPEE
 
         def extract_nodelink(text) #{{{
           text.each_line do |line|
-            if line =~ /^"([^"]+)"\[shape=([a-z]+)(\slabel="([^"]*)")?\];/
+            if line =~ /^\s*"([^"]+)"\[shape=([a-z]+)(\slabel="([^"]*)")?\]\s*;/
               id = $1
               type = map_nodes($2,$4)
               label = id
@@ -69,7 +73,7 @@ module CPEE
             end
           end
           text.each_line do |line|
-            if line =~ /^"([^"]+)"\s+->\s+"([^"]+)"(\s*\[(label="([^"]*)")?\])?;/
+            if line =~ /^\s*"([^"]+)"\s+->\s+"([^"]+)"(\s*\[(label="([^"]*)")?\])?\s*;/
               lid = $1
               rid = $2
               cond = $5
