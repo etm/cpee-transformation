@@ -27,19 +27,14 @@ module CPEE
           @tree = tree
         end
 
-        def output_to_document(doc)
-          generate_for_list(@tree,doc.root)
-          doc.to_s
-        end
-
         def generate_for_list(list,res)
           list.each do |e|
             nam = e.class.name.gsub(/\w+:+/,'')
             send("print_#{nam}".to_sym,e,res)
           end
         end
-
       end
+
 
     end
 
