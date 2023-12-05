@@ -15,10 +15,9 @@
 # cpee-transformation (file COPYING in the main directory).  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/cpee/formation/bpmn2')
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/cpee/formation/cpee')
-require 'pp'
+require_relative '../lib/cpee/transformation/bpmn2'
+require_relative '../lib/cpee/transformation/transformer'
+require_relative '../lib/cpee/transformation/cpee'
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
 f = "Test 16.bpmn"
@@ -28,11 +27,11 @@ bpmn2 = CPEE::Transformation::Source::BPMN2.new(File.read(f))
 #p bpmn2.dataelements
 #p bpmn2.endpoints
 
-trans = CPEE::Transformation::Transformer(bpmn2)
+trans = CPEE::Transformation::Transformer.new(bpmn2)
 traces = trans.build_traces
-puts trans.legend
+puts traces.legend
 
-tree = trans.build_tree(true).to_s
+tree = trans.build_tree(true)
 xml = trans.generate_model(CPEE::Transformation::Target::CPEE)
 
 # p xml.to_s

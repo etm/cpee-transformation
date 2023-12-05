@@ -15,9 +15,9 @@
 # cpee-transformation (file COPYING in the main directory).  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/cpee/transformation/bpmn2')
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/cpee/transformation/cpee')
+require_relative '../lib/cpee/transformation/bpmn2'
+require_relative '../lib/cpee/transformation/transformer'
+require_relative '../lib/cpee/transformation/cpee'
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
 Dir["*.bpmn"].each do |f|

@@ -31,7 +31,7 @@
       </parameters>
     </call>
     <choose mode="exclusive">
-      <otherwise>
+      <alternative condition="">
         <call id="a4" endpoint="timeout">
           <parameters>
             <label>"B"</label>
@@ -44,10 +44,10 @@
           </parameters>
           <finalize output="result" language="application/javascript">data.a += 1</finalize>
         </call>
-      </otherwise>
-      <otherwise>
+      </alternative>
+      <alternative condition="">
         <escape/>
-      </otherwise>
+      </alternative>
     </choose>
   </loop>
 </description>
