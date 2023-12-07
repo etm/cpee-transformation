@@ -46,6 +46,9 @@ module CPEE
           end
 
           def get_next(what) #{{{
+            if @phrases.nil?
+              phrases = ["Then #{what} occurs. ", "Afterwards, this is followed by #{what}. ", "Subsequently, this is followed by #{what}. ", "Subsequently #{what} occurs. "]
+            end
             @first ||= 0
             @first += 1
             if @num == 1
@@ -56,7 +59,9 @@ module CPEE
               elsif @first == 1 && @where.nil?
                 "First, #{what} occurs. "
               else
-                 ["Then #{what} occurs. ", "Afterwards, this is followed by #{what}. ", "Subsequently, this is followed by #{what}. ", "Subsequently #{what} occurs. "].sample
+                phrase = phrases.shift
+                phrases.append phrase
+                phrase
               end
             end
           end #}}}
@@ -89,7 +94,7 @@ module CPEE
           end #}}}
 
           def print_Break(node,res)
-            res << "At this point we escape the innermost loop. "
+            res << "At this point the innermost loop is exited. "
           end
 
           def print_Loop(node,res)
@@ -107,7 +112,7 @@ module CPEE
                 if node.sub[0].condition.empty?
                   res << "If we reach this point we loop back. "
                 else
-                  res << "At this point we loop back, if the condition \"#{node.sub[0].condition.join(' and ')}\" evaluates to true. "
+                  res << "After this we loop back, if the condition \"#{node.sub[0].condition.join(' and ')}\" evaluates to true. "
                 end
               end
             end
@@ -138,9 +143,11 @@ module CPEE
               end
               if node.parameters.length > 0
                 res << "It is called with the following parameters: "
+                params = []
                 node.parameters.each do |k,v|
-                  res << "#{k} is \"#{v}\""
+                  params << "#{k} is \"#{v}\""
                 end
+                res << params.join(', ') + '. '
               end
             end
           end
@@ -164,13 +171,13 @@ module CPEE
               generate_for_list(branch,res)
               restore_where orig
             end
-            res << "At this point the parallel branches are joined. "
+            res << "Finally the parallel branches are joined. "
           end
 
           def print_Conditional(node,res)
             res << get_next("an #{node.mode} decision with #{node.sub.length} branches")
             node.sub.each_with_index do |branch, index|
-              if branch.condition?
+              if branch.condition? && branch.condition.length > 0
                 res << "The #{get_num(index)} decision branch is executed if the condition is \"#{branch.condition.join(' or ')}\". "
               else
                 res << '' # empty condition.
@@ -183,7 +190,7 @@ module CPEE
             #   res << "If none of the conditions match, a default branch is executed. The default branch contains "
             #   generate_for_list(x,res)
             # end
-            res << "At this point all decision branches are finished. "
+            res << "Following this, all decision branches are finished. "
           end
 
       end

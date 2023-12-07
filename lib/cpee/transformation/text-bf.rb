@@ -29,7 +29,7 @@ module CPEE
         def generate
           res = "The process contains the following main elements:\n"
           generate_after_list(@tree,res)
-          res << "This is the end of the process."
+          res << "After this the process ends."
           res
         end
 
@@ -79,7 +79,7 @@ module CPEE
           end #}}}
 
           def print_Break(node,res)
-            res << get_next("at this point we escape the innermost loop.")
+            res << get_next("at this point the innermost loop is exited. ")
             [nil]
           end
 
@@ -177,7 +177,7 @@ module CPEE
             decision = @decision
             ntext = "an #{node.mode} decision with #{node.sub.length} branches. This decision will be furthermore refered to as D#{decision}. "
             node.sub.each_with_index do |branch, index|
-              if branch.condition?
+              if branch.condition? && branch.condition.length > 0
                 ntext << "\n    The #{get_num(index)} branch of D#{decision} is executed if the condition is \"#{branch.condition.join(' or ')}\". "
               else
                 ntext << '' # empty condition.
