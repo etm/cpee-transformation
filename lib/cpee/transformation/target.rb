@@ -33,6 +33,20 @@ module CPEE
             send("print_#{nam}".to_sym,e,res)
           end
         end
+
+        def generate_after_list(list,res)
+          post = []
+          list.each do |e|
+            nam = e.class.name.gsub(/\w+:+/,'')
+            post += send("print_#{nam}".to_sym,e,res)
+          end
+          post.compact!
+          post.each do |pair|
+            ltext, node = pair
+            res << ltext
+            generate_after_list(node,res)
+          end
+        end
       end
 
 

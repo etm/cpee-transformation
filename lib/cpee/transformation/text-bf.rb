@@ -27,8 +27,8 @@ module CPEE
       class Text_bf < Default
 
         def generate
-          res = ""
-          generate_for_list(@tree,res)
+          res = "The process contains the following main elements:\n"
+          generate_after_list(@tree,res)
           res.sub!(/.\s*$/,', and the process ends.')
           res
         end
@@ -54,9 +54,9 @@ module CPEE
               if @first == 1 && !@where.nil?
                 "The first entry in #{@where.nil? ? '' : @where + ' '}is #{what}. "
               elsif @first == 1 && @where.nil?
-                "First, #{what} occurs. "
+                "  * #{what}\n"
               else
-                 ["Then #{what} occurs. ", "Afterwards, this is followed by #{what}. ", "Subsequently, this is followed by #{what}. ", "Subsequently #{what} occurs. "].sample
+                 "  * #{what}\n"
               end
             end
           end #}}}
@@ -90,28 +90,30 @@ module CPEE
 
           def print_Break(node,res)
             res << "At this point we escape the innermost loop. "
+            [nil]
           end
 
           def print_Loop(node,res)
+            post = []
+
             @loop ||= 0
             @loop += 1
             loop = @loop
             logic = Proc.new do
               if node.mode == :pre_test
                 if node.sub[0].condition.empty?
-                  res << get_next("an infinite loop (no condidition)")
+                  res << get_next("an infinite loop (no condidition), furthermore referred to as L#{loop}.")
                 else
-                  res << get_next("a loop, which starts if the condition \"#{node.sub[0].condition.join(' and ')}\" is met,")
+                  res << get_next("a loop, which starts if the condition \"#{node.sub[0].condition.join(' and ')}\" is met, furthermore referred to as L#{loop}.")
                 end
-                generate_for_list(node.sub[0],res)
+                post << ["The loop L#{loop} contains the following elements:\n", node.sub[0] ]
               else
-                res << get_next("the start of a loop")
-                generate_for_list(node.sub[0],res)
                 if node.sub[0].condition.empty?
-                  res << "If we reach this point we loop back. "
+                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.")
                 else
-                  res << "At this point we loop back, if the condition \"#{node.sub[0].condition.join(' and ')}\" evaluates to true. "
+                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.\nIt the loop ends, and the condition \"#{node.sub[0].condition.join(' and ')}\" is met,\nwe loop back to this element.")
                 end
+                post << ["The loop L#{loop} contains the following elements:\n", node.sub[0] ]
               end
             end
             if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
@@ -123,6 +125,7 @@ module CPEE
                 print_Conditional(node,res)
               end
             end
+            post
           end
 
           def print_Node(node,res)
@@ -146,54 +149,59 @@ module CPEE
                 end
               end
             end
+            [nil]
           end
 
           def print_Parallel(node,res)
+            post  = []
+
             @parallel ||= 0
             @parallel += 1
             parallel = @parallel
+            ltext = ""
             if node.wait == "-1" && node.cancel == "last"
-              res << get_next("a parallel gateway with #{node.sub.length} branches, furthermore dubbed PG#{parallel},")
+              ltext << "a parallel gateway with #{node.sub.length} branches, furthermore dubbed PG#{parallel}. "
             elsif node.wait == "1" && node.cancel == "first"
-              res << get_next("an event-based gateway with #{node.sub.length} branches")
+              ltext << "an event-based gateway with #{node.sub.length} branches. "
             elsif node.cancel == "first"
               if node.wait == -1 || node.wait == 0
-                res << get_next("a parallel gateway with #{node.sub.length} branches")
+                ltext << "a parallel gateway with #{node.sub.length} branches. "
               else
-                res << get_next("a parallel event-based gateway which waits for #{node.wait} out of #{node.sub.length} branches")
+                ltext << "a parallel event-based gateway which waits for #{node.wait} out of #{node.sub.length} branches. "
               end
             else
-              res << get_next("a complex gateway with #{node.sub.length} branches")
+              ltext << "a complex gateway with #{node.sub.length} branches. "
             end
             node.sub.each_with_index do |branch,index|
-              orig = reset_where "in the #{get_num(index)} parallel branch of PG#{parallel}", node.sub.length
-              generate_for_list(branch,res)
-              restore_where orig
+              post << ["The #{get_num(index)} branch of PG#{parallel} contains the following elements:\n", branch ]
             end
-            res << "At this point the branches of PG#{parallel} are joined. "
+            res << get_next(ltext)
+            post
           end
 
           def print_Conditional(node,res)
+            post  = []
+
             @decision ||= 0
             @decision += 1
             decision = @decision
-            res << get_next("an #{node.mode} decision with #{node.sub.length} branches")
-            res << "This decision will be furthermore refered to as D#{decision}. "
+            ntext = "an #{node.mode} decision with #{node.sub.length} branches. This decision will be furthermore refered to as D#{decision}. "
             node.sub.each_with_index do |branch, index|
               if branch.condition?
-                res << "The #{get_num(index)} branch of D#{decision} is executed if the condition is \"#{branch.condition.join(' or ')}\". "
+                ntext << "\n    The #{get_num(index)} branch of D#{decision} is executed if the condition is \"#{branch.condition.join(' or ')}\". "
               else
-                res << '' # empty condition.
+                ntext << '' # empty condition.
               end
               orig = reset_where "in the #{get_num(index)} branch of D#{decision}", branch.length
-              generate_for_list(branch,res)
+              post << [ "The #{get_num(index)} branch of D#{decision} contains the following elements:\n", branch ]
               restore_where orig
             end
+            res << get_next(ntext)
             # if ### default branch handling
             #   res << "If none of the conditions match, a default branch is executed. The default branch contains "
-            #   generate_for_list(x,res)
+            #   post << x
             # end
-            res << "At this point all branches of D#{decision} are finished. "
+            post
           end
 
       end
