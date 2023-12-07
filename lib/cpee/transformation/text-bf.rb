@@ -29,7 +29,7 @@ module CPEE
         def generate
           res = "The process contains the following main elements:\n"
           generate_after_list(@tree,res)
-          res.sub!(/.\s*$/,', and the process ends.')
+          res << "This is the end of the process."
           res
         end
 
@@ -48,17 +48,7 @@ module CPEE
           def get_next(what) #{{{
             @first ||= 0
             @first += 1
-            if @num == 1
-              "The only entry #{@where.nil? ? '' : @where + ' ' }is #{what}. "
-            else
-              if @first == 1 && !@where.nil?
-                "The first entry in #{@where.nil? ? '' : @where + ' '}is #{what}. "
-              elsif @first == 1 && @where.nil?
-                "  * #{what}\n"
-              else
-                 "  * #{what}\n"
-              end
-            end
+            "  * #{what}\n"
           end #}}}
 
           def get_meth(m) #{{{
@@ -89,7 +79,7 @@ module CPEE
           end #}}}
 
           def print_Break(node,res)
-            res << "At this point we escape the innermost loop. "
+            res << get_next("at this point we escape the innermost loop.")
             [nil]
           end
 
@@ -109,9 +99,9 @@ module CPEE
                 post << ["The loop L#{loop} contains the following elements:\n", node.sub[0] ]
               else
                 if node.sub[0].condition.empty?
-                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.")
+                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.\n    If the loop ends,\n    L#{loop} is visited again.")
                 else
-                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.\nIt the loop ends, and the condition \"#{node.sub[0].condition.join(' and ')}\" is met,\nwe loop back to this element.")
+                  res << get_next("the start of a loop, furthermore referred to as L#{loop}.\n    If the loop ends, and the condition \"#{node.sub[0].condition.join(' and ')}\" is met,\n    L#{loop} is visited again.")
                 end
                 post << ["The loop L#{loop} contains the following elements:\n", node.sub[0] ]
               end
@@ -192,9 +182,7 @@ module CPEE
               else
                 ntext << '' # empty condition.
               end
-              orig = reset_where "in the #{get_num(index)} branch of D#{decision}", branch.length
               post << [ "The #{get_num(index)} branch of D#{decision} contains the following elements:\n", branch ]
-              restore_where orig
             end
             res << get_next(ntext)
             # if ### default branch handling
