@@ -68,6 +68,11 @@ module CPEE
               type = map_nodes($2,$4)
               label = id
 
+              label.sub(/^'/,'')
+              label.sub(/'$/,'')
+              label.sub(/^"/,'')
+              label.sub(/"$/,'')
+
               n = Node.new(0,id,type,label,0,1)
               @graph.add_node n
 

@@ -58,6 +58,7 @@ module CPEE
 				private :map_nodes
 
         def extract_nodelink(text) #{{{
+          first = nil
           text.each_line do |line|
             if line =~ /-->/
               a = line.strip.split(/-->\s*(\|([^|]+)\|)?/)
@@ -67,10 +68,36 @@ module CPEE
                 l, _, c, r = a
               end
 
-              lid, ltype, llabel = l.split(':',3)
-              rid, rtype, rlabel = r.split(':',3)
-              lid = lid.to_i.to_s
-              rid = rid.to_i.to_s
+              lid, ltype, llabel = l.strip.split(':',3)
+              rid, rtype, rlabel = r.strip.split(':',3)
+
+              ltype = 'task' if ltype.nil?
+              rtype = 'task' if rtype.nil?
+
+              if lid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+                lid = $1
+                llabel = $3
+              else
+                lid = lid.to_i.to_s
+              end
+
+              if rid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+                rid = $1
+                rlabel = $3
+              else
+                rid = rid.to_i.to_s
+              end
+
+              llabel = '' if llabel.nil?
+              rlabel = '' if rlabel.nil?
+              llabel.sub(/^'/,'')
+              llabel.sub(/'$/,'')
+              llabel.sub(/^"/,'')
+              llabel.sub(/"$/,'')
+              rlabel.sub(/^'/,'')
+              rlabel.sub(/'$/,'')
+              rlabel.sub(/^"/,'')
+              rlabel.sub(/"$/,'')
 
 							# every line contains a link
 							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s)
@@ -81,8 +108,10 @@ module CPEE
               @graph.add_node n1, :outgoing
               @graph.add_node n2, :incoming
 
-							@start = n1 if n1.type == :startEvent && @start == nil
+						  first = n1 if first.nil?
+              @start = n1 if n1.type == :startEvent && @start.nil?
             end
+            @start = first if @start.nil?
           end
         end #}}}
 

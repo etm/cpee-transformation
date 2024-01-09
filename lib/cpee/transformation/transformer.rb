@@ -219,7 +219,7 @@ module CPEE
             puts "--> endnode #{endnode.nil? ? 'nil' : endnode.niceid}" if debug
             tracesgroup, endnode = traces.segment_by endnode
             tracesgroup.each do |trcs|
-              next unless branch.last.respond_to?(:new_branch)
+              branch << Conditional.new(0,:exclusive,:exclusiveGateway) unless branch.last.respond_to?(:new_branch)
               nb = branch.last.new_branch
               unless trcs.finished?
                 puts '--> branch down to ' + (down + 1).to_s if debug
