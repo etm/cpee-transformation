@@ -16,29 +16,34 @@
 # along with cpee-transformation (file COPYING in the main directory). If not,
 # see <http://www.gnu.org/licenses/>.
 
-require 'rubygems'
 require 'riddl/server'
-require 'xml/smart'
-if File.exist?(File.dirname(__FILE__) + '/../lib/cpee/transformation/bpmn2')
-  require File.expand_path(File.dirname(__FILE__) + '/../lib/cpee/transformation/bpmn2')
-  require File.expand_path(File.dirname(__FILE__) + '/../lib/cpee/transformation/transformer')
-  require File.expand_path(File.dirname(__FILE__) + '/../lib/cpee/transformation/cpee')
-else
-  require 'cpee/transformation/bpmn2'
-  require 'cpee/transformation/transformer'
-  require 'cpee/transformation/cpee'
-end
 require 'json'
+require_relative '../lib/cpee/transformation/bpmn2'
+require_relative '../lib/cpee/transformation/mermaid'
+require_relative '../lib/cpee/transformation/graphviz'
+require_relative '../lib/cpee/transformation/transformer'
+require_relative '../lib/cpee/transformation/cpee'
 
 class ExtractDescription < Riddl::Implementation #{{{
   def response
-    bpmn2 = CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
-    trans = CPEE::Transformation::Transformer.new(bpmn2)
-    trans.build_traces
-    trans.build_tree(false)
-    xml = trans.generate_model(CPEE::Transformation::Target::CPEE)
+    source = case @h['RIDDL_DECLARATION_PATH'].split('/')[1]
+      when 'bpmn2'
+        CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
+      when 'mermaid'
+        CPEE::Transformation::Source::Mermaid.new(@p[0].value.read)
+      when 'graphviz'
+        CPEE::Transformation::Source::Graphviz.new(@p[0].value.read)
+      else
+        nil
+    end
+    unless source.nil?
+      trans = CPEE::Transformation::Transformer.new(source)
+      trans.build_traces
+      trans.build_tree(false)
+      xml = trans.generate_model(CPEE::Transformation::Target::CPEE)
 
-    return Riddl::Parameter::Complex.new("description","text/xml",xml.to_s)
+      return Riddl::Parameter::Complex.new("description","text/xml",xml.to_s)
+    end
   end
 end #}}}
 

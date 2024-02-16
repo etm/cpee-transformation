@@ -25,6 +25,8 @@
     <tile>
       <layer name="main">
         <apply-to>/bpmn2</apply-to>
+        <apply-to>/mermaid</apply-to>
+        <apply-to>/graphviz</apply-to>
       </layer>
     </tile>
   </facade>
