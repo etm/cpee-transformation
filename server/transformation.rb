@@ -26,7 +26,11 @@ require_relative '../lib/cpee/transformation/cpee'
 
 class ExtractDescription < Riddl::Implementation #{{{
   def response
+    #pp @p[0].value.read
+    #@p[0].value.rewind
     source = case @h['RIDDL_DECLARATION_PATH'].split('/')[1]
+      when 'cpee'
+        CPEE::Transformation::Source::CPEE.new(@p[0].value.read)
       when 'bpmn2'
         CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
       when 'mermaid'
