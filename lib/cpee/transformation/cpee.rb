@@ -23,7 +23,103 @@ module CPEE
 
   module Transformation
 
-    module Target
+    module Source
+
+      class CPEE
+        attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
+
+         def initialize(text)
+          @tree = Tree.new
+          @start = nil
+
+          @dataelements = {}
+          @endpoints = {}
+          @graph = Graph.new
+
+          extract_original(text)
+
+          @traces = Traces.new [[@start]]
+        end #}}}
+
+        def dive(node,n1=nil,condition=nil)
+          if n1.nil?
+            n1 = @start = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:startEvent,'',0,1)
+          end
+          node.children.each do |ele|
+            case ele.qname.name
+              when loop
+                if node.attribute['mode'] == 'pre_test'
+                  nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
+                  @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
+                  @graph.add_node nx
+                  condition = nil
+
+                  no = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
+                  @graph.add_link Link.new(nx.id, no.id, nil)
+                  @graph.add_node no
+                  n1 = no
+
+                  ln = dive loop, n0, node.attribute['condition']
+
+                  @graph.add_link Link.new(ln.id, no.id, nil)
+                else
+                  nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
+                  @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
+                  @graph.add_node nx
+                  condition = nil
+
+                  dive loop, nx
+
+                  no = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
+                  @graph.add_link Link.new(nx.id, no.id, nil)
+                  @graph.add_node no
+                  n1 = no
+
+                  @graph.add_link Link.new(no.id, nx.id, node.attribute['condition'])
+                end
+              when call
+                no = Node.new(0,node.attributes['id'],:task,node.find("string(d:parameters/d:label)"),1,1)
+                no.methods << node.find("string(d:parameters/d:method)
+                no.endpoints << node.attributes['endpoint']
+                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
+                @graph.add_node no
+                condition = nil
+                n1 = no
+              when manipulate
+                no = Node.new(0,node.attributes['id'],:scriptTask,node.attributes['label'].to_s,1,1)
+                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
+                @graph.add_node no
+                condition = nil
+                n1 = no
+              when parallel
+                nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
+                @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
+                @graph.add_node nx
+                condition = nil
+              when choose
+              when break
+                no = Node.new(0,node.attributes['id'],:break,'BREAK',1,1)
+                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
+                @graph.add_node no
+                condition = nil
+                n1 = no
+            end
+          end
+          n1
+        end
+        private :dive
+
+        def extract_original(text)
+          doc = XML::Smart::string(text)
+          doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
+          dive doc.root
+        end
+
+      end
+
+    end
+
+    module Target #{{{
 
       class CPEE < Default
 
@@ -61,6 +157,7 @@ module CPEE
           def print_Node(node,res)
             if node.endpoints.empty? && !node.script.nil? && node.script.strip != ''
               n = res.add('d:manipulate', node.script, 'id' => "a#{node.niceid}")
+              n.attributes['label'] = node.label.gsub(/"/,"\\\"")
               n.attributes['output'] = node.script_var unless node.script_var.nil?
               n.attributes['language'] = node.script_type unless node.script_type.nil?
             else
@@ -114,7 +211,7 @@ module CPEE
 
       end
 
-    end
+    end #}}}
 
   end
 
