@@ -100,10 +100,22 @@ module CPEE
                 @graph.add_node no
                 n1 = no
               when 'parallel'
-                nx = Node.new(0,ele.attributes['id'],:parallelGateway,'',1,1)
-                @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
+                bra = ele.find('d:alternative|d:otherwise')
+                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                @graph.add_node nx
+                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                @graph.add_node ns
+                @graph.add_node ne
+                bra.each do |br|
+                  bn = dive br, ns, br.attributes['condition'], br.qname.name == 'otherwise'
+                  if bn == ns
+                    @graph.add_link Link.new(bn.id, ne.id, br.attributes['condition'], br.qname.name == 'otherwise')
+                  else
+                    @graph.add_link Link.new(bn.id, ne.id)
+                  end
+                end
+                n1 = ne
               when 'choose'
                 bra = ele.find('d:alternative|d:otherwise')
                 ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
