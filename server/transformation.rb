@@ -40,15 +40,15 @@ class ExtractDescription < Riddl::Implementation #{{{
     end
     mtype, target = case @h['RIDDL_DECLARATION_PATH'].split('/')[-2]
       when 'cpee'
-        ['text/xml', CPEE::Transformation::Target::CPEE.new(@p[0].value.read)]
+        ['text/xml', CPEE::Transformation::Target::CPEE]
       when 'mermaid'
-        ['text/plain', CPEE::Transformation::Target::Mermaid.new(@p[0].value.read)]
+        ['text/plain', CPEE::Transformation::Target::Mermaid]
       when 'text-bf'
-        ['text/plain', CPEE::Transformation::Target::Text_bf.new(@p[0].value.read)]
+        ['text/plain', CPEE::Transformation::Target::Text_bf]
       when 'text-df-PO-extended'
-        ['text/plain', CPEE::Transformation::Target::Text_df_PO_extended.new(@p[0].value.read)]
+        ['text/plain', CPEE::Transformation::Target::Text_df_PO_extended]
       when 'text-df-PO-reduced'
-        ['text/plain', CPEE::Transformation::Target::Text_df_PO_reduced.new(@p[0].value.read)]
+        ['text/plain', CPEE::Transformation::Target::Text_df_PO_reduced]
       else
         [nil,nil]
     end

@@ -1,15 +1,63 @@
 <?xml version="1.0"?>
 <description xmlns="http://cpee.org/ns/description/1.0">
-  <manipulate id="a2" label="a" output="result" language="application/x-ruby">data.a = 0</manipulate>
-  <manipulate id="a1" label="b" output="result" language="application/x-ruby">data.a = 1</manipulate>
-  <call id="a4" endpoint="timeout">
-    <parameters>
-      <label>"\"B\""</label>
-      <method>put</method>
-      <type>:task</type>
-      <mid>'a4'</mid>
-      <arguments/>
-    </parameters>
-    <finalize output="result" language="application/x-ruby">data.a += 1</finalize>
-  </call>
+  <manipulate id="a1" label="A" output="result" language="application/javascript">data.a = 0</manipulate>
+  <choose mode="exclusive">
+    <alternative condition="data.a &lt; 3" language="text/javascript"/>
+    <alternative condition="data.a &lt; 0" language="text/javascript">
+      <call id="a4" endpoint="timeout">
+        <parameters>
+          <label>B</label>
+          <method/>
+          <type>:serviceTask</type>
+          <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+          <arguments>
+            <timeout>1</timeout>
+          </arguments>
+        </parameters>
+        <code>
+          <finalize output="result" language="application/javascript">data.a += 1</finalize>
+        </code>
+      </call>
+    </alternative>
+  </choose>
+  <loop mode="pre_test" condition="true">
+    <call id="a7" endpoint="timeout">
+      <parameters>
+        <label>C</label>
+        <method/>
+        <type>:serviceTask</type>
+        <mid>'sid-69717BB0-7EFB-40A9-A450-CD4953893433'</mid>
+        <arguments>
+          <timeout>1</timeout>
+        </arguments>
+      </parameters>
+    </call>
+    <choose mode="exclusive">
+      <alternative condition="">
+        <call id="a4" endpoint="timeout">
+          <parameters>
+            <label>B</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+          <code>
+            <finalize output="result" language="application/javascript">data.a += 1</finalize>
+          </code>
+        </call>
+        <choose mode="exclusive">
+          <alternative condition=""/>
+          <alternative condition="">
+            <escape/>
+          </alternative>
+        </choose>
+      </alternative>
+      <alternative condition="">
+        <escape/>
+      </alternative>
+    </choose>
+  </loop>
 </description>
