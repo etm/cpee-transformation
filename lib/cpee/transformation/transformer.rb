@@ -64,6 +64,8 @@ module CPEE
             flat ? nil : Parallel.new(node.id,node.type,1)
           when :inclusiveGateway
             flat ? nil : Conditional.new(node.id,:inclusive,node.type)
+          when :break
+            flat ? nil : Break.new(node.id)
           when :endEvent, :startEvent, nil
             nil
           else

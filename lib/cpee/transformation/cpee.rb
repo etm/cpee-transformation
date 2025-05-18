@@ -42,64 +42,88 @@ module CPEE
         end #}}}
 
         def dive(node,n1=nil,condition=nil)
+          if node.children.empty?
+            return n1
+          end
           if n1.nil?
             n1 = @start = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:startEvent,'',0,1)
           end
           node.children.each do |ele|
             case ele.qname.name
-              when loop
-                if node.attribute['mode'] == 'pre_test'
-                  nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
-                  @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
-                  @graph.add_node nx
+              when 'loop'
+                if ele.attributes['mode'] == 'pre_test'
+                  nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,2)
+                  @graph.add_link Link.new(n1.id, nx.id, condition)
                   condition = nil
+                  @graph.add_node nx
+                  n1 = nx
 
-                  no = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
-                  @graph.add_link Link.new(nx.id, no.id, nil)
-                  @graph.add_node no
-                  n1 = no
+                  bn = dive ele, nx, ele.attributes['condition']
 
-                  ln = dive loop, n0, node.attribute['condition']
-
-                  @graph.add_link Link.new(ln.id, no.id, nil)
+                  @graph.add_link Link.new(bn.id, nx.id, nil)
                 else
-                  nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
-                  @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
-                  @graph.add_node nx
+                  nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,1)
+                  @graph.add_link Link.new(n1.id, nx.id, condition)
                   condition = nil
+                  @graph.add_node nx
 
-                  dive loop, nx
+                  bn = dive ele, nx
 
-                  no = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
-                  @graph.add_link Link.new(nx.id, no.id, nil)
+                  no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,2)
+                  @graph.add_link Link.new(bn.id, no.id, nil)
                   @graph.add_node no
                   n1 = no
 
-                  @graph.add_link Link.new(no.id, nx.id, node.attribute['condition'])
+                  @graph.add_link Link.new(no.id, nx.id, ele.attributes['condition'])
                 end
-              when call
-                no = Node.new(0,node.attributes['id'],:task,node.find("string(d:parameters/d:label)"),1,1)
-                no.methods << node.find("string(d:parameters/d:method)
-                no.endpoints << node.attributes['endpoint']
-                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
-                @graph.add_node no
+              when 'call'
+                no = Node.new(0,ele.attributes['id'],:task,ele.find("string(d:parameters/d:label)"),1,1)
+                no.methods << ele.find("string(d:parameters/d:method)")
+                no.endpoints << ele.attributes['endpoint']
+                ele.find("d:parameters/d:arguments/d:*").each do |e|
+                  no.parameters[e.qname.name] = e.text
+                end
+                if (sc = ele.find("d:code/d:finalize")).any?
+                  no.script_type = 'application/x-ruby'
+                  no.script = sc.first.text
+                end
+                @graph.add_link Link.new(n1.id, no.id, condition)
                 condition = nil
-                n1 = no
-              when manipulate
-                no = Node.new(0,node.attributes['id'],:scriptTask,node.attributes['label'].to_s,1,1)
-                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
                 @graph.add_node no
-                condition = nil
                 n1 = no
-              when parallel
-                nx = Node.new(0,node.attributes['id'],:exclusiveGateway,node.find("string(d:parameters/d:label)"),1,1)
-                @graph.add_link Link.new(n1.id, nx.id, condition? ? condition : nil)
+              when 'manipulate'
+                no = Node.new(0,ele.attributes['id'],:scriptTask,ele.attributes['label'].to_s,1,1)
+                no.script = ele.text
+                no.script_type = 'application/x-ruby'
+                @graph.add_link Link.new(n1.id, no.id, condition)
+                condition = nil
+                @graph.add_node no
+                n1 = no
+              when 'parallel'
+                nx = Node.new(0,ele.attributes['id'],:parallelGateway,'',1,1)
+                @graph.add_link Link.new(n1.id, nx.id, condition)
+                condition = nil
                 @graph.add_node nx
+              when 'choose'
+                bra = ele.find('d:alternative')
+                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                @graph.add_link Link.new(n1.id, ns.id, condition)
                 condition = nil
-              when choose
-              when break
-                no = Node.new(0,node.attributes['id'],:break,'BREAK',1,1)
-                @graph.add_link Link.new(n1.id, no.id, condition? ? condition : nil)
+                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                @graph.add_node ns
+                @graph.add_node ne
+                bra.each do |br|
+                  bn = dive br, ns, br.attributes['condition']
+                  if bn == ns
+                    @graph.add_link Link.new(bn.id, ne.id, br.attributes['condition'])
+                  else
+                    @graph.add_link Link.new(bn.id, ne.id, nil)
+                  end
+                end
+                n1 = ne
+              when 'break'
+                no = Node.new(0,ele.attributes['id'],:break,'',1,1)
+                @graph.add_link Link.new(n1.id, no.id, condition.nil? ? condition : nil)
                 @graph.add_node no
                 condition = nil
                 n1 = no
@@ -112,7 +136,10 @@ module CPEE
         def extract_original(text)
           doc = XML::Smart::string(text)
           doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
-          dive doc.root
+          bn = dive doc.root
+          ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
+          @graph.add_node ne
+          @graph.add_link Link.new(bn.id, ne.id, nil)
         end
 
       end
@@ -155,15 +182,16 @@ module CPEE
           end
 
           def print_Node(node,res)
-            if node.endpoints.empty? && !node.script.nil? && node.script.strip != ''
-              n = res.add('d:manipulate', node.script, 'id' => "a#{node.niceid}")
+            nid = node.id =~ /a\d+/ ? node.id : "a#{node.niceid}"
+            if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
+              n = res.add('d:manipulate', node.script, 'id' => nid)
               n.attributes['label'] = node.label.gsub(/"/,"\\\"")
               n.attributes['output'] = node.script_var unless node.script_var.nil?
               n.attributes['language'] = node.script_type unless node.script_type.nil?
             else
-              n   = res.add('d:call', 'id' => "a#{node.niceid}", 'endpoint' => node.endpoints.join(','))
+              n   = res.add('d:call', 'id' => nid, 'endpoint' => node.endpoints.join(','))
               p   = n.add('d:parameters')
-                    p.add('d:label',"\"#{node.label.gsub(/"/,"\\\"")}\"")
+                    p.add('d:label',"#{node.label}")
                     p.add('d:method',node.methods.join(',') || 'post')
                     p.add('d:type',":#{node.type}")
                     p.add('d:mid',"'#{node.id}'")
@@ -171,10 +199,19 @@ module CPEE
               node.parameters.each do |k,v|
                 par.add(k,v)
               end
-              if !node.script.nil? && node.script.strip != ''
-                x = n.add('d:finalize',node.script)
-                x.attributes['output'] = node.script_var unless node.script_var.nil?
-                x.attributes['language'] = node.script_type unless node.script_type.nil?
+              if !node.script.nil? && ((node.script.is_a?(String) && node.script.strip != '') ||  node.script.is_a?(Hash))
+                y = n.add('d:code')
+                if node.script.is_a?(String)
+                  x = y.add('d:finalize',node.script)
+                  x.attributes['output'] = node.script_var unless node.script_var.nil?
+                  x.attributes['language'] = node.script_type unless node.script_type.nil?
+                else
+                  node.script.each do |k,v|
+                    x = y.add('d:' + k,v)
+                    x.attributes['output'] = node.script_var unless node.script_var.nil?
+                    x.attributes['language'] = node.script_type unless node.script_type.nil?
+                  end
+                end
               end
             end
           end

@@ -7,7 +7,7 @@
       <call id="a4" endpoint="timeout">
         <parameters>
           <label>"B"</label>
-          <method/>
+          <method>put</method>
           <type>:serviceTask</type>
           <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
           <arguments>

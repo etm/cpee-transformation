@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0">
+  <manipulate id="a2" output="result" language="application/javascript" label='a'>data.a = 0</manipulate>
+  <manipulate id="a1" output="result" language="application/javascript" label='b'>data.a = 1</manipulate>
+  <loop mode="pre_test" condition="aaaa">
+    <call id="a4" endpoint="timeout">
+      <parameters>
+        <label>"B"</label>
+        <method>put</method>
+        <type>:serviceTask</type>
+        <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+        <arguments>
+          <timeout>1</timeout>
+        </arguments>
+      </parameters>
+      <code>
+        <finalize output="result" language="application/javascript">data.a += 1</finalize>
+      </code>
+    </call>
+  </loop>
+</description>
