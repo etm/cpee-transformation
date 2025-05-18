@@ -100,8 +100,8 @@ module CPEE
                 @graph.add_node no
                 n1 = no
               when 'parallel'
-                bra = ele.find('d:alternative|d:otherwise')
-                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                bra = ele.find('d:prallel_branch')
+                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:parallelGateway,nil,1,bra.length)
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
                 ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
