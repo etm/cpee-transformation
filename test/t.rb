@@ -15,10 +15,8 @@
 # cpee-transformation (file COPYING in the main directory).  If not, see
 # <http://www.gnu.org/licenses/>.
 
-#require_relative '../lib/cpee/transformation/transformer' rescue nil
-#require_relative '../lib/cpee/transformation/cpee' rescue nil
-require_relative 'transformer'
-require_relative 'cpee'
+require_relative '../lib/cpee/transformation/transformer' rescue nil
+require_relative '../lib/cpee/transformation/cpee' rescue nil
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
 f = "t3.xml"
