@@ -81,7 +81,7 @@ module CPEE
                 no.methods << ele.find("string(d:parameters/d:method)")
                 no.endpoints << ele.attributes['endpoint']
                 ele.find("d:parameters/d:arguments/d:*").each do |e|
-                  no.parameters[e.qname.name] = e.text
+                  no.arguments[e.qname.name] = e.text
                 end
                 if (sc = ele.find("d:code/d:finalize")).any?
                   no.script_type = 'application/x-ruby'
@@ -100,20 +100,18 @@ module CPEE
                 @graph.add_node no
                 n1 = no
               when 'parallel'
-                bra = ele.find('d:prallel_branch')
+                bra = ele.find('d:parallel_branch')
                 ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:parallelGateway,nil,1,bra.length)
+                ns.attributes[:wait] = ele.attributes['wait'] || -1
+                ns.attributes[:cancel] = ele.attributes['cancel'] || 'last'
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:parallelGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
-                  bn = dive br, ns, br.attributes['condition'], br.qname.name == 'otherwise'
-                  if bn == ns
-                    @graph.add_link Link.new(bn.id, ne.id, br.attributes['condition'], br.qname.name == 'otherwise')
-                  else
-                    @graph.add_link Link.new(bn.id, ne.id)
-                  end
+                  bn = dive br, ns
+                  @graph.add_link Link.new(bn.id, ne.id)
                 end
                 n1 = ne
               when 'choose'
@@ -208,7 +206,7 @@ module CPEE
                     p.add('d:type',":#{node.type}")
                     p.add('d:mid',"'#{node.id}'")
               par = p.add('d:arguments')
-              node.parameters.each do |k,v|
+              node.arguments.each do |k,v|
                 par.add(k,v)
               end
               if !node.script.nil? && ((node.script.is_a?(String) && node.script.strip != '') ||  node.script.is_a?(Hash))

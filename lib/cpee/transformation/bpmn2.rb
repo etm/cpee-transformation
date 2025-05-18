@@ -90,9 +90,9 @@ module CPEE
               name = a.attributes['name']
               value = a.attributes['itemSubjectRef']
               if @dataelements.keys.include?(value)
-                n.parameters[name] = 'data.' + value
+                n.arguments[name] = 'data.' + value
               else
-                n.parameters[name] = value
+                n.arguments[name] = value
               end
             end
             e.find("bm:ioSpecification/bm:dataOutput").each do |a|

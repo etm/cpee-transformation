@@ -144,10 +144,10 @@ module CPEE
               else
                 res << get_next("a task with the id a#{node.niceid}")
               end
-              if node.parameters.length > 0
-                res << "It is called with the following parameters: "
+              if node.arguments.length > 0
+                res << "It is called with the following arguments: "
                 params = []
-                node.parameters.each do |k,v|
+                node.arguments.each do |k,v|
                   params << "#{k} is \"#{v}\""
                 end
                 res << params.join(', ') + '. '

@@ -57,7 +57,7 @@ module CPEE
       def map_node(node,flat) #{{{
         case node.type
           when :parallelGateway
-            flat ? nil : Parallel.new(node.id,node.type)
+            flat ? nil : Parallel.new(node.id,node.type,node.attributes[:wait],node.attributes[:cancel])
           when :exclusiveGateway
             flat ? nil : Conditional.new(node.id,:exclusive,node.type)
           when :eventBasedGateway

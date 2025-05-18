@@ -38,7 +38,7 @@ module CPEE
       include Container
       @@niceid = {}
       attr_reader :id, :niceid
-      attr_reader :endpoints, :methods, :parameters, :attributes
+      attr_reader :endpoints, :methods, :arguments, :attributes
       attr_accessor :script, :script_id, :script_var, :script_type, :incoming, :outgoing, :type, :label
       def initialize(context,id,type,label,incoming,outgoing)
         @@niceid[context] ||= -1
@@ -52,7 +52,7 @@ module CPEE
         @script_type = nil
         @script_id = nil
         @script_var = 'result'
-        @parameters = {}
+        @arguments = {}
         @incoming = incoming
         @outgoing = outgoing
         @attributes = {}

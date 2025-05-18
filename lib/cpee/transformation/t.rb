@@ -21,7 +21,7 @@ require_relative 'transformer'
 require_relative 'cpee'
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
-f = "t2.xml"
+f = "t3.xml"
 
 model = CPEE::Transformation::Source::CPEE.new(File.read(f))
 
