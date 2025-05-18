@@ -105,7 +105,7 @@ module CPEE
                 condition = nil
                 @graph.add_node nx
               when 'choose'
-                bra = ele.find('d:alternative')
+                bra = ele.find('d:alternative|d:otherwise')
                 ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
                 @graph.add_link Link.new(n1.id, ns.id, condition)
                 condition = nil
@@ -119,6 +119,7 @@ module CPEE
                   else
                     @graph.add_link Link.new(bn.id, ne.id, nil)
                   end
+                end
                 end
                 n1 = ne
               when 'break'
@@ -240,6 +241,7 @@ module CPEE
               end
               generate_for_list(branch,s2)
             end
+            pp s1
             if (x = s1.find('d:otherwise')).any?
               s1.add x
             end

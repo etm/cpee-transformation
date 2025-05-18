@@ -67,10 +67,11 @@ module CPEE
     end # }}}
     class Link #{{{
       attr_accessor :from, :to
-      attr_reader :condition, :attributes
-      def initialize(from,to,cond=nil)
+      attr_reader :condition, :attributes, :otherwise
+      def initialize(from,to,cond=nil,otherwise=false)
         @from  = from
         @to = to
+        @otherwise = otherwise
         @condition = cond
         @attributes = {}
       end
