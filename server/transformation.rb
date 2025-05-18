@@ -26,9 +26,7 @@ require_relative '../lib/cpee/transformation/cpee'
 
 class ExtractDescription < Riddl::Implementation #{{{
   def response
-    #pp @p[0].value.read
-    #@p[0].value.rewind
-    source = case @h['RIDDL_DECLARATION_PATH'].split('/')[1]
+    source = case @h['RIDDL_DECLARATION_PATH'].split('/')[-1]
       when 'cpee'
         CPEE::Transformation::Source::CPEE.new(@p[0].value.read)
       when 'bpmn2'
@@ -40,13 +38,30 @@ class ExtractDescription < Riddl::Implementation #{{{
       else
         nil
     end
-    unless source.nil?
+    mtype, target = case @h['RIDDL_DECLARATION_PATH'].split('/')[-2]
+      when 'cpee'
+        ['text/xml', CPEE::Transformation::Target::CPEE.new(@p[0].value.read)]
+      when 'mermaid'
+        ['text/plain', CPEE::Transformation::Target::Mermaid.new(@p[0].value.read)]
+      when 'text-bf'
+        ['text/plain', CPEE::Transformation::Target::Text_bf.new(@p[0].value.read)]
+      when 'text-df-PO-extended'
+        ['text/plain', CPEE::Transformation::Target::Text_df_PO_extended.new(@p[0].value.read)]
+      when 'text-df-PO-reduced'
+        ['text/plain', CPEE::Transformation::Target::Text_df_PO_reduced.new(@p[0].value.read)]
+      else
+        [nil,nil]
+    end
+    if source.nil? || target.nil?
+      @status = 500
+    else
       trans = CPEE::Transformation::Transformer.new(source)
       trans.build_traces
       trans.build_tree(false)
-      xml = trans.generate_model(CPEE::Transformation::Target::CPEE)
 
-      return Riddl::Parameter::Complex.new("description","text/xml",xml.to_s)
+      xml = trans.generate_model(target)
+
+      return Riddl::Parameter::Complex.new("description",mtype,xml.to_s)
     end
   end
 end #}}}
@@ -55,10 +70,12 @@ class ExtractDataelements < Riddl::Implementation #{{{
   def response
     ret = []
 
-    bpmn2 = CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
-    bpmn2.dataelements.each do |k,v|
-      ret << Riddl::Parameter::Simple.new("name",k)
-      ret << Riddl::Parameter::Simple.new("value",v)
+    if @h['RIDDL_DECLARATION_PATH'].split('/')[-1] == 'bpmn2'
+      bpmn2 = CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
+      bpmn2.dataelements.each do |k,v|
+        ret << Riddl::Parameter::Simple.new("name",k)
+        ret << Riddl::Parameter::Simple.new("value",v)
+      end
     end
 
     ret
@@ -69,10 +86,12 @@ class ExtractEndpoints < Riddl::Implementation #{{{
   def response
     ret = []
 
-    bpmn2 = CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
-    bpmn2.endpoints.each do |k,v|
-      ret << Riddl::Parameter::Simple.new("name",k)
-      ret << Riddl::Parameter::Simple.new("value",v)
+    if @h['RIDDL_DECLARATION_PATH'].split('/')[-1] == 'bpmn2'
+      bpmn2 = CPEE::Transformation::Source::BPMN2.new(@p[0].value.read)
+      bpmn2.endpoints.each do |k,v|
+        ret << Riddl::Parameter::Simple.new("name",k)
+        ret << Riddl::Parameter::Simple.new("value",v)
+      end
     end
 
     ret
@@ -83,9 +102,19 @@ Riddl::Server.new(File.dirname(__FILE__) + '/transformation_dec.xml', :port => 9
   accessible_description true
   cross_site_xhr true
 
-  interface 'main' do
-    run ExtractDescription if post 'dedesc'
-    run ExtractDataelements if post 'dadesc'
-    run ExtractEndpoints if post 'endesc'
+  interface 'xml_cpee' do
+    run ExtractDescription if post 'xmldedesc'
+    run ExtractDataelements if post 'xmldadesc'
+    run ExtractEndpoints if post 'xmlendesc'
+  end
+  interface 'text_cpee' do
+    run ExtractDescription if post 'plaindedesc'
+    run ExtractDataelements if post 'plaindadesc'
+    run ExtractEndpoints if post 'plainendesc'
+  end
+  interface 'xml_text' do
+    run ExtractDescription if post 'xmldedesc'
+    run ExtractDataelements if post 'xmldadesc'
+    run ExtractEndpoints if post 'xmlendesc'
   end
 end.loop!

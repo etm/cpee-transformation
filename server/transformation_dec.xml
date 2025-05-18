@@ -17,16 +17,30 @@
 -->
 
 <declaration xmlns="http://riddl.org/ns/declaration/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
-  <interface name="main">
-    <xi:include href="transformation.xml"/>
+  <interface name="xml_cpee">
+    <xi:include href="transformation_xml_cpee.xml"/>
+  </interface>
+  <interface name="text_cpee">
+    <xi:include href="transformation_text_cpee.xml"/>
+  </interface>
+  <interface name="xml_text">
+    <xi:include href="transformation_xml_text.xml"/>
   </interface>
 
   <facade>
     <tile>
-      <layer name="main">
-        <apply-to>/bpmn2</apply-to>
-        <apply-to>/mermaid</apply-to>
-        <apply-to>/graphviz</apply-to>
+      <layer name="xml_cpee">
+        <apply-to>/cpee/bpmn2</apply-to>
+      </layer>
+      <layer name="text_cpee">
+        <apply-to>/cpee/mermaid</apply-to>
+        <apply-to>/cpee/graphviz</apply-to>
+      </layer>
+      <layer name="xml_text">
+        <apply-to>/mermaid/cpee</apply-to>
+        <apply-to>/text-bf/cpee</apply-to>
+        <apply-to>/text-df-PO-extended/cpee</apply-to>
+        <apply-to>/text-df-PO-reduced/cpee</apply-to>
       </layer>
     </tile>
   </facade>

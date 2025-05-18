@@ -18,38 +18,32 @@
 
 <description datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns="http://riddl.org/ns/description/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
 
-  <message name="description">
-    <parameter name="description" mimetype="text/xml"/>
+  <message name="plaindescription">
+    <parameter name="description" mimetype="text/plain"/>
   </message>
-  <message name="dataelements">
-    <zeroOrMore>
-      <parameter name="name" type="string"/>
-      <parameter name="value" type="string"/>
-    </zeroOrMore>
-  </message>
-  <message name="endpoints">
+  <message name="list">
     <zeroOrMore>
       <parameter name="name" type="string"/>
       <parameter name="value" type="string"/>
     </zeroOrMore>
   </message>
 
-  <message name="dedesc">
+  <message name="xmldedesc">
     <parameter name="description" mimetype="text/xml"/>
     <parameter name="type" fixed="description"/>
   </message>
-  <message name="dadesc">
+  <message name="xmldadesc">
     <parameter name="description" mimetype="text/xml"/>
     <parameter name="type" fixed="dataelements"/>
   </message>
-  <message name="endesc">
+  <message name="xmlendesc">
     <parameter name="description" mimetype="text/xml"/>
     <parameter name="type" fixed="endpoints"/>
   </message>
 
   <resource>
-    <post in="dedesc" out="description"/>
-    <post in="dadesc" out="dataelements"/>
-    <post in="endesc" out="endpoints"/>
+    <post in="xmldedesc" out="plaindescription"/>
+    <post in="xmldadesc" out="list"/>
+    <post in="xmlendesc" out="list"/>
   </resource>
 </description>
