@@ -41,7 +41,7 @@ module CPEE
           @traces = Traces.new [[@start]]
         end #}}}
 
-        def dive(node,n1=nil,condition=nil)
+        def dive(node,n1=nil,condition=nil,otherwise=false)
           if node.children.empty?
             return n1
           end
@@ -53,24 +53,24 @@ module CPEE
               when 'loop'
                 if ele.attributes['mode'] == 'pre_test'
                   nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,2)
-                  @graph.add_link Link.new(n1.id, nx.id, condition)
+                  @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                   condition = nil
                   @graph.add_node nx
                   n1 = nx
 
                   bn = dive ele, nx, ele.attributes['condition']
 
-                  @graph.add_link Link.new(bn.id, nx.id, nil)
+                  @graph.add_link Link.new(bn.id, nx.id)
                 else
                   nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,1)
-                  @graph.add_link Link.new(n1.id, nx.id, condition)
+                  @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                   condition = nil
                   @graph.add_node nx
 
                   bn = dive ele, nx
 
                   no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,2)
-                  @graph.add_link Link.new(bn.id, no.id, nil)
+                  @graph.add_link Link.new(bn.id, no.id)
                   @graph.add_node no
                   n1 = no
 
@@ -87,7 +87,7 @@ module CPEE
                   no.script_type = 'application/x-ruby'
                   no.script = sc.first.text
                 end
-                @graph.add_link Link.new(n1.id, no.id, condition)
+                @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
                 @graph.add_node no
                 n1 = no
@@ -95,36 +95,35 @@ module CPEE
                 no = Node.new(0,ele.attributes['id'],:scriptTask,ele.attributes['label'].to_s,1,1)
                 no.script = ele.text
                 no.script_type = 'application/x-ruby'
-                @graph.add_link Link.new(n1.id, no.id, condition)
+                @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
                 @graph.add_node no
                 n1 = no
               when 'parallel'
                 nx = Node.new(0,ele.attributes['id'],:parallelGateway,'',1,1)
-                @graph.add_link Link.new(n1.id, nx.id, condition)
+                @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                 condition = nil
                 @graph.add_node nx
               when 'choose'
                 bra = ele.find('d:alternative|d:otherwise')
                 ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
-                @graph.add_link Link.new(n1.id, ns.id, condition)
+                @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
                 ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
-                  bn = dive br, ns, br.attributes['condition']
+                  bn = dive br, ns, br.attributes['condition'], br.qname.name == 'otherwise'
                   if bn == ns
-                    @graph.add_link Link.new(bn.id, ne.id, br.attributes['condition'])
+                    @graph.add_link Link.new(bn.id, ne.id, br.attributes['condition'], br.qname.name == 'otherwise')
                   else
-                    @graph.add_link Link.new(bn.id, ne.id, nil)
+                    @graph.add_link Link.new(bn.id, ne.id)
                   end
-                end
                 end
                 n1 = ne
               when 'break'
                 no = Node.new(0,ele.attributes['id'],:break,'',1,1)
-                @graph.add_link Link.new(n1.id, no.id, condition.nil? ? condition : nil)
+                @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 @graph.add_node no
                 condition = nil
                 n1 = no
@@ -234,14 +233,17 @@ module CPEE
                 a.attributes['language'] = branch.condition_type unless branch.condition_type.nil?
                 a
               else
-                s1.add('d:alternative', 'condition' => '')
+                if branch.otherwise
+                  s1.add('d:otherwise')
+                else
+                  s1.add('d:alternative', 'condition' => '')
+                end
               end
               branch.attributes.each do |k,v|
                 s2.attributes[k] = v
               end
               generate_for_list(branch,s2)
             end
-            pp s1
             if (x = s1.find('d:otherwise')).any?
               s1.add x
             end

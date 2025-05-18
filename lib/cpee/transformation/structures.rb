@@ -84,12 +84,13 @@ module CPEE
 
     class Alternative < Array #{{{
       include Container
-      attr_accessor :condition, :condition_type
+      attr_accessor :condition, :condition_type, :otherwise
       attr_reader :id, :attributes
       def condition?; true; end
       def initialize(id)
         @container = true
         @id = id
+        @otherwise = false
         @condition = []
         @condition_type = nil
         @attributes = {}

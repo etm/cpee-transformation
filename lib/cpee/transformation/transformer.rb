@@ -103,6 +103,7 @@ module CPEE
               unless li.nil?
                 if branch.condition?
                   branch.condition << li.condition unless li.condition.nil?
+                  branch.otherwise = li.otherwise if li.condition.nil?
                   branch.condition.uniq!
                   branch.condition_type = "text/javascript"
                 end
