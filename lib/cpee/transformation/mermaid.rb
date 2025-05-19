@@ -129,69 +129,69 @@ module CPEE
           @fromto = []
           @labels['se'] = "se:startevent:((startevent))"
           @labels['ee'] = "ee:endevent:((endevent))"
-          pnode = generate_in_list(@tree,['se'])
-          pnode.each do |pn|
-            @fromto << [pn,'ee']
-          end
-          "flowchart LR\n" + @fromto.map{ |e| "#{@labels[e[0]]}-->#{@labels[e[1]]}"}.join("\n")
+          pn = generate_in_list(@tree,'se')
+          set_fromto pn, 'ee'
+          "flowchart LR\n" + @fromto.map{ |e| "#{@labels[e[0]]}-->#{e.length == 3 ? e[2] : ''}#{@labels[e[1]]}"}.join("\n")
         end
 
         private
 
-          def print_Node(node,pnode)
+          def set_fromto(pn,nid)
+            if pn.is_a?(Array) && pn.length > 1
+              @fromto << [pn[0],nid,pn[1]]
+            else
+              @fromto << [pn,nid]
+            end
+          end
+
+          def print_Node(node,pn)
             nid = node.id
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
               @labels[nid] = "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             else
               @labels[nid] = "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             end
-            pnode.each do |pn|
-              @fromto << [pn,nid]
-            end
-            [nid]
+            set_fromto pn, nid
+            nid
           end
 
-          def print_Break(node,pnode)
+          def print_Break(node,pn)
             nid = node.id
             @labels[nid] = "#{nid}:escalate:((^))"
-            pnode.each do |pn|
-              @fromto << [pn,nid]
-            end
-            [nid]
+            set_fromto pn, nid
+            nid
           end
 
-          def print_Parallel(node,pnode)
+          def print_Parallel(node,pn)
             nid = "gw#{(@gwc += 1)}"
-            pnode.each do |pn|
-              @fromto << [pn,"#{nid}s"]
-            end
+            set_fromto pn, "#{nid}s"
             @labels["#{nid}s"] = "#{nid}s:parallelgateway:{AND}"
             @labels["#{nid}e"] = "#{nid}e:parallelgateway:{AND}"
-            pnode = []
             node.sub.each do |branch|
-              pnode += generate_in_list(branch,["#{nid}s"])
+              pn = generate_in_list(branch,["#{nid}s"])
+              set_fromto pn, "#{nid}e"
             end
-            pnode.each do |pn|
-              @fromto << [pn,"#{nid}e"]
-            end
-            ["#{nid}e"]
+            "#{nid}e"
           end
 
-          def print_Conditional(node,pnode)
+          def print_Conditional(node,pn)
             nid = "gw#{(@gwc += 1)}"
-            pnode.each do |pn|
-              @fromto << [pn,"#{nid}s"]
-            end
+            set_fromto pn, "#{nid}s"
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
             @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
-            pnode = []
             node.sub.each do |branch|
-              pnode += generate_in_list(branch,["#{nid}s"])
+              pn = if branch.condition.any?
+                generate_in_list(branch,["#{nid}s","|\"#{branch.condition.join(' or ')}\"|"])
+              else
+                if branch.otherwise
+                  generate_in_list(branch,["#{nid}s","|\"|\"|"])
+                else
+                  generate_in_list(branch,"#{nid}s")
+                end
+              end
+              set_fromto pn, "#{nid}e"
             end
-            pnode.each do |pn|
-              @fromto << [pn,"#{nid}e"]
-            end
-            ["#{nid}e"]
+            "#{nid}e"
           end
 
           def print_Loop(node,pnode)
