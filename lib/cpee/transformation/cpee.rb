@@ -23,7 +23,7 @@ module CPEE
 
   module Transformation
 
-    module Source
+    module Source #{{{
 
       class CPEE
         attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
@@ -39,7 +39,7 @@ module CPEE
           extract_original(text)
 
           @traces = Traces.new [[@start]]
-        end #}}}
+        end
 
         def dive(node,n1=nil,condition=nil,otherwise=false)
           if node.children.empty?
@@ -154,7 +154,7 @@ module CPEE
 
       end
 
-    end
+    end #}}}
 
     module Target #{{{
 

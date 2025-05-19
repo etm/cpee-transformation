@@ -22,7 +22,7 @@ module CPEE
 
   module Transformation
 
-    module Source
+    module Source #{{{
 
       class Mermaid
         attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
@@ -117,8 +117,20 @@ module CPEE
 
       end
 
-    end
+    end #}}}
 
+    module Target #{{{
+
+      class Mermaid < Default
+
+        def generate
+          res = "The process contains the following main elements:\n"
+          generate_after_list(@tree,res)
+          res << "After this the process ends."
+          res
+        end
+
+    end #}}}
 
   end
 
