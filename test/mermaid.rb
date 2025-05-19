@@ -26,7 +26,7 @@ model = CPEE::Transformation::Source::CPEE.new(File.read(f))
 
 trans = CPEE::Transformation::Transformer.new(model)
 traces = trans.build_traces
-puts traces.legend
+# puts traces.legend
 
 tree = trans.build_tree(false)
 mm = trans.generate_model(CPEE::Transformation::Target::Mermaid)
