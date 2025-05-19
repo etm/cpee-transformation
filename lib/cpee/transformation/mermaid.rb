@@ -124,43 +124,83 @@ module CPEE
       class Mermaid < Default
 
         def generate
-          res = "flowchart LR\n"
-          generate_after_list(@tree,res)
-          res
+          @gwc = 0
+          @labels = {}
+          @fromto = []
+          @labels['se'] = "se:startevent:((startevent))"
+          @labels['ee'] = "ee:endevent:((endevent))"
+          pnode = generate_in_list(@tree,['se'])
+          pnode.each do |pn|
+            @fromto << [pn,'ee']
+          end
+          "flowchart LR\n" + @fromto.map{ |e| "#{@labels[e[0]]}-->#{@labels[e[1]]}"}.join("\n")
         end
 
         private
 
-          def print_Node(node,res)
-            nid = node.niceid
+          def print_Node(node,pnode)
+            nid = node.id
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              res << "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             else
-              res << "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             end
+            pnode.each do |pn|
+              @fromto << [pn,nid]
+            end
+            [nid]
           end
 
-          def print_Break(node,res)
-            nid = node.niceid
-            res << "#{nid}:escalate:((^))"
+          def print_Break(node,pnode)
+            nid = node.id
+            @labels[nid] = "#{nid}:escalate:((^))"
+            pnode.each do |pn|
+              @fromto << [pn,nid]
+            end
+            [nid]
           end
 
-          def print_Loop(node,res)
-            nid = node.niceid
-            res << "#{nid}a:exclusivegateway:{x}"
-            res << "#{nid}e:exclusivegateway:{x}"
+          def print_Parallel(node,pnode)
+            nid = "gw#{(@gwc += 1)}"
+            pnode.each do |pn|
+              @fromto << [pn,"#{nid}s"]
+            end
+            @labels["#{nid}s"] = "#{nid}s:parallelgateway:{AND}"
+            @labels["#{nid}e"] = "#{nid}e:parallelgateway:{AND}"
+            pnode = []
+            node.sub.each do |branch|
+              pnode += generate_in_list(branch,["#{nid}s"])
+            end
+            pnode.each do |pn|
+              @fromto << [pn,"#{nid}e"]
+            end
+            ["#{nid}e"]
           end
 
-          def print_Parallel(node,res)
-            nid = node.niceid
-            res << "#{nid}a:parallelgateway:{+}"
-            res << "#{nid}e:parallelgateway:{+}"
+          def print_Conditional(node,pnode)
+            nid = "gw#{(@gwc += 1)}"
+            pnode.each do |pn|
+              @fromto << [pn,"#{nid}s"]
+            end
+            @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
+            @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
+            pnode = []
+            node.sub.each do |branch|
+              pnode += generate_in_list(branch,["#{nid}s"])
+            end
+            pnode.each do |pn|
+              @fromto << [pn,"#{nid}e"]
+            end
+            ["#{nid}e"]
           end
 
-          def print_Conditional(node,res)
+          def print_Loop(node,pnode)
             nid = node.niceid
-            res << "#{nid}a:exclusivegateway:{x}"
-            res << "#{nid}e:exclusivegateway:{x}"
+            pnode.each do |pn|
+              @fromto << [pn,nid]
+            end
+            res << "#{nid}a:exclusivegateway:{x}\n"
+            res << "#{nid}e:exclusivegateway:{x}\n"
           end
 
       end

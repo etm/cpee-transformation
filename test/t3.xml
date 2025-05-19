@@ -14,6 +14,18 @@
         </parameters>
         <finalize output="result" language="application/javascript">data.a += 1</finalize>
       </call>
+      <call id="a2" endpoint="timeout">
+        <parameters>
+          <label>"A"</label>
+          <method>put</method>
+          <type>:serviceTask</type>
+          <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+          <arguments>
+            <timeout>1</timeout>
+          </arguments>
+        </parameters>
+        <finalize output="result" language="application/javascript">data.a += 1</finalize>
+      </call>
     </parallel_branch>
     <parallel_branch>
       <call id="a4" endpoint="timeout">

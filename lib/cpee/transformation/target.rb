@@ -34,6 +34,14 @@ module CPEE
           end
         end
 
+        def generate_in_list(list,res)
+          list.each do |e|
+            nam = e.class.name.gsub(/\w+:+/,'')
+            res = send("print_#{nam}".to_sym,e,res)
+          end
+          res
+        end
+
         def generate_after_list(list,res)
           post = []
           list.each do |e|
