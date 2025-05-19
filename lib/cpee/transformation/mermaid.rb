@@ -201,8 +201,6 @@ module CPEE
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
             @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
 
-            pp node.mode
-
             cn = if node.mode == :pre_test
               set_fromto "#{nid}s", "#{nid}e"
               [ ["#{nid}e", "|\"#{node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')}\"|"], "#{nid}s"]

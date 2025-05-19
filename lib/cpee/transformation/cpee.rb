@@ -67,7 +67,7 @@ module CPEE
                   condition = nil
                   @graph.add_node nx
 
-                  bn = dive ele, nx
+                  bn = dive ele, nx, ele.attributes['condition']
 
                   no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,2)
                   @graph.add_link Link.new(bn.id, no.id)
