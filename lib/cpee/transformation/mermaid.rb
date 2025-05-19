@@ -194,13 +194,35 @@ module CPEE
             "#{nid}e"
           end
 
-          def print_Loop(node,pnode)
-            nid = node.niceid
-            pnode.each do |pn|
-              @fromto << [pn,nid]
+          def print_Loop(node,pn)
+            nid = "gw#{(@gwc += 1)}"
+            set_fromto pn, "#{nid}s"
+
+            @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
+            @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
+
+            pp node.mode
+
+            cn = if node.mode == :pre_test
+              set_fromto "#{nid}s", "#{nid}e"
+              [ ["#{nid}e", "|\"#{node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')}\"|"], "#{nid}s"]
+            else
+              set_fromto ["#{nid}e","|\"#{node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')}\"|"], "#{nid}s"
+              ["#{nid}s", "#{nid}e"]
             end
-            res << "#{nid}a:exclusivegateway:{x}\n"
-            res << "#{nid}e:exclusivegateway:{x}\n"
+
+            pn = if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
+              generate_in_list(node.sub[0],cn[0])
+            else
+              if node.sub.length == 1
+                generate_in_list(node.sub[0],cn[0])
+              else
+                print_Conditional(node,cn[0])
+              end
+            end
+            set_fromto pn, cn[1]
+
+            "#{nid}e"
           end
 
       end
