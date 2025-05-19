@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <description xmlns="http://cpee.org/ns/description/1.0">
-  <manipulate id="a2" output="result" language="application/javascript" label='a'>data.a = 0</manipulate>
-  <manipulate id="a1" output="result" language="application/javascript" label='b'>data.a = 1</manipulate>
   <loop mode="pre_test" condition="aaaa">
     <call id="a4" endpoint="timeout">
       <parameters>

@@ -124,11 +124,46 @@ module CPEE
       class Mermaid < Default
 
         def generate
-          res = "The process contains the following main elements:\n"
+          res = "flowchart LR\n"
           generate_after_list(@tree,res)
-          res << "After this the process ends."
           res
         end
+
+        private
+
+          def print_Node(node,res)
+            nid = node.niceid
+            if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
+              res << "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+            else
+              res << "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+            end
+          end
+
+          def print_Break(node,res)
+            nid = node.niceid
+            res << "#{nid}:escalate:((^))"
+          end
+
+          def print_Loop(node,res)
+            nid = node.niceid
+            res << "#{nid}a:exclusivegateway:{x}"
+            res << "#{nid}e:exclusivegateway:{x}"
+          end
+
+          def print_Parallel(node,res)
+            nid = node.niceid
+            res << "#{nid}a:parallelgateway:{+}"
+            res << "#{nid}e:parallelgateway:{+}"
+          end
+
+          def print_Conditional(node,res)
+            nid = node.niceid
+            res << "#{nid}a:exclusivegateway:{x}"
+            res << "#{nid}e:exclusivegateway:{x}"
+          end
+
+      end
 
     end #}}}
 
