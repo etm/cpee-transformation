@@ -16,7 +16,7 @@
 # along with cpee-transformation (file COPYING in the main directory).  If not,
 # see <http://www.gnu.org/licenses/>.
 
-require_relative 'structures'
+require_relative 'target'
 
 module CPEE
 

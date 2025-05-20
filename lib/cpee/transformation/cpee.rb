@@ -16,7 +16,7 @@
 # along with cpee-transformation (file COPYING in the main directory). If not,
 # see <http://www.gnu.org/licenses/>.
 
-require File.expand_path(File.dirname(__FILE__) + '/target')
+require_relative 'target'
 require 'xml/smart'
 
 module CPEE
