@@ -74,18 +74,14 @@ module CPEE
               ltype = 'task' if ltype.nil?
               rtype = 'task' if rtype.nil?
 
-              if lid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+              if lid =~ /^([a-zA-Z\d]+)(\[([^\]]+)\])/
                 lid = $1
                 llabel = $3
-              else
-                lid = lid.to_i.to_s
               end
 
-              if rid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+              if rid =~ /^([a-zA-Z\d]+)(\[([^\]]+)\])/
                 rid = $1
                 rlabel = $3
-              else
-                rid = rid.to_i.to_s
               end
 
               llabel = '' if llabel.nil?

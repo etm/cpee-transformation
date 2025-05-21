@@ -1,0 +1,10 @@
+flowchart LR
+se:startevent:((startevent))-->a1:task:(MPON_sends_the_dismissal_to_the_MPOO)
+a1:task:(MPON_sends_the_dismissal_to_the_MPOO)-->a3:task:(MPOO_reviews_the_dismissal)
+a3:task:(MPOO_reviews_the_dismissal)-->gw1s:exclusivegateway:{x}
+gw1s:exclusivegateway:{x}-->|"opposes"|a7:task:(MPOO_opposes_the_dismissal_of_MPON)
+a7:task:(MPOO_opposes_the_dismissal_of_MPON)-->gw1e:exclusivegateway:{x}
+gw1s:exclusivegateway:{x}-->|"confirms"|a9:task:(MPOO_confirms_the_dismissal_of_MPON)
+a9:task:(MPOO_confirms_the_dismissal_of_MPON)-->gw1e:exclusivegateway:{x}
+gw1e:exclusivegateway:{x}-->A:task:(A)
+A:task:(A)-->ee:endevent:((endevent))
