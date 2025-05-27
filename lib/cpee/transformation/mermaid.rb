@@ -39,7 +39,11 @@ module CPEE
 
           extract_nodelink(text)
 
-          @traces = Traces.new [[@start]]
+          if @start.nil?
+            @traces = Traces.new [[]]
+          else
+            @traces = Traces.new [[@start]]
+          end
         end #}}}
 
 				def map_nodes(node)

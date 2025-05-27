@@ -38,7 +38,11 @@ module CPEE
 
           extract_original(text)
 
-          @traces = Traces.new [[@start]]
+          if @start.nil?
+            @traces = Traces.new [[]]
+          else
+            @traces = Traces.new [[@start]]
+          end
         end
 
         def dive(node,n1=nil,condition=nil,otherwise=false)

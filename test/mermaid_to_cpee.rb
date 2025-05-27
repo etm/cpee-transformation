@@ -20,7 +20,7 @@ require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
-f = "t5.mmd"
+f = "t6.mmd"
 
 model = CPEE::Transformation::Source::Mermaid.new(File.read(f))
 
@@ -31,7 +31,7 @@ puts traces.legend
 tree = trans.build_tree(false)
 mm = trans.generate_model(CPEE::Transformation::Target::CPEE)
 
-# puts mm
+puts mm
 
 #puts 'do "xmllint test.xml" for happiness. or not.'
 #File.write(File.expand_path(File.dirname(__FILE__) + '/test.xml'),xml.to_s)
