@@ -100,7 +100,7 @@ module CPEE
               rlabel.sub(/"$/,'')
 
 							# every line contains a link
-							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s)
+							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s.gsub(/(^"|"$)/, ''))
 
               n1 = Node.new(0,lid,map_nodes(ltype),llabel.sub(/^\(/,'').sub(/\)$/,''),0,1)
               n2 = Node.new(0,rid,map_nodes(rtype),rlabel.sub(/^\(/,'').sub(/\)$/,''),1,0)
