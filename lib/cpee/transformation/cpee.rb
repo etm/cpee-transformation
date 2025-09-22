@@ -16,7 +16,7 @@
 # along with cpee-transformation (file COPYING in the main directory). If not,
 # see <http://www.gnu.org/licenses/>.
 
-require File.expand_path(File.dirname(__FILE__) + '/target')
+require_relative 'target'
 require 'xml/smart'
 
 module CPEE
@@ -38,7 +38,11 @@ module CPEE
 
           extract_original(text)
 
-          @traces = Traces.new [[@start]]
+          if @start.nil?
+            @traces = Traces.new [[]]
+          else
+            @traces = Traces.new [[@start]]
+          end
         end
 
         def dive(node,n1=nil,condition=nil,otherwise=false)

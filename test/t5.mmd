@@ -1,0 +1,12 @@
+```mermaid
+flowchart LR
+se:startevent:((startevent))-->A:task:(A)
+A:task:(A)-->a1:task:(MPON sends the dismissal to the MPOO)
+a1:task:(MPON sends the dismissal to the MPOO)-->a3:task:(MPOO reviews the dismissal)
+a3:task:(MPOO reviews the dismissal)-->gw1s:exclusivegateway:{x}
+gw1s:exclusivegateway:{x}-->|"opposes"|a7:task:(MPOO opposes the dismissal of MPON)
+a7:task:(MPOO opposes the dismissal of MPON)-->gw1e:exclusivegateway:{x}
+gw1s:exclusivegateway:{x}-->|"confirms"|a9:task:(MPOO confirms the dismissal of MPON)
+a9:task:(MPOO confirms the dismissal of MPON)-->gw1e:exclusivegateway:{x}
+gw1e:exclusivegateway:{x}-->ee:endevent:((endevent))
+```

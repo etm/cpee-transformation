@@ -37,9 +37,9 @@ module CPEE
     class Node #{{ {
       include Container
       @@niceid = {}
-      attr_reader :id, :niceid
+      attr_reader :id
       attr_reader :endpoints, :methods, :arguments, :attributes
-      attr_accessor :script, :script_id, :script_var, :script_type, :incoming, :outgoing, :type, :label
+      attr_accessor :script, :script_id, :script_var, :script_type, :incoming, :outgoing, :type, :label, :niceid
       def initialize(context,id,type,label,incoming,outgoing)
         @@niceid[context] ||= -1
         @niceid = (@@niceid[context] += 1)

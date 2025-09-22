@@ -28,6 +28,23 @@ module CPEE
       def initialize(source)
         @hl = HighLine.new
         @source = source
+
+        ### fix ids
+        ids = [0]
+        nodes = []
+        source.graph.nodes.each do |k,v|
+          if v.id =~ /^a(\d+)$/
+            v.niceid = $1.to_i
+            ids << v.niceid
+            nodes << v.id
+          end
+        end
+        source.graph.nodes.each do |k,v|
+          unless nodes.include?(v.id)
+            v.niceid = ids.max + 1
+            ids << v.niceid
+          end
+        end
       end
 
       def build_traces #{{{
@@ -57,7 +74,7 @@ module CPEE
       def map_node(node,flat) #{{{
         case node.type
           when :parallelGateway
-            flat ? nil : Parallel.new(node.id,node.type,node.attributes[:wait],node.attributes[:cancel])
+            flat ? nil : Parallel.new(node.id,node.type,node.attributes[:wait].nil? ? '-1' : node.attributes[:wait],node.attributes[:cancel].nil? ? 'last' : node.attributes[:cancel])
           when :exclusiveGateway
             flat ? nil : Conditional.new(node.id,:exclusive,node.type)
           when :eventBasedGateway

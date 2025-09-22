@@ -45,7 +45,11 @@ module CPEE
           extract_endpoints(doc)
           extract_nodelink(doc)
 
-          @traces = Traces.new [[@start]]
+          if @start.nil?
+            @traces = Traces.new [[]]
+          else
+            @traces = Traces.new [[@start]]
+          end
         end #}}}
 
         def extract_dataelements(doc) #{{{

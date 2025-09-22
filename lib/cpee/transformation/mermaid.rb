@@ -16,7 +16,7 @@
 # along with cpee-transformation (file COPYING in the main directory).  If not,
 # see <http://www.gnu.org/licenses/>.
 
-require_relative 'structures'
+require_relative 'target'
 
 module CPEE
 
@@ -39,7 +39,11 @@ module CPEE
 
           extract_nodelink(text)
 
-          @traces = Traces.new [[@start]]
+          if @start.nil?
+            @traces = Traces.new [[]]
+          else
+            @traces = Traces.new [[@start]]
+          end
         end #}}}
 
 				def map_nodes(node)
@@ -75,18 +79,14 @@ module CPEE
               ltype = 'task' if ltype.nil?
               rtype = 'task' if rtype.nil?
 
-              if lid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+              if lid =~ /^([a-zA-Z\d]+)(\[([^\]]+)\])/
                 lid = $1
                 llabel = $3
-              else
-                lid = lid.to_i.to_s
               end
 
-              if rid =~ /^([a-zA-Z])+(\[([^\]]+)\])?/
+              if rid =~ /^([a-zA-Z\d]+)(\[([^\]]+)\])/
                 rid = $1
                 rlabel = $3
-              else
-                rid = rid.to_i.to_s
               end
 
               llabel = '' if llabel.nil?
@@ -101,7 +101,7 @@ module CPEE
               rlabel.sub(/"$/,'')
 
 							# every line contains a link
-							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s)
+							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s.gsub(/(^"|"$)/, ''))
 
               n1 = Node.new(0,lid,map_nodes(ltype),llabel.sub(/^\(/,'').sub(/\)$/,''),0,1)
               n2 = Node.new(0,rid,map_nodes(rtype),rlabel.sub(/^\(/,'').sub(/\)$/,''),1,0)
