@@ -20,7 +20,7 @@ require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 
 Dir.chdir(File.expand_path(File.dirname(__FILE__)))
-f = "t1.xml"
+f = "t4.xml"
 
 model = CPEE::Transformation::Source::CPEE.new(File.read(f))
 

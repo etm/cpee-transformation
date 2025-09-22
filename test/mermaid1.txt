@@ -1,0 +1,20 @@
+graph LR
+0:startevent:((startevent))
+0:startevent:((startevent)) --> 1:task:(Diagnose Non-Specific Low Back Pain)
+1:task:(Diagnose Non-Specific Low Back Pain) --> 2:exclusivegateway:{x}
+2:exclusivegateway:{x} --> |Branch 1| 3:task:(Apply Superficial Heat or other Nonpharmocol. Treatments)
+3:task:(Apply Superficial Heat or other Nonpharmocol. Treatments) --> 4:exclusivegateway:{x}
+4:exclusivegateway:{x} --> |Branch 1| 5:task:(Prescribe NSAID or SMR)
+5:task:(Prescribe NSAID or SMR) --> 6:exclusivegateway:{x}
+4:exclusivegateway:{x} --> |Branch 2| 6:exclusivegateway:{x}
+6:exclusivegateway:{x} --> 7:exclusivegateway:{x}
+2:exclusivegateway:{x} --> |Branch 2| 8:task:(Apply Exercise or other Nonpharmacol. Treatments)
+8:task:(Apply Exercise or other Nonpharmacol. Treatments) --> 9:exclusivegateway:{x}
+9:exclusivegateway:{x} --> |Branch 1| 10:task:(Prescribe NSAID)
+10:task:(Prescribe NSAID) --> 11:exclusivegateway:{x}
+11:exclusivegateway:{x} --> |Branch 1| 12:task:(Prescribe Opioid)
+12:task:(Prescribe Opioid) --> 13:exclusivegateway:{x}
+11:exclusivegateway:{x} --> |Branch 2| 13:exclusivegateway:{x}
+13:exclusivegateway:{x} --> 9:exclusivegateway:{x}
+9:exclusivegateway:{x} --> |Branch 2| 7:exclusivegateway:{x}
+7:exclusivegateway:{x} --> 2:exclusivegateway:{x}

@@ -62,6 +62,7 @@ module CPEE
           text.each_line do |line|
             if line =~ /-->/
               a = line.strip.split(/-->\s*(\|([^|]+)\|)?/)
+              pp a
               if a.length == 2
                 l, r = a
               else
