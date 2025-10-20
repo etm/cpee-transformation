@@ -29,22 +29,22 @@ module CPEE
         @hl = HighLine.new
         @source = source
 
-        ### fix ids
-        ids = [0]
-        nodes = []
-        source.graph.nodes.each do |k,v|
-          if v.id =~ /^a(\d+)$/
-            v.niceid = $1.to_i
-            ids << v.niceid
-            nodes << v.id
-          end
-        end
-        source.graph.nodes.each do |k,v|
-          unless nodes.include?(v.id)
-            v.niceid = ids.max + 1
-            ids << v.niceid
-          end
-        end
+        ### fix ids, dont do it, we save the id's in alt_id which is much safer
+        # ids = [0]
+        # nodes = []
+        # source.graph.nodes.each do |k,v|
+        #   if v.id =~ /^a(\d+)$/
+        #     v.niceid = $1.to_i
+        #     ids << v.niceid
+        #     nodes << v.id
+        #   end
+        # end
+        # source.graph.nodes.each do |k,v|
+        #   unless nodes.include?(v.id)
+        #     v.niceid = ids.max + 1
+        #     ids << v.niceid
+        #   end
+        # end
       end
 
       def build_traces #{{{

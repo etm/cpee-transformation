@@ -15,23 +15,65 @@
 # cpee-transformation (file COPYING in the main directory).  If not, see
 # <http://www.gnu.org/licenses/>.
 
+def wrap(s1, s2, width=78, indent=ARGV.options.summary_width + 3)
+  lines = []
+  s = ARGV.options.summary_indent + s1 + ' ' * (indent - s1.length - ARGV.options.summary_indent.length) + s2
+  line, s = s[0..indent-2], s[indent..-1]
+  s.split(/\n/).each do |ss|
+    ss.split(/[ \t]+/).each do |word|
+      if line.size + word.size >= width
+        lines << line
+        line = (" " * (indent)) + word
+      else
+        line << " " << word
+      end
+    end
+    lines << line if line
+    line = (" " * (indent-1))
+  end
+  return lines.join("\n")
+end
+
+require 'optparse'
+
 require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 
-Dir.chdir(File.expand_path(File.dirname(__FILE__)))
-f = "t4.xml"
+interactive = false
+
+ARGV.options { |opt|
+  opt.summary_indent = ' ' * 2
+  opt.summary_width = 18
+  opt.banner = "Usage:\n#{opt.summary_indent}#{File.basename($0)} FNAME\n"
+  opt.on("Options:")
+  opt.on("--help", "-h", "This text") { puts opt; exit }
+  opt.on("--interactive", "-i", "Interactive mode") { interactive = true }
+  opt.on("")
+  opt.on(wrap("[FNAME]","convert cpee tree in file FNAME to mermaid and output to console."))
+  opt.parse!
+}
+
+if ARGV.length != 1
+  puts ARGV.options
+  exit
+else
+  f = ARGV[0]
+end
 
 model = CPEE::Transformation::Source::CPEE.new(File.read(f))
 
 trans = CPEE::Transformation::Transformer.new(model)
 traces = trans.build_traces
-# puts traces.legend
 
-tree = trans.build_tree(false)
+if interactive
+  puts traces.legend
+  puts
+  tree = trans.build_tree(true)
+else
+  tree = trans.build_tree(false)
+end
+
 mm = trans.generate_model(CPEE::Transformation::Target::Mermaid)
 
 puts mm
-
-#puts 'do "xmllint test.xml" for happiness. or not.'
-#File.write(File.expand_path(File.dirname(__FILE__) + '/test.xml'),xml.to_s)
