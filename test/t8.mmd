@@ -1,0 +1,12 @@
+graph LR
+    0:startevent:((startevent)) --> 1:task:(Receive Sample)
+    1:task:(Receive Sample) --> 2:task:(Check Sample)
+    2:task:(Check Sample) --> 3:task:(Carry Out Examination)
+    3:task:(Carry Out Examination) --> 4:inclusivegateway:{O}
+    4:inclusivegateway:{O} --> 5:task:(Prepare Report)
+    4:inclusivegateway:{O} --> 6:task:(Send for Confirmatory Testing)
+    4:inclusivegateway:{O} --> 7:task:(Notify Clinician)
+    5:task:(Prepare Report) --> 8:inclusivegateway:{O}
+    6:task:(Send for Confirmatory Testing) --> 8:inclusivegateway:{O}
+    7:task:(Notify Clinician) --> 8:inclusivegateway:{O}
+    8:inclusivegateway:{O} --> 9:endevent:(((endevent)))

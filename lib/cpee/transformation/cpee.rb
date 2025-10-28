@@ -240,7 +240,7 @@ module CPEE
           end
 
           def print_Conditional(node,res)
-            s1 = res.add('d:choose', 'mode' => node.mode == 'inclusive' ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id)
+            s1 = res.add('d:choose', 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id)
             node.sub.each do |branch|
               s2 = if branch.condition.any?
                 a = s1.add('d:alternative','condition' => branch.condition.join(' or '))
