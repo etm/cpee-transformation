@@ -56,17 +56,22 @@ class ExtractDescription < Riddl::Implementation #{{{
     if source.nil? || target.nil?
       @status = 500
     else
+      trans = nil
       begin
         Timeout.timeout(15) do
           trans = CPEE::Transformation::Transformer.new(source)
           trans.build_traces
           trans.build_tree(false)
         end
-      rescue Timeout::Error
+      rescue Timeout::Error => err
         puts 'broken model'
+        puts err.message
+        puts err.backtrace
       ensure
-        xml = trans.generate_model(target)
-        return Riddl::Parameter::Complex.new("description",mtype,xml.to_s)
+        if trans
+          xml = trans.generate_model(target)
+          return Riddl::Parameter::Complex.new("description",mtype,xml.to_s)
+        end
       end
     end
   end
