@@ -1,0 +1,24 @@
+graph LR
+0:startevent:((startevent))
+0:startevent:((startevent)) --> 1:task:(Search for a customer)
+1:task: --> 2:task:(Make customer an offer)
+2:task: --> 3:exclusivegateway:{x}
+3:exclusivegateway:{x} --> |Branch 1| 4:task:(Receive additional request)
+4:task: --> 5:task:(Provide details)
+5:task: --> 6:exclusivegateway:{x}
+3:exclusivegateway:{x} --> |Branch 2| 6:exclusivegateway:{x}
+6:exclusivegateway:{x} --> |Branch 1| 7:task:( )
+6:exclusivegateway:{x} --> |Branch 2| 8:task:(Receive booking request)
+8:task: --> 9:task:(Send the bill)
+9:task: --> 10:task:( )
+10:task: --> 9:task:
+9:task: --> 11:task:(Receive payment)
+11:task: --> 12:exclusivegateway:{x}
+12:exclusivegateway:{x} --> |Branch 1| 13:task:(Contact customer)
+12:exclusivegateway:{x} --> |Branch 2| 14:task:(Book travel)
+14:task: --> 15:task:(Send booking confirmation)
+15:task: --> 12:exclusivegateway:
+13:task: --> 12:exclusivegateway:
+12:exclusivegateway: --> 6:exclusivegateway:
+6:exclusivegateway: --> 3:exclusivegateway:
+3:exclusivegateway: --> 16:endevent:(((endevent)))
