@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0">
+  <parallel wait="-1" cancel="last">
+    <parallel_branch>
+      <call id="a24" endpoint="">
+        <parameters>
+          <label>Check if recipients are present</label>
+          <method/>
+          <type>:task</type>
+          <mid>'23'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a25" endpoint="">
+            <parameters>
+              <label>Retrieve recipients</label>
+              <method/>
+              <type>:task</type>
+              <mid>'25'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a26" endpoint="">
+            <parameters>
+              <label>Retrieve recipients</label>
+              <method/>
+              <type>:task</type>
+              <mid>'26'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a29" endpoint="">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <mid>'29'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a30" endpoint="">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <mid>'30'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a31" endpoint="">
+        <parameters>
+          <label>Retrieve processing legal basis</label>
+          <method/>
+          <type>:task</type>
+          <mid>'36'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a38" endpoint="">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <mid>'39'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a39" endpoint="">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <mid>'40'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a41" endpoint="">
+            <parameters>
+              <label>Receive negation</label>
+              <method/>
+              <type>:task</type>
+              <mid>'42'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a42" endpoint="">
+            <parameters>
+              <label>Receive consent</label>
+              <method/>
+              <type>:task</type>
+              <mid>'43'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a28" endpoint="">
+        <parameters>
+          <label>Check if legitimate interests are presents</label>
+          <method/>
+          <type>:task</type>
+          <mid>'27'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a29" endpoint="">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <mid>'29'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a30" endpoint="">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <mid>'30'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a31" endpoint="">
+        <parameters>
+          <label>Retrieve processing legal basis</label>
+          <method/>
+          <type>:task</type>
+          <mid>'36'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a38" endpoint="">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <mid>'39'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a39" endpoint="">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <mid>'40'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a41" endpoint="">
+            <parameters>
+              <label>Receive negation</label>
+              <method/>
+              <type>:task</type>
+              <mid>'42'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a42" endpoint="">
+            <parameters>
+              <label>Receive consent</label>
+              <method/>
+              <type>:task</type>
+              <mid>'43'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a32" endpoint="">
+        <parameters>
+          <label>Retrieve processing legal basis</label>
+          <method/>
+          <type>:task</type>
+          <mid>'31'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a33" endpoint="">
+        <parameters>
+          <label>Retrieve processing purposses</label>
+          <method/>
+          <type>:task</type>
+          <mid>'32'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="a35" endpoint="">
+            <parameters>
+              <label>Retrieve identity and contact details</label>
+              <method/>
+              <type>:task</type>
+              <mid>'33'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a36" endpoint="">
+            <parameters>
+              <label>Ask DPO details</label>
+              <method/>
+              <type>:task</type>
+              <mid>'35'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+      <call id="a31" endpoint="">
+        <parameters>
+          <label>Retrieve processing legal basis</label>
+          <method/>
+          <type>:task</type>
+          <mid>'36'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a38" endpoint="">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <mid>'39'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a39" endpoint="">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <mid>'40'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a41" endpoint="">
+            <parameters>
+              <label>Receive negation</label>
+              <method/>
+              <type>:task</type>
+              <mid>'42'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a42" endpoint="">
+            <parameters>
+              <label>Receive consent</label>
+              <method/>
+              <type>:task</type>
+              <mid>'43'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </parallel_branch>
+  </parallel>
+</description>

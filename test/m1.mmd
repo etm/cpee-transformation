@@ -1,0 +1,9 @@
+flowchart LR
+  se:startevent:((startevent))-->a2:task:(Task X)
+  a2:task:(Task X)-->a6:task:(Task abc)
+  a6:task:(Task abc)-->a4:task:(Task Z)
+  a4:task:(Task Z)-->a8:task:(Task a)
+  a8:task:(Task a)-->a9:task:(Task b)
+  a9:task:(Task b)-->a10:exclusivegateway:{x}
+  a10:exclusivegateway:{x}-->|count < 10| a9:task: (Task b)
+  a10:exclusivegateway:{x}-->|count >= 10| ee:endevent:(((endevent)))

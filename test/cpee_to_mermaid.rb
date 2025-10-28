@@ -50,7 +50,7 @@ ARGV.options { |opt|
   opt.on("--help", "-h", "This text") { puts opt; exit }
   opt.on("--interactive", "-i", "Interactive mode") { interactive = true }
   opt.on("")
-  opt.on(wrap("[FNAME]","convert mermaid in file FNAME to cpee tree and output to console."))
+  opt.on(wrap("[FNAME]","convert cpee tree in file FNAME to mermaid and output to console."))
   opt.parse!
 }
 
@@ -61,7 +61,7 @@ else
   f = ARGV[0]
 end
 
-model = CPEE::Transformation::Source::Mermaid.new(File.read(f))
+model = CPEE::Transformation::Source::CPEE.new(File.read(f))
 
 trans = CPEE::Transformation::Transformer.new(model)
 traces = trans.build_traces
@@ -74,6 +74,6 @@ else
   tree = trans.build_tree(false)
 end
 
-mm = trans.generate_model(CPEE::Transformation::Target::CPEE)
+mm = trans.generate_model(CPEE::Transformation::Target::Mermaid)
 
 puts mm

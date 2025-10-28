@@ -165,20 +165,21 @@ module CPEE
       class CPEE < Default
 
         def generate
-          res = XML::Smart.string("<description xmlns='http://cpee.org/ns/description/1.0'/>")
+          res = XML::Smart.string("<description xmlns='http://cpee.org/ns/description/1.0' xmlns:a='http://cpee.org/ns/annotation/1.0'/>")
           res.register_namespace 'd', 'http://cpee.org/ns/description/1.0'
+          res.register_namespace 'a', 'http://cpee.org/ns/annotation/1.0'
           generate_for_list(@tree,res.root)
           res.to_s
         end
 
         private
           def print_Break(node,res)
-            res.add('escape')
+            res.add('escape', 'a:alt_id' => node.id)
           end
 
           def print_Loop(node,res)
             if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
+              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'a:alt_id' => node.id)
               s1.attributes['language'] = node.sub[0].condition_type unless node.sub[0].condition_type.nil?
               node.sub[0].attributes.each do |k,v|
                 s1.attributes[k] = v
@@ -196,19 +197,18 @@ module CPEE
           end
 
           def print_Node(node,res)
-            nid = node.id =~ /a\d+/ ? node.id : "a#{node.niceid}"
+            nid = "a#{node.niceid}"
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              n = res.add('d:manipulate', node.script, 'id' => nid)
+              n = res.add('d:manipulate', node.script, 'id' => nid, 'a:alt_id' => node.id)
               n.attributes['label'] = node.label.gsub(/"/,"\\\"")
               n.attributes['output'] = node.script_var unless node.script_var.nil?
               n.attributes['language'] = node.script_type unless node.script_type.nil?
             else
-              n   = res.add('d:call', 'id' => nid, 'endpoint' => node.endpoints.join(','))
+              n   = res.add('d:call', 'id' => nid, 'endpoint' => node.endpoints.join(','), 'a:alt_id' => node.id)
               p   = n.add('d:parameters')
                     p.add('d:label',"#{node.label}")
                     p.add('d:method',node.methods.join(',') || 'post')
                     p.add('d:type',":#{node.type}")
-                    p.add('d:mid',"'#{node.id}'")
               par = p.add('d:arguments')
               node.arguments.each do |k,v|
                 par.add(k,v)
@@ -231,7 +231,7 @@ module CPEE
           end
 
           def print_Parallel(node,res)
-            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel)
+            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id)
             node.sub.each do |branch|
               s2 = s1.add('parallel_branch')
               generate_for_list(branch,s2)
@@ -240,7 +240,7 @@ module CPEE
           end
 
           def print_Conditional(node,res)
-            s1 = res.add('d:choose', 'mode' => node.mode == 'inclusive' ? 'inclusive' : 'exclusive' )
+            s1 = res.add('d:choose', 'mode' => node.mode == 'inclusive' ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id)
             node.sub.each do |branch|
               s2 = if branch.condition.any?
                 a = s1.add('d:alternative','condition' => branch.condition.join(' or '))
