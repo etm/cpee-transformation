@@ -37,7 +37,7 @@ end
 require 'optparse'
 
 require_relative '../lib/cpee/transformation/transformer' rescue nil
-require_relative '../lib/cpee/transformation/cpee' rescue nil
+require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 
 interactive = false
@@ -50,7 +50,7 @@ ARGV.options { |opt|
   opt.on("--help", "-h", "This text") { puts opt; exit }
   opt.on("--interactive", "-i", "Interactive mode") { interactive = true }
   opt.on("")
-  opt.on(wrap("[FNAME]","convert cpee tree in file FNAME to mermaid and output to console."))
+  opt.on(wrap("[FNAME]","convert cpee bpmn2 in file FNAME to mermaid and output to console."))
   opt.parse!
 }
 
@@ -61,9 +61,8 @@ else
   f = ARGV[0]
 end
 
-model = CPEE::Transformation::Source::CPEE.new(File.read(f))
+model = CPEE::Transformation::Source::BPMN2.new(File.read(f))
 trans = CPEE::Transformation::Transformer.new(model)
-
 
 traces = trans.build_traces
 

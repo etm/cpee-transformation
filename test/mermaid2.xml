@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0">
+  <call id="a2" endpoint="">
+    <parameters>
+      <label>Search for a customer</label>
+      <method/>
+      <type>:task</type>
+      <mid>'1'</mid>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="">
+    <parameters>
+      <label>Make customer an offer</label>
+      <method/>
+      <type>:task</type>
+      <mid>'2'</mid>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="Branch 1">
+    <choose mode="exclusive">
+      <alternative condition="Branch 1" language="text/javascript">
+        <call id="a5" endpoint="">
+          <parameters>
+            <label>Receive additional request</label>
+            <method/>
+            <type>:task</type>
+            <mid>'4'</mid>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a6" endpoint="">
+          <parameters>
+            <label>Provide details</label>
+            <method/>
+            <type>:task</type>
+            <mid>'5'</mid>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="Branch 2" language="text/javascript"/>
+    </choose>
+  </loop>
+  <choose mode="exclusive">
+    <alternative condition=""/>
+    <alternative condition="Branch 1" language="text/javascript">
+      <call id="a8" endpoint="">
+        <parameters>
+          <label> </label>
+          <method/>
+          <type>:task</type>
+          <mid>'7'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <escape/>
+    </alternative>
+    <alternative condition="Branch 2" language="text/javascript">
+      <call id="a9" endpoint="">
+        <parameters>
+          <label>Receive booking request</label>
+          <method/>
+          <type>:task</type>
+          <mid>'8'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a10" endpoint="">
+        <parameters>
+          <label>Send the bill</label>
+          <method/>
+          <type>:task</type>
+          <mid>'9'</mid>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive">
+        <alternative condition="">
+          <call id="a11" endpoint="">
+            <parameters>
+              <label/>
+              <method/>
+              <type>:task</type>
+              <mid>'10'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a10" endpoint="">
+            <parameters>
+              <label>Send the bill</label>
+              <method/>
+              <type>:task</type>
+              <mid>'9'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a12" endpoint="">
+            <parameters>
+              <label>Receive payment</label>
+              <method/>
+              <type>:task</type>
+              <mid>'11'</mid>
+              <arguments/>
+            </parameters>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="Branch 1" language="text/javascript">
+              <call id="a14" endpoint="">
+                <parameters>
+                  <label>Contact customer</label>
+                  <method/>
+                  <type>:task</type>
+                  <mid>'13'</mid>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="Branch 2" language="text/javascript">
+              <call id="a15" endpoint="">
+                <parameters>
+                  <label>Book travel</label>
+                  <method/>
+                  <type>:task</type>
+                  <mid>'14'</mid>
+                  <arguments/>
+                </parameters>
+              </call>
+              <call id="a16" endpoint="">
+                <parameters>
+                  <label>Send booking confirmation</label>
+                  <method/>
+                  <type>:task</type>
+                  <mid>'15'</mid>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition=""/>
+          </choose>
+        </alternative>
+      </choose>
+      <escape/>
+    </alternative>
+  </choose>
+</description>
