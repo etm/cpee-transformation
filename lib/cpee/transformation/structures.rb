@@ -34,7 +34,7 @@ module CPEE
       end
     end #}}}
 
-    class Node #{{ {
+    class Node #{{{
       include Container
       @@niceid = {}
       attr_reader :id

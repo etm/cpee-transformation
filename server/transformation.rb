@@ -18,6 +18,7 @@
 
 require 'riddl/server'
 require 'json'
+require 'timeout'
 require_relative '../lib/cpee/transformation/bpmn2'
 require_relative '../lib/cpee/transformation/mermaid'
 require_relative '../lib/cpee/transformation/graphviz'
@@ -55,13 +56,18 @@ class ExtractDescription < Riddl::Implementation #{{{
     if source.nil? || target.nil?
       @status = 500
     else
-      trans = CPEE::Transformation::Transformer.new(source)
-      trans.build_traces
-      trans.build_tree(false)
-
-      xml = trans.generate_model(target)
-
-      return Riddl::Parameter::Complex.new("description",mtype,xml.to_s)
+      begin
+        Timeout.timeout(15) do
+          trans = CPEE::Transformation::Transformer.new(source)
+          trans.build_traces
+          trans.build_tree(false)
+        end
+      rescue Timeout::Error
+        puts 'broken model'
+      ensure
+        xml = trans.generate_model(target)
+        return Riddl::Parameter::Complex.new("description",mtype,xml.to_s)
+      end
     end
   end
 end #}}}
