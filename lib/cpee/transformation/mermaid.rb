@@ -168,7 +168,7 @@ module CPEE
             @labels["#{nid}s"] = "#{nid}s:parallelgateway:{AND}"
             @labels["#{nid}e"] = "#{nid}e:parallelgateway:{AND}"
             node.sub.each do |branch|
-              pn = generate_in_list(branch,["#{nid}s"])
+              pn = generate_in_list(branch,"#{nid}s")
               set_fromto pn, "#{nid}e"
             end
             "#{nid}e"

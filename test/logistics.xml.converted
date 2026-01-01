@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="a1">
+    <parameters>
+      <label>Receive customer order</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a2" endpoint="" a:alt_id="a3">
+    <parameters>
+      <label>Pick stock items</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="a5">
+    <parameters>
+      <label>Pack items into parcels</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a4" endpoint="" a:alt_id="a7">
+    <parameters>
+      <label>Weight parcels</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="a9">
+    <parameters>
+      <label>Print shipping labels</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <parallel wait="-1" cancel="last" a:alt_id="7cad19c18226638bfc4001b5369cde49">
+    <parallel_branch>
+      <call id="a8" endpoint="" a:alt_id="a13">
+        <parameters>
+          <label>Move parcels to loading dock</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a9" endpoint="" a:alt_id="a15">
+        <parameters>
+          <label>Check parcel count</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a10" endpoint="" a:alt_id="a17">
+        <parameters>
+          <label>Inspect packing quality</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+  <parallel wait="-1" cancel="last" a:alt_id="dd173c14769c2ad2e8201465a7302d2c">
+    <parallel_branch>
+      <call id="a13" endpoint="" a:alt_id="a27">
+        <parameters>
+          <label>Load parcels on truck</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a14" endpoint="" a:alt_id="a31">
+        <parameters>
+          <label>Send delivery instructions to transporter</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a15" endpoint="" a:alt_id="a29">
+        <parameters>
+          <label>Update order status</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a16" endpoint="" a:alt_id="a33">
+        <parameters>
+          <label>Update stock levels</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+</description>
