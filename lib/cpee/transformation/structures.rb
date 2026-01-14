@@ -275,7 +275,8 @@ module CPEE
           last  = (i == ele.length - 1)
           pchar = last ? '└' : '├'
           if e.container?
-            ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
+            cname = e.class.to_s.gsub(/[^:]*::/,'')
+            ret << indent + pchar + ' ' + cname + " #{cname == 'Alternative' ?  e.condition : ''}\n"
             ret << print_tree(e,indent + (last ? '  ' : '│ '),verbose)
           elsif e.is_a?(Break)
             ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"

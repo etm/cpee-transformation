@@ -41,6 +41,7 @@ require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 
 interactive = false
+printtree = false
 
 ARGV.options { |opt|
   opt.summary_indent = ' ' * 2
@@ -49,6 +50,7 @@ ARGV.options { |opt|
   opt.on("Options:")
   opt.on("--help", "-h", "This text") { puts opt; exit }
   opt.on("--interactive", "-i", "Interactive mode") { interactive = true }
+  opt.on("--tree", "-t", "Print tree") { printtree = true }
   opt.on("")
   opt.on(wrap("[FNAME]","convert mermaid in file FNAME to cpee tree and output to console."))
   opt.parse!
@@ -74,6 +76,8 @@ else
   tree = trans.build_tree(false)
 end
 
-mm = trans.generate_model(CPEE::Transformation::Target::CPEE)
-
-puts mm
+if printtree
+  puts tree.to_s
+else
+  puts trans.generate_model(CPEE::Transformation::Target::CPEE)
+end

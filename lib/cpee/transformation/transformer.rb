@@ -111,7 +111,9 @@ module CPEE
                 ### if a tasks loops to itself, then second_nodes returns the first
                 @source.graph.link(branch.id,traces.second_nodes.first.id)
               else
-                if traces.all_tail? && traces.length > 1 && !traces.all_loops?
+                ### if traces.all_tail? && traces.length > 1 && !traces.all_loops?
+                ### we had traces.all_tail? here. why?
+                if !traces.all_tail? && traces.length > 1 && !traces.all_loops?
                   @source.graph.link(traces.first[-2].id,traces.first[-1].id)
                 else
                   @source.graph.link(branch.id,traces.first_node.id)
