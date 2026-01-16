@@ -216,6 +216,13 @@ module CPEE
                 else
                   traces.remove_by_endnode(endnode)
                 end
+              elsif node.type != :exclusiveGateway && !traces.all_loops? && !traces.all_front?
+                traces.extend
+                traces.shift_all
+                n = map_node(node,traces.same_first)
+                if !n.nil? && !(n.container? && traces.finished?)
+                  (branch << n).compact!
+                end
               else
                 loops = traces.loops_and_partial_loops
 

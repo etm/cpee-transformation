@@ -1,6 +1,6 @@
 TREE:
-  └ Conditional
-    ├ Alternative
-    │ └ 6
-    └ Alternative
-      └ 4
+  └ Conditional 
+    ├ Alternative []
+    │ └ 6 (C)
+    └ Alternative ["data.a < 3"]
+      └ 4 (B)

@@ -1,8 +1,8 @@
 TREE:
-  ├ 3
-  └ Loop
-    ├ Alternative
-    │ ├ 5
-    │ └ 3
-    └ Alternative
+  ├ 3 (A)
+  └ Loop 
+    ├ Alternative ["data.a < 3"]
+    │ ├ 5 (B)
+    │ └ 3 (A)
+    └ Alternative []
       └ Break

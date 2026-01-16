@@ -1,6 +1,6 @@
 TREE:
-  └ Loop
-    ├ Alternative
-    │ └ 3
-    └ Alternative
+  └ Loop 
+    ├ Alternative ["data.a < 3"]
+    │ └ 3 (B)
+    └ Alternative []
       └ Break

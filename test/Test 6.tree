@@ -1,18 +1,18 @@
 TREE:
-  ├ Parallel
-  │ ├ Branch
-  │ │ ├ 4
-  │ │ └ 5
-  │ ├ Branch
-  │ │ └ Parallel
-  │ │   ├ Branch
-  │ │   │ └ 1
-  │ │   └ Branch
-  │ │     └ 0
-  │ └ Branch
-  │   └ 6
-  └ Conditional
-    ├ Alternative
-    │ └ 8
-    └ Alternative
-      └ 13
+  ├ Parallel 
+  │ ├ Branch 
+  │ │ ├ 4 (Supply Mechanical Parts)
+  │ │ └ 5 (Produce Mechanical Parts (A-Z))
+  │ ├ Branch 
+  │ │ └ Parallel 
+  │ │   ├ Branch 
+  │ │   │ └ 1 (Develop Control System)
+  │ │   └ Branch 
+  │ │     └ 0 (Supply Electric Parts)
+  │ └ Branch 
+  │   └ 6 (Produce Headcap System)
+  └ Conditional 
+    ├ Alternative ["data.a == 'path 1'"]
+    │ └ 8 (Systems Integration A)
+    └ Alternative ["data.a == 'path 2'"]
+      └ 13 (Systems Integration B)

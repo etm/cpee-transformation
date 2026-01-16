@@ -1,39 +1,39 @@
 TREE:
-  ├ 1
-  ├ Parallel
-  │ ├ Branch
-  │ │ ├ 2
-  │ │ ├ 3
-  │ │ ├ 4
-  │ │ └ 12
-  │ └ Branch
-  │   └ 6
-  ├ 11
-  ├ Loop
-  │ ├ Alternative
-  │ │ ├ 5
-  │ │ ├ 14
-  │ │ ├ 1
-  │ │ ├ Parallel
-  │ │ │ ├ Branch
-  │ │ │ │ ├ 2
-  │ │ │ │ ├ 3
-  │ │ │ │ ├ 4
-  │ │ │ │ └ 12
-  │ │ │ └ Branch
-  │ │ │   └ 6
-  │ │ └ 11
-  │ ├ Alternative
-  │ │ ├ 1
-  │ │ ├ Parallel
-  │ │ │ ├ Branch
-  │ │ │ │ ├ 2
-  │ │ │ │ ├ 3
-  │ │ │ │ ├ 4
-  │ │ │ │ └ 12
-  │ │ │ └ Branch
-  │ │ │   └ 6
-  │ │ └ 11
-  │ └ Alternative
+  ├ 1 (Fetch Component 1 Stock Level from TENNECO)
+  ├ Parallel 
+  │ ├ Branch 
+  │ │ ├ 2 (Fetch M1 Lead Time)
+  │ │ ├ 3 (Fetch M1 Capacity)
+  │ │ ├ 4 (Fetch M1 Price)
+  │ │ └ 12 (Fetch M1 in Transit)
+  │ └ Branch 
+  │   └ 6 (Fetch M2 Lead Time, Capacity, Intransit  and Price)
+  ├ 11 (Decide M1, M2 or Problem)
+  ├ Loop 
+  │ ├ Alternative []
+  │ │ ├ 5 (Order Component 1)
+  │ │ ├ 14 (Set Intransit to Order Amount)
+  │ │ ├ 1 (Fetch Component 1 Stock Level from TENNECO)
+  │ │ ├ Parallel 
+  │ │ │ ├ Branch 
+  │ │ │ │ ├ 2 (Fetch M1 Lead Time)
+  │ │ │ │ ├ 3 (Fetch M1 Capacity)
+  │ │ │ │ ├ 4 (Fetch M1 Price)
+  │ │ │ │ └ 12 (Fetch M1 in Transit)
+  │ │ │ └ Branch 
+  │ │ │   └ 6 (Fetch M2 Lead Time, Capacity, Intransit  and Price)
+  │ │ └ 11 (Decide M1, M2 or Problem)
+  │ ├ Alternative []
+  │ │ ├ 1 (Fetch Component 1 Stock Level from TENNECO)
+  │ │ ├ Parallel 
+  │ │ │ ├ Branch 
+  │ │ │ │ ├ 2 (Fetch M1 Lead Time)
+  │ │ │ │ ├ 3 (Fetch M1 Capacity)
+  │ │ │ │ ├ 4 (Fetch M1 Price)
+  │ │ │ │ └ 12 (Fetch M1 in Transit)
+  │ │ │ └ Branch 
+  │ │ │   └ 6 (Fetch M2 Lead Time, Capacity, Intransit  and Price)
+  │ │ └ 11 (Decide M1, M2 or Problem)
+  │ └ Alternative []
   │   └ Break
-  └ 13
+  └ 13 (Big Problem eMail)

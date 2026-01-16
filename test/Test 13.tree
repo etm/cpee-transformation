@@ -1,7 +1,7 @@
 TREE:
-  ├ Conditional
-  │ ├ Alternative
-  │ │ └ 5
-  │ └ Alternative
-  │   └ 3
-  └ 7
+  ├ Conditional 
+  │ ├ Alternative []
+  │ │ └ 5 (C)
+  │ └ Alternative ["data.a < 3"]
+  │   └ 3 (B)
+  └ 7 (A)
