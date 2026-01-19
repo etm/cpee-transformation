@@ -20,7 +20,7 @@ require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 
-def tprint(f,count,tcount)
+def tprint(f,count,tcount,failed=false)
   if File.exist?(fname = File.join(File.dirname(f),File.basename(f,File.extname(f)) + '.bpmn'))
     tcount += 1
     begin
@@ -34,27 +34,33 @@ def tprint(f,count,tcount)
       if nt == ot
         puts "Passed: " + fname
         count += 1
+        failed = false
       else
-        puts "Failed: " + fname
+        puts '-' * 78 unless failed
+        puts 'Failed: ' + fname
         puts nt
         puts ot
+        puts '-' * 78
+        failed = true
       end
     rescue SystemStackError
       puts "Failed: " + fname + "(Stack Level too deep)"
+      failed = true
     end
   end
-  return count, tcount
+  return count, tcount, failed
 end
 
 count = 0
 tcount = 0
+failed = false
 if ARGV[0] && File.exist?(ARGV[0])
   count, tcount = tprint(ARGV[0],count,tcount)
 else
   Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
-    count, tcount = tprint(f,count,tcount)
+    count, tcount, failed = tprint(f,count,tcount, failed)
   end
 end
 
-puts "-" * 25
+puts "-" * 78
 puts "Summary: #{count}/#{tcount} passed"
