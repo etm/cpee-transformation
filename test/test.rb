@@ -20,13 +20,8 @@ require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 
-count = 0
-tcount = 0
-Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
-  fname2 = File.join(File.dirname(f),File.basename(f,'.tree') + '.mmd')
-  fname3 = File.join(File.dirname(f),File.basename(f,'.tree') + '.xml')
-
-  if File.exist?(fname = File.join(File.dirname(f),File.basename(f,'.tree') + '.bpmn'))
+def tprint(f,count,tcount)
+  if File.exist?(fname = File.join(File.dirname(f),File.basename(f,File.extname(f)) + '.bpmn'))
     tcount += 1
     begin
       model = CPEE::Transformation::Source::BPMN2.new(File.read(fname))
@@ -35,7 +30,7 @@ Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
       tree = trans.build_tree(false)
 
       nt = tree.to_s
-      ot = File.read(f)
+      ot = File.read(File.join(File.dirname(f),File.basename(f,File.extname(f)) + '.tree'))
       if nt == ot
         puts "Passed: " + fname
         count += 1
@@ -47,7 +42,17 @@ Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
     rescue SystemStackError
       puts "Failed: " + fname + "(Stack Level too deep)"
     end
+  end
+  return count, tcount
+end
 
+count = 0
+tcount = 0
+if ARGV[0] && File.exist?(ARGV[0])
+  count, tcount = tprint(ARGV[0],count,tcount)
+else
+  Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
+    count, tcount = tprint(f,count,tcount)
   end
 end
 
