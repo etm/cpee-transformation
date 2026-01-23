@@ -1,0 +1,10 @@
+TREE:
+  ├ 1 (A)
+  ├ 5 (B)
+  ├ Loop 
+  │ ├ Alternative ["data.a < 3"]
+  │ │ └ 5 (B)
+  │ └ Alternative []
+  │   └ Break
+  ├ 7 (C)
+  └ 8 (D)
