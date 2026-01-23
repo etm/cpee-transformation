@@ -142,6 +142,12 @@ module CPEE
                 (branch << n).compact!
               end
             else
+              if debug
+                p "Type: #{node.type}"
+                p "  All Loops: #{traces.all_loops?}"
+                p "  All Loops Head Controlled: #{traces.all_front?}"
+                p "  All Loops Tail Controlled: #{traces.all_tail?}"
+              end
               if node.type == :exclusiveGateway && traces.all_loops? && traces.all_front?
                 loops = traces.loops_only
                 traces.remove(loops)
@@ -217,6 +223,13 @@ module CPEE
                   traces.remove_by_endnode(endnode)
                 end
               elsif node.type != :exclusiveGateway && !traces.all_loops? && !traces.all_front?
+                traces.extend
+                traces.shift_all
+                n = map_node(node,traces.same_first)
+                if !n.nil? && !(n.container? && traces.finished?)
+                  (branch << n).compact!
+                end
+              elsif node.type != :exclusiveGateway && !traces.all_loops? && traces.all_front?
                 traces.extend
                 traces.shift_all
                 n = map_node(node,traces.same_first)

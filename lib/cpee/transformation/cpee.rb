@@ -241,13 +241,15 @@ module CPEE
 
           def print_Conditional(node,res)
             s1 = res.add('d:choose', 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id)
+            otherwise = false
             node.sub.each do |branch|
               s2 = if branch.condition.any?
                 a = s1.add('d:alternative','condition' => branch.condition.join(' or '))
                 a.attributes['language'] = branch.condition_type unless branch.condition_type.nil?
                 a
               else
-                if branch.otherwise
+                if branch.otherwise || !otherwise
+                  otherwise = true
                   s1.add('d:otherwise')
                 else
                   s1.add('d:alternative', 'condition' => '')
