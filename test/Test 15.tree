@@ -1,10 +1,8 @@
 TREE:
   └ Loop
-    ├ Alternative
-    │ ├ 1
-    │ └ Conditional
-    │   ├ Alternative
-    │   └ Alternative
-    │     └ 3
-    └ Alternative
-      └ Break
+    └ Alternative []
+      ├ 1 (A)
+      └ Loop
+        ├ Alternative ["data.a < 3"]
+        └ Alternative ["data.a < 0"]
+          └ 3 (B)
