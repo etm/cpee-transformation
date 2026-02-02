@@ -135,7 +135,7 @@ module CPEE
                   end
                 end
                 n1 = ne
-              when 'break'
+              when 'escape'
                 no = Node.new(0,ele.attributes['id'],:break,'',1,1)
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 @graph.add_node no

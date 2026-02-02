@@ -148,7 +148,7 @@ module CPEE
                 p "  All Loops Head Controlled: #{traces.all_front?}"
                 p "  All Loops Tail Controlled: #{traces.all_tail?}"
               end
-              if node.type == :exclusiveGateway && traces.all_loops? && traces.all_front?
+              if traces.all_loops? && traces.all_front?
                 loops = traces.loops_only
                 traces.remove(loops)
 
@@ -264,9 +264,9 @@ module CPEE
               branch << Conditional.new(0,:exclusive,:exclusiveGateway) unless branch.last.respond_to?(:new_branch)
               nb = branch.last.new_branch
               unless trcs.finished?
-                puts '--> branch down to ' + (down + 1).to_s if debug
+                puts '--> ebranch down to ' + (down + 1).to_s if debug
                 build_ttree nb, trcs, endnode, debug, down + 1
-                puts '--> branch up from ' + (down + 1).to_s if debug
+                puts '--> ebranch up from ' + (down + 1).to_s if debug
               end
             end
             # remove all traces that don't start with endnode to account for loops

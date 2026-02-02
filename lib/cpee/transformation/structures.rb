@@ -64,6 +64,10 @@ module CPEE
       def inc_outgoing!
         @outgoing += 1
       end
+
+      def to_s
+        "#{@niceid} (#{@label},#{@type})\n"
+      end
     end # }}}
     class Link #{{{
       attr_accessor :from, :to
@@ -304,6 +308,9 @@ module CPEE
           self.delete_if do |t|
             t[0] != enode
           end
+          # self.delete_if do |t|
+          #   t[0] == enode && t.length <= 2
+          # end
         end
 
         def empty!
@@ -340,7 +347,7 @@ module CPEE
           self.each{ |tr| tr.shift }
         end
         def pop_all(what=nil)
-          if node.nil?
+          if what.nil?
             self.each{ |tr| tr.pop }
           else
             self.each{ |tr| tr.pop if tr.last == what }
@@ -370,11 +377,13 @@ module CPEE
           num == self.length
         end
 
+        # first and last the same in all traces
         def all_loops?
           num = 0
           self.each{|n| num += 1 if n.first == n.last }
           num == self.length
         end
+        # find all loops. Loops need to have the same second to last
         def all_front?
           lo = Traces.new self.find_all{ |t| t.first == t.last }
           lo.uniq!
@@ -383,6 +392,9 @@ module CPEE
           self.each{|n| num += 1 if n.include?(search) }
           num == self.length
         end
+
+        # second to last the same as in all traces
+        # second to last because last must be the same as current
         def all_tail?
           num = 0
           search = self.first[-2]
