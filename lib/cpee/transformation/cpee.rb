@@ -168,7 +168,7 @@ module CPEE
           res = XML::Smart.string("<description xmlns='http://cpee.org/ns/description/1.0' xmlns:a='http://cpee.org/ns/annotation/1.0'/>")
           res.register_namespace 'd', 'http://cpee.org/ns/description/1.0'
           res.register_namespace 'a', 'http://cpee.org/ns/annotation/1.0'
-          generate_for_list(@tree,res.root)
+          generate_in_list(@tree,res.root)
           res.to_s
         end
 
@@ -184,11 +184,11 @@ module CPEE
               node.sub[0].attributes.each do |k,v|
                 s1.attributes[k] = v
               end
-              generate_for_list(node.sub[0],s1)
+              generate_in_list(node.sub[0],s1)
             else
               s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
               if node.sub.length == 1
-                generate_for_list(node.sub[0],s1)
+                generate_in_list(node.sub[0],s1)
               else
                 print_Conditional(node,s1)
               end
@@ -240,7 +240,7 @@ module CPEE
             s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id)
             node.sub.each do |branch|
               s2 = s1.add('parallel_branch')
-              generate_for_list(branch,s2)
+              generate_in_list(branch,s2)
             end
             s1
           end
@@ -264,7 +264,7 @@ module CPEE
               branch.attributes.each do |k,v|
                 s2.attributes[k] = v
               end
-              generate_for_list(branch,s2)
+              generate_in_list(branch,s2)
             end
             if (x = s1.find('d:otherwise')).any?
               s1.add x

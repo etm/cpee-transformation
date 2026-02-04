@@ -27,13 +27,6 @@ module CPEE
           @tree = tree
         end
 
-        def generate_for_list(list,res)
-          list.each do |e|
-            nam = e.class.name.gsub(/\w+:+/,'')
-            send("print_#{nam}".to_sym,e,res)
-          end
-        end
-
         def generate_in_list(list,res)
           list.each do |e|
             nam = e.class.name.gsub(/\w+:+/,'')
@@ -55,8 +48,8 @@ module CPEE
             generate_after_list(node,res)
           end
         end
-      end
 
+      end
 
     end
 

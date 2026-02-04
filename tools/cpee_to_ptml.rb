@@ -38,6 +38,7 @@ require 'optparse'
 
 require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
+require_relative '../lib/cpee/transformation/ptml' rescue nil
 
 interactive = false
 printtree = false
@@ -69,6 +70,7 @@ traces = trans.build_traces
 
 if interactive
   puts traces.legend
+  puts
   tree = trans.build_tree(true)
 else
   tree = trans.build_tree(false)
@@ -79,5 +81,5 @@ pp tree
 if printtree
   puts tree.to_s
 else
-  puts trans.generate_model(CPEE::Transformation::Target::CPEE)
+  puts trans.generate_model(CPEE::Transformation::Target::PTML)
 end
