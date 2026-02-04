@@ -70,7 +70,6 @@ traces = trans.build_traces
 
 if interactive
   puts traces.legend
-  puts
   tree = trans.build_tree(true)
 else
   tree = trans.build_tree(false)

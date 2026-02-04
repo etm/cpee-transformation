@@ -57,28 +57,27 @@ module CPEE
               when 'loop'
                 if ele.attributes['mode'] == 'pre_test'
                   nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,2)
-                  @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
-                  condition = nil
                   @graph.add_node nx
-                  n1 = nx
+                  @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
 
+                  condition = nil
                   bn = dive ele, nx, ele.attributes['condition']
 
                   @graph.add_link Link.new(bn.id, nx.id)
+                  n1 = nx
                 else
                   nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,1)
+                  @graph.add_node nx
                   @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                   condition = nil
-                  @graph.add_node nx
 
                   bn = dive ele, nx, ele.attributes['condition']
 
                   no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,2)
-                  @graph.add_link Link.new(bn.id, no.id)
                   @graph.add_node no
-                  n1 = no
-
+                  @graph.add_link Link.new(bn.id, no.id)
                   @graph.add_link Link.new(no.id, nx.id, ele.attributes['condition'])
+                  n1 = no
                 end
               when 'call'
                 no = Node.new(0,ele.attributes['id'],:task,ele.find("string(d:parameters/d:label)"),1,1)
@@ -136,7 +135,7 @@ module CPEE
                 end
                 n1 = ne
               when 'escape'
-                no = Node.new(0,ele.attributes['id'],:break,'',1,1)
+                no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:break,'',1,1)
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 @graph.add_node no
                 condition = nil
@@ -153,7 +152,7 @@ module CPEE
           bn = dive doc.root
           ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
           @graph.add_node ne
-          @graph.add_link Link.new(bn.id, ne.id, nil)
+          @graph.add_link Link.new(bn.id, ne.id)
         end
 
       end
@@ -165,6 +164,7 @@ module CPEE
       class CPEE < Default
 
         def generate
+          @nids = []
           res = XML::Smart.string("<description xmlns='http://cpee.org/ns/description/1.0' xmlns:a='http://cpee.org/ns/annotation/1.0'/>")
           res.register_namespace 'd', 'http://cpee.org/ns/description/1.0'
           res.register_namespace 'a', 'http://cpee.org/ns/annotation/1.0'
@@ -197,7 +197,14 @@ module CPEE
           end
 
           def print_Node(node,res)
+            ### make sure nids are not duplicate
             nid = "a#{node.niceid}"
+            nic = node.niceid
+            while @nids.include?(nid)
+              nid = "a#{nic += 1}"
+            end
+            @nids << nid
+            ###
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
               n = res.add('d:manipulate', node.script, 'id' => nid, 'a:alt_id' => node.id)
               n.attributes['label'] = node.label.gsub(/"/,"\\\"")
@@ -208,7 +215,6 @@ module CPEE
               p   = n.add('d:parameters')
                     p.add('d:label',"#{node.label}")
                     p.add('d:method',node.methods.join(',') || 'post')
-                    p.add('d:type',":#{node.type}")
               par = p.add('d:arguments')
               node.arguments.each do |k,v|
                 par.add(k,v)

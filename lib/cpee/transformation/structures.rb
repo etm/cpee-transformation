@@ -99,6 +99,9 @@ module CPEE
         @condition_type = nil
         @attributes = {}
       end
+      def inspect
+        ::Object::inspect()
+      end
     end #}}}
     class Branch < Array #{{{
       include Container
