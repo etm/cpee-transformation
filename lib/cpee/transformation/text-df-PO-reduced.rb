@@ -28,7 +28,7 @@ module CPEE
 
         def generate
           res = ""
-          generate_for_list(@tree,res)
+          generate_in_list(@tree,res)
           res.sub!(/.\s*$/,', and the process ends.')
           res
         end
@@ -105,10 +105,10 @@ module CPEE
                 else
                   res << get_next("a loop, which starts if the condition \"#{node.sub[0].condition.join(' and ')}\" is met,")
                 end
-                generate_for_list(node.sub[0],res)
+                generate_in_list(node.sub[0],res)
               else
                 res << get_next("the start of a loop")
-                generate_for_list(node.sub[0],res)
+                generate_in_list(node.sub[0],res)
                 if node.sub[0].condition.empty?
                   res << "If we reach this point we loop back. "
                 else
@@ -168,7 +168,7 @@ module CPEE
             end
             node.sub.each_with_index do |branch,index|
               orig = reset_where "in the #{get_num(index)} parallel branch", node.sub.length
-              generate_for_list(branch,res)
+              generate_in_list(branch,res)
               restore_where orig
             end
             res << "Finally the parallel branches are joined. "
@@ -183,12 +183,12 @@ module CPEE
                 res << '' # empty condition.
               end
               orig = reset_where "in the #{get_num(index)} decision branch", branch.length
-              generate_for_list(branch,res)
+              generate_in_list(branch,res)
               restore_where orig
             end
             # if ### default branch handling
             #   res << "If none of the conditions match, a default branch is executed. The default branch contains "
-            #   generate_for_list(x,res)
+            #   generate_in_list(x,res)
             # end
             res << "Following this, all decision branches are finished. "
           end
