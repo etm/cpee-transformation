@@ -1,0 +1,377 @@
+2
+1
+"---"
+3
+1
+"---"
+1
+1
+"---"
+#<CPEE::Transformation::Graph:0x00007fee385ad8a8
+ @links=
+  [#<CPEE::Transformation::Link:0x00007fee39373348
+    @attributes={},
+    @condition=nil,
+    @from="18cec97cc12153d40f37d7704f431d4f",
+    @otherwise=false,
+    @to="a3">,
+   #<CPEE::Transformation::Link:0x00007fee393731b8
+    @attributes={},
+    @condition=nil,
+    @from="a3",
+    @otherwise=false,
+    @to="a6">,
+   #<CPEE::Transformation::Link:0x00007fee39373078
+    @attributes={},
+    @condition=nil,
+    @from="a6",
+    @otherwise=false,
+    @to="73e56c23b538bdd3f86458bb1101682b">,
+   #<CPEE::Transformation::Link:0x00007fee39372f38
+    @attributes={},
+    @condition="data.a < 3",
+    @from="73e56c23b538bdd3f86458bb1101682b",
+    @otherwise=false,
+    @to="4f4058880669a1d5541dbe1dfcbe2621">,
+   #<CPEE::Transformation::Link:0x00007fee39372c68
+    @attributes={},
+    @condition="data.a < 3",
+    @from="4f4058880669a1d5541dbe1dfcbe2621",
+    @otherwise=false,
+    @to="a5">,
+   #<CPEE::Transformation::Link:0x00007fee39372ad8
+    @attributes={},
+    @condition=nil,
+    @from="a5",
+    @otherwise=false,
+    @to="a7">,
+   #<CPEE::Transformation::Link:0x00007fee39372a88
+    @attributes={},
+    @condition="data.a < 3",
+    @from="a7",
+    @otherwise=false,
+    @to="d9bd1e3e8b3b21828c294ec75498e4ff">,
+   #<CPEE::Transformation::Link:0x00007fee393728a8
+    @attributes={},
+    @condition="data.a >= 3 && data.a < 6",
+    @from="4f4058880669a1d5541dbe1dfcbe2621",
+    @otherwise=false,
+    @to="a8">,
+   #<CPEE::Transformation::Link:0x00007fee393726c8
+    @attributes={},
+    @condition=nil,
+    @from="a8",
+    @otherwise=false,
+    @to="a4">,
+   #<CPEE::Transformation::Link:0x00007fee39372538
+    @attributes={},
+    @condition=nil,
+    @from="a4",
+    @otherwise=false,
+    @to="a9">,
+   #<CPEE::Transformation::Link:0x00007fee39372498
+    @attributes={},
+    @condition="data.a >= 3 && data.a < 6",
+    @from="a9",
+    @otherwise=false,
+    @to="d9bd1e3e8b3b21828c294ec75498e4ff">,
+   #<CPEE::Transformation::Link:0x00007fee393723a8
+    @attributes={},
+    @condition=nil,
+    @from="4f4058880669a1d5541dbe1dfcbe2621",
+    @otherwise=true,
+    @to="72c199f0072423b2bd0293848c89604b">,
+   #<CPEE::Transformation::Link:0x00007fee39372308
+    @attributes={},
+    @condition=nil,
+    @from="72c199f0072423b2bd0293848c89604b",
+    @otherwise=true,
+    @to="d9bd1e3e8b3b21828c294ec75498e4ff">,
+   #<CPEE::Transformation::Link:0x00007fee393722b8
+    @attributes={},
+    @condition=nil,
+    @from="d9bd1e3e8b3b21828c294ec75498e4ff",
+    @otherwise=false,
+    @to="73e56c23b538bdd3f86458bb1101682b">,
+   #<CPEE::Transformation::Link:0x00007fee39372178
+    @attributes={},
+    @condition=nil,
+    @from="73e56c23b538bdd3f86458bb1101682b",
+    @otherwise=false,
+    @to="d3c10fd10b96d8e0d35c5f841c0891ae">],
+ @nodes=
+  {"a3" =>
+    #<CPEE::Transformation::Node:0x00007fee624e0478
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a3",
+     @incoming=1,
+     @label="A",
+     @methods=[""],
+     @niceid=1,
+     @outgoing=1,
+     @script="data.a += 1",
+     @script_id=nil,
+     @script_type="application/x-ruby",
+     @script_var="result",
+     @type=:task>,
+   "a6" =>
+    #<CPEE::Transformation::Node:0x00007fee3859fc80
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a6",
+     @incoming=1,
+     @label="B",
+     @methods=[""],
+     @niceid=2,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:task>,
+   "73e56c23b538bdd3f86458bb1101682b" =>
+    #<CPEE::Transformation::Node:0x00007fee3859f640
+     @arguments={},
+     @attributes={},
+     @endpoints=[],
+     @id="73e56c23b538bdd3f86458bb1101682b",
+     @incoming=2,
+     @label=nil,
+     @methods=[],
+     @niceid=3,
+     @outgoing=2,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:exclusiveGateway>,
+   "4f4058880669a1d5541dbe1dfcbe2621" =>
+    #<CPEE::Transformation::Node:0x00007fee3859f140
+     @arguments={},
+     @attributes={},
+     @endpoints=[],
+     @id="4f4058880669a1d5541dbe1dfcbe2621",
+     @incoming=1,
+     @label=nil,
+     @methods=[],
+     @niceid=4,
+     @outgoing=3,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:exclusiveGateway>,
+   "d9bd1e3e8b3b21828c294ec75498e4ff" =>
+    #<CPEE::Transformation::Node:0x00007fee3859eec0
+     @arguments={},
+     @attributes={},
+     @endpoints=[],
+     @id="d9bd1e3e8b3b21828c294ec75498e4ff",
+     @incoming=1,
+     @label=nil,
+     @methods=[],
+     @niceid=5,
+     @outgoing=3,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:exclusiveGateway>,
+   "a5" =>
+    #<CPEE::Transformation::Node:0x00007fee3859e4c0
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a5",
+     @incoming=1,
+     @label="C",
+     @methods=[""],
+     @niceid=6,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:task>,
+   "a7" =>
+    #<CPEE::Transformation::Node:0x00007fee3859dde0
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a7",
+     @incoming=1,
+     @label="B",
+     @methods=[""],
+     @niceid=7,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:task>,
+   "a8" =>
+    #<CPEE::Transformation::Node:0x00007fee3859cee0
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a8",
+     @incoming=1,
+     @label="D",
+     @methods=[""],
+     @niceid=8,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:task>,
+   "a4" =>
+    #<CPEE::Transformation::Node:0x00007fee3859c800
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a4",
+     @incoming=1,
+     @label="A",
+     @methods=[""],
+     @niceid=9,
+     @outgoing=1,
+     @script="data.a += 1",
+     @script_id=nil,
+     @script_type="application/x-ruby",
+     @script_var="result",
+     @type=:task>,
+   "a9" =>
+    #<CPEE::Transformation::Node:0x00007fee3859c080
+     @arguments={"timeout" => "1"},
+     @attributes={},
+     @endpoints=["timeout"],
+     @id="a9",
+     @incoming=1,
+     @label="B",
+     @methods=[""],
+     @niceid=10,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:task>,
+   "72c199f0072423b2bd0293848c89604b" =>
+    #<CPEE::Transformation::Node:0x00007fee3859b2c0
+     @arguments={},
+     @attributes={},
+     @endpoints=[],
+     @id="72c199f0072423b2bd0293848c89604b",
+     @incoming=1,
+     @label="",
+     @methods=[],
+     @niceid=11,
+     @outgoing=1,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:break>,
+   "d3c10fd10b96d8e0d35c5f841c0891ae" =>
+    #<CPEE::Transformation::Node:0x00007fee3859ae60
+     @arguments={},
+     @attributes={},
+     @endpoints=[],
+     @id="d3c10fd10b96d8e0d35c5f841c0891ae",
+     @incoming=1,
+     @label="",
+     @methods=[],
+     @niceid=12,
+     @outgoing=0,
+     @script=nil,
+     @script_id=nil,
+     @script_type=nil,
+     @script_var="result",
+     @type=:endEvent>}>
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="timeout" a:alt_id="a3">
+    <parameters>
+      <label>A</label>
+      <method/>
+      <arguments>
+        <timeout>1</timeout>
+      </arguments>
+    </parameters>
+    <code>
+      <finalize output="result" language="application/x-ruby">data.a += 1</finalize>
+    </code>
+  </call>
+  <call id="a2" endpoint="timeout" a:alt_id="a6">
+    <parameters>
+      <label>B</label>
+      <method/>
+      <arguments>
+        <timeout>1</timeout>
+      </arguments>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="data.a &lt; 3" a:alt_id="73e56c23b538bdd3f86458bb1101682b" language="text/javascript">
+    <choose mode="exclusive" a:alt_id="4f4058880669a1d5541dbe1dfcbe2621">
+      <alternative condition="data.a &lt; 3" language="text/javascript">
+        <call id="a6" endpoint="timeout" a:alt_id="a5">
+          <parameters>
+            <label>C</label>
+            <method/>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+        </call>
+        <call id="a7" endpoint="timeout" a:alt_id="a7">
+          <parameters>
+            <label>B</label>
+            <method/>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="data.a &gt;= 3 &amp;&amp; data.a &lt; 6" language="text/javascript">
+        <call id="a8" endpoint="timeout" a:alt_id="a8">
+          <parameters>
+            <label>D</label>
+            <method/>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+        </call>
+        <call id="a9" endpoint="timeout" a:alt_id="a4">
+          <parameters>
+            <label>A</label>
+            <method/>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+          <code>
+            <finalize output="result" language="application/x-ruby">data.a += 1</finalize>
+          </code>
+        </call>
+        <call id="a10" endpoint="timeout" a:alt_id="a9">
+          <parameters>
+            <label>B</label>
+            <method/>
+            <arguments>
+              <timeout>1</timeout>
+            </arguments>
+          </parameters>
+        </call>
+      </alternative>
+      <otherwise>
+        <escape a:alt_id="-1"/>
+      </otherwise>
+    </choose>
+  </loop>
+</description>

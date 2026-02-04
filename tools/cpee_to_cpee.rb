@@ -74,8 +74,6 @@ else
   tree = trans.build_tree(false)
 end
 
-pp tree
-
 if printtree
   puts tree.to_s
 else

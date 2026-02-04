@@ -174,7 +174,8 @@ module CPEE
 
         private
           def print_Break(node,res)
-            res.add('escape', 'a:alt_id' => node.id)
+            s1 = res.add('escape', 'a:alt_id' => node.id)
+            s1
           end
 
           def print_Loop(node,res)
@@ -233,6 +234,7 @@ module CPEE
                   end
                 end
               end
+              n
             end
           end
 
