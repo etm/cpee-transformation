@@ -93,10 +93,12 @@ module CPEE
             e.find("bm:ioSpecification/bm:dataInput").each do |a|
               name = a.attributes['name']
               value = a.attributes['itemSubjectRef']
-              if @dataelements.keys.include?(value)
-                n.arguments[name] = 'data.' + value
-              else
-                n.arguments[name] = value
+              unless name.nil?
+                if @dataelements.keys.include?(value)
+                  n.arguments[name] = 'data.' + value
+                else
+                  n.arguments[name] = value
+                end
               end
             end
             e.find("bm:ioSpecification/bm:dataOutput").each do |a|
