@@ -95,6 +95,7 @@ module CPEE
 
           def print_Break(node,res)
             res << "At this point the innermost loop is exited. "
+            res
           end
 
           def print_Loop(node,res)
@@ -125,18 +126,23 @@ module CPEE
                 print_Conditional(node,res)
               end
             end
+            res
           end
 
           def print_Node(node,res)
-            if node.endpoints.empty? && !node.script.nil? && node.script.strip != ''
+            ep = node.endpoints.dup
+            if ep.length == 1 && ep[0].empty?
+              ep = []
+            end
+            if ep.empty? && !node.script.nil? && node.script.strip != ''
               res << get_next("a script task with the id a#{node.niceid}")
             else
               lab = node.label.gsub(/"/,"\\\"").strip rescue ''
-              if lab.length > 0 && node.endpoints.any?
-                res << get_next("a task with the id a#{node.niceid} and the label \"#{lab}\" which #{get_meth(node.methods.join(','))} the endpoint #{node.endpoints.join(',')}")
-              elsif lab.length == 0 && node.endpoints.any?
-                res << get_next("a task with the id a#{node.niceid} which #{get_meth(node.methods.join(','))} the endpoint #{node.endpoints.join(',')}")
-              elsif lab.length > 0 && node.endpoints.empty?
+              if lab.length > 0 && ep.any?
+                res << get_next("a task with the id a#{node.niceid} and the label \"#{lab}\" which #{get_meth(node.methods.join(','))} the endpoint #{ep.join(',')}")
+              elsif lab.length == 0 && ep.any?
+                res << get_next("a task with the id a#{node.niceid} which #{get_meth(node.methods.join(','))} the endpoint #{ep.join(',')}")
+              elsif lab.length > 0 && ep.empty?
                 res << get_next("a task with the id a#{node.niceid} and the label \"#{lab}\"")
               else
                 res << get_next("a task with the id a#{node.niceid}")
@@ -150,6 +156,7 @@ module CPEE
                 res << params.join(', ') + '. '
               end
             end
+            res
           end
 
           def print_Parallel(node,res)
@@ -172,6 +179,7 @@ module CPEE
               restore_where orig
             end
             res << "Finally the parallel branches are joined. "
+            res
           end
 
           def print_Conditional(node,res)
@@ -191,6 +199,7 @@ module CPEE
             #   generate_in_list(x,res)
             # end
             res << "Following this, all decision branches are finished. "
+            res
           end
 
       end
