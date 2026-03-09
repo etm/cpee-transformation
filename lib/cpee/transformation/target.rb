@@ -30,7 +30,7 @@ module CPEE
         def generate_in_list(list,res)
           list.each do |e|
             nam = e.class.name.gsub(/\w+:+/,'')
-            res = send("print_#{nam}".to_sym,e,res)
+            res = send("print_#{nam}".to_sym,e,res) # always save last node
           end
           res
         end

@@ -174,8 +174,7 @@ module CPEE
 
         private
           def print_Break(node,res)
-            s1 = res.add('escape', 'a:alt_id' => node.id)
-            s1
+            res.add('escape', 'a:alt_id' => node.id)
             res
           end
 
@@ -195,7 +194,6 @@ module CPEE
                 print_Conditional(node,s1)
               end
             end
-            s1
             res
           end
 
@@ -247,7 +245,6 @@ module CPEE
               s2 = s1.add('parallel_branch')
               generate_in_list(branch,s2)
             end
-            s1
             res
           end
 
@@ -275,7 +272,6 @@ module CPEE
             if (x = s1.find('d:otherwise')).any?
               s1.add x
             end
-            s1
             res
           end
 
