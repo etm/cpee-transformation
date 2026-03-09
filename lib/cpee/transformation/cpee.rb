@@ -176,6 +176,7 @@ module CPEE
           def print_Break(node,res)
             s1 = res.add('escape', 'a:alt_id' => node.id)
             s1
+            res
           end
 
           def print_Loop(node,res)
@@ -195,6 +196,7 @@ module CPEE
               end
             end
             s1
+            res
           end
 
           def print_Node(node,res)
@@ -236,6 +238,7 @@ module CPEE
               end
               n
             end
+            res
           end
 
           def print_Parallel(node,res)
@@ -245,6 +248,7 @@ module CPEE
               generate_in_list(branch,s2)
             end
             s1
+            res
           end
 
           def print_Conditional(node,res)
@@ -272,6 +276,7 @@ module CPEE
               s1.add x
             end
             s1
+            res
           end
 
       end
