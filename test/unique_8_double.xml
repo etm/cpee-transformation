@@ -1,0 +1,187 @@
+<description xmlns="http://cpee.org/ns/description/1.0">
+  <call id="a3" endpoint="timeout">
+    <parameters>
+      <label>"A"</label>
+      <method/>
+      <type>:serviceTask</type>
+      <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+      <parameters>
+        <timeout>1</timeout>
+      </parameters>
+    </parameters>
+    <manipulate output="result" language="application/javascript">data.a += 1
+      <code>data.a += 1</code>
+    </manipulate>
+  </call>
+  <call id="a6" endpoint="timeout">
+    <parameters>
+      <label>"B"</label>
+      <method/>
+      <type>:serviceTask</type>
+      <mid>'sid-D16D28EC-08D9-4FA6-92F4-D533E21C9C5E'</mid>
+      <parameters>
+        <timeout>1</timeout>
+      </parameters>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="">
+    <_probability>
+      <_probability_min/>
+      <_probability_max/>
+      <_probability_avg/>
+    </_probability>
+    <_annotations>
+      <_logging_behavior>
+        <_iteration/>
+      </_logging_behavior>
+    </_annotations>
+    <choose mode="exclusive">
+      <alternative condition="data.a &gt;= 3 &amp;&amp; data.a &lt; 6" language="text/javascript">
+        <call id="a7" endpoint="timeout">
+          <parameters>
+            <label>"D"</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-0937F905-A975-4DB2-A8C9-CD523611AEF5'</mid>
+            <parameters>
+              <timeout>1</timeout>
+            </parameters>
+          </parameters>
+        </call>
+        <call id="a13" endpoint="timeout">
+          <parameters>
+            <label>"A"</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+            <parameters>
+              <timeout>1</timeout>
+            </parameters>
+          </parameters>
+          <manipulate output="result" language="application/javascript">data.a += 1
+            <code>data.a += 1</code>
+          </manipulate>
+        </call>
+        <call id="a16" endpoint="timeout">
+          <parameters>
+            <label>"B"</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-D16D28EC-08D9-4FA6-92F4-D533E21C9C5E'</mid>
+            <parameters>
+              <timeout>1</timeout>
+            </parameters>
+          </parameters>
+        </call>
+        <escape/>
+      </alternative>
+      <alternative condition="data.a &lt; 3" language="text/javascript">
+        <call id="a5" endpoint="timeout">
+          <parameters>
+            <label>"C"</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-7E70A0D7-660E-4C1B-B377-64387F99BD87'</mid>
+            <parameters>
+              <timeout>1</timeout>
+            </parameters>
+          </parameters>
+        </call>
+        <call id="a26" endpoint="timeout">
+          <parameters>
+            <label>"B"</label>
+            <method/>
+            <type>:serviceTask</type>
+            <mid>'sid-D16D28EC-08D9-4FA6-92F4-D533E21C9C5E'</mid>
+            <parameters>
+              <timeout>1</timeout>
+            </parameters>
+          </parameters>
+        </call>
+      </alternative>
+      <otherwise>
+        <call id="a2" endpoint="">
+          <parameters>
+            <label>e</label>
+            <color/>
+            <method>:post</method>
+            <arguments/>
+          </parameters>
+          <annotations>
+            <_generic/>
+            <_logging_behavior>
+              <_exclude/>
+              <_include/>
+            </_logging_behavior>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+          </documentation>
+        </call>
+        <call id="a1" endpoint="">
+          <parameters>
+            <label>f</label>
+            <color/>
+            <method>:post</method>
+            <arguments/>
+          </parameters>
+          <annotations>
+            <_generic/>
+            <_logging_behavior>
+              <_exclude/>
+              <_include/>
+            </_logging_behavior>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+          </documentation>
+        </call>
+        <escape/>
+      </otherwise>
+    </choose>
+  </loop>
+</description>
