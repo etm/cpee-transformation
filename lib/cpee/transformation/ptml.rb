@@ -155,60 +155,77 @@ module CPEE
             res
           end
 
+          def set_edges_condition(source,target,res,cond,default)
+            rid = rand.to_s[2..11]
+            if default
+              res.add('parentsNode','id'=> rid, 'sourceId' => source, 'targetId' => target, 'default' => default)
+            else
+              res.add('parentsNode','id'=> rid, 'sourceId' => source, 'targetId' => target, 'condition' => cond)
+            end
+            res
+          end
+
+
           def print_Break(node,res)
-            pp node
+            rid = rand.to_s[2..11]
+            n = res.add('manualTask','id' => rid, 'name' => node.label)
+            set_edges(@last,rid,res)
+            res
           end
 
           def print_Loop(node,res)
-            original_last = @last
-            nid = "a#{node.id}"
-            res.add('xorLoop','id' => nid, 'name' => nil)
-            set_edges(@last,nid,res)
-            @last = nid
-
-            if node.sub.length == 2
-              node.sub.reverse.each do |branch|
-                if branch[0].type == :break
-                  rid = rand.to_s[2..11]
-                  res.add('automaticTask', 'id' => rid, 'name' => 'tau')
-                  set_edges(@last,rid,res)
-                elsif branch.length == 1
-                  generate_in_list(branch,res)
-                elsif branch.length >1
-                  branch_last = @last
-                  rid = rand.to_s[2..11]
-                  res.add('sequence', 'id' => rid, 'name' => 'just-sequence')
-                  set_edges(@last,rid,res)
-                  @last = rid
-                  generate_in_list(branch,res)
-                  @last = branch_last
-                end
-              end
-            elsif node.sub.length > 2
-              node.sub.reverse.each do |branch|
-                if branch[0].type == :break
-                  rid = rand.to_s[2..11]
-                  res.add('automaticTask', 'id' => rid, 'name' => 'tau')
-                  set_edges(@last,rid,res)
-                  #Add new xor
-                  xor_id = rand.to_s[2..11]
-                  res.add('xor', 'id' => xor_id, 'name' => 'help-xor')
-                  set_edges(@last,xor_id,res)
-                  escape_id = rand.to_s[2..11]
-                  res.add('manualTask', 'id' => escape_id, 'name' => 'escape')
-                  set_edges(xor_id,escape_id,res)
-                  @last = xor_id
-                else
-                  if branch.length == 1
+            if node.mode == :pre_test
+              original_last = @last
+              nid = "a#{node.id}"
+              res.add('xorLoop','id' => nid, 'name' => nil)
+              set_edges(@last,nid,res)
+              @last = nid
+              if node.sub.length == 2
+                node.sub.reverse.each do |branch|
+                  cond = branch.condition.any? ? branch.condition[0] : nil
+                  if branch[0].type == :break
+                    rid = rand.to_s[2..11]
+                    res.add('automaticTask', 'id' => rid, 'name' => 'tau')
+                    set_edges(@last,rid,res)
+                  elsif branch.length == 1
                     generate_in_list(branch,res)
+                    res.find("//parentsNode[@sourceId='#{@last}']").last.attributes['condition'] = cond
                   elsif branch.length >1
                     branch_last = @last
                     rid = rand.to_s[2..11]
                     res.add('sequence', 'id' => rid, 'name' => 'just-sequence')
-                    set_edges(@last,rid,res)
+                    set_edges_condition(@last,nid,res,cond,false)
                     @last = rid
                     generate_in_list(branch,res)
                     @last = branch_last
+                  end
+                end
+              elsif node.sub.length > 2
+                node.sub.reverse.each do |branch|
+                  if branch[0].type == :break
+                    rid = rand.to_s[2..11]
+                    res.add('automaticTask', 'id' => rid, 'name' => 'tau')
+                    set_edges(@last,rid,res)
+                    #Add new xor
+                    xor_id = rand.to_s[2..11]
+                    res.add('xor', 'id' => xor_id, 'name' => 'help-xor')
+                    set_edges(@last,xor_id,res)
+                    escape_id = rand.to_s[2..11]
+                    res.add('manualTask', 'id' => escape_id, 'name' => 'escape')
+                    set_edges(xor_id,escape_id,res)
+                    @last = xor_id
+                  else
+                    if branch.length == 1
+                      generate_in_list(branch,res)
+                    elsif branch.length >1
+                      branch_last = @last
+                      rid = rand.to_s[2..11]
+                      res.add('sequence', 'id' => rid, 'name' => 'just-sequence')
+                      set_edges(@last,rid,res)
+                      @last = rid
+                      generate_in_list(branch,res)
+                      @last = branch_last
+                    end
                   end
                 end
               end
@@ -245,6 +262,7 @@ module CPEE
            def print_Conditional(node,res) #{{{
             original_last = @last
             nid = "a#{node.id}"
+
             if node.type == :exclusiveGateway
               res.add('xor','id' => nid, 'name' => nil)
             elsif node.type == :parallelGateway
@@ -252,22 +270,34 @@ module CPEE
             elsif node.type == :inclusiveGateway
               res.add('or','id' => nid, 'name' => nil)
             end
-            set_edges(@last,nid,res)
+
+            #if first element in model
+            if res.children.length == 1
+              res.attributes['root'] = nid
+            else
+              set_edges(@last,nid,res)
+            end
             @last = nid
             node.sub.each do |branch|
-              pp branch.condition.any?
-              pp branch.condition
+              #get conditions and default
+              cond = branch.condition.any? ? branch.condition[0] : nil
+              default = branch.otherwise ? true : nil
               if branch.length == 0
                 rid = rand.to_s[2..11]
                 res.add('automaticTask', 'id' => rid, 'name' => 'tau')
-                set_edges(@last,rid,res)
+                set_edges_condition(@last,rid,res,cond,default)
               elsif branch.length == 1
                 generate_in_list(branch,res)
+                if default
+                  res.find("//parentsNode[@sourceId='#{@last}']").last.attributes['default'] = default
+                else
+                  res.find("//parentsNode[@sourceId='#{@last}']").last.attributes['condition'] = cond
+                end
               elsif branch.length >1
                 branch_last = @last
                 rid = rand.to_s[2..11]
                 res.add('sequence', 'id' => rid, 'name' => 'just-sequence')
-                set_edges(@last,rid,res)
+                set_edges_condition(@last,rid,res,cond,default)
                 @last = rid
                 generate_in_list(branch,res)
                 @last = branch_last
