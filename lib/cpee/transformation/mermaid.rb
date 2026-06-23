@@ -156,7 +156,7 @@ module CPEE
           def print_Node(node,pn)
             nid = node.id
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              @labels[nid] = "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:script:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             else
               @labels[nid] = "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             end
