@@ -140,6 +140,7 @@ module CPEE
           while @nids.include?(nid)
             nid.next!
           end
+          @nids << nid
           nid
         end
 

@@ -51,6 +51,7 @@ module CPEE
           while @nids.include?(nid)
             nid.next!
           end
+          @nids << nid
           nid
         end
 
@@ -197,15 +198,16 @@ module CPEE
           end
 
           def print_Loop(node,res)
+            eid = "e#{(@eid += 1)}"
             if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'a:alt_id' => node.id)
+              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'a:alt_id' => node.id, 'eid' => eid)
               s1.attributes['language'] = node.sub[0].condition_type unless node.sub[0].condition_type.nil?
               node.sub[0].attributes.each do |k,v|
                 s1.attributes[k] = v
               end
               generate_in_list(node.sub[0],s1)
             else
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
+              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'eid' => eid)
               if node.sub.length == 1
                 generate_in_list(node.sub[0],s1)
               else
@@ -259,7 +261,7 @@ module CPEE
 
           def print_Parallel(node,res)
             eid = "e#{(@eid += 1)}"
-            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id)
+            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id, 'eid' => eid)
             node.sub.each do |branch|
               bid = "e#{(@eid += 1)}"
               s2 = s1.add('parallel_branch', 'eid' => bid)
