@@ -100,9 +100,9 @@ module CPEE
                 ele.find("d:parameters/d:arguments/d:*").each do |e|
                   no.arguments[e.qname.name] = e.text
                 end
-                if (sc = ele.find("d:code/d:finalize")).any?
+                if (sc = ele.find("d:code/d:*")).any?
                   no.script_type = 'application/x-ruby'
-                  no.script = sc.first.text
+                  no.script = sc.map{|e| [e.qname.name,e.text] }.to_h
                 end
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
@@ -111,8 +111,8 @@ module CPEE
               when 'manipulate'
                 nid = id_find(ele.attributes['id'])
                 no = Node.new(0,nid,:scriptTask,ele.attributes['label'].to_s,1,1)
-                no.script = ele.text
                 no.script_type = 'application/x-ruby'
+                no.script = ele.find("string(d:code)")
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
                 @graph.add_node no
@@ -227,10 +227,11 @@ module CPEE
             @nids << nid
             ###
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              n = res.add('d:manipulate', node.script, 'id' => nid, 'a:alt_id' => node.id)
+              n = res.add('d:manipulate', 'id' => nid, 'a:alt_id' => node.id)
               n.attributes['label'] = node.label.gsub(/"/,"\\\"")
-              n.attributes['output'] = node.script_var unless node.script_var.nil?
-              n.attributes['language'] = node.script_type unless node.script_type.nil?
+              nc = n.add('d:code',node.script)
+              nc.attributes['output'] = node.script_var unless node.script_var.nil?
+              nc.attributes['language'] = node.script_type unless node.script_type.nil?
             else
               n   = res.add('d:call', 'id' => nid, 'endpoint' => node.endpoints.join(','), 'a:alt_id' => node.id)
               p   = n.add('d:parameters')
@@ -249,7 +250,7 @@ module CPEE
                 else
                   node.script.each do |k,v|
                     x = y.add('d:' + k,v)
-                    x.attributes['output'] = node.script_var unless node.script_var.nil?
+                    x.attributes['output'] = node.script_var unless node.script_var.nil? || k == 'prepare'
                     x.attributes['language'] = node.script_type unless node.script_type.nil?
                   end
                 end
