@@ -134,9 +134,9 @@ module CPEE
                 end
                 n1 = ne
               when 'choose'
-                bra = ele.find('d:alternative|d:otherwise')
                 nid = id_find(ele.attributes['eid'])
-                ns = Node.new(0,nid,:exclusiveGateway,nil,1,bra.length)
+                bra = ele.find('d:alternative|d:otherwise')
+                ns = Node.new(0,nid,:exclusiveGateway,ele.attributes['label'],1,bra.length)
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
                 ne = Node.new(0,nid + 'e',:exclusiveGateway,nil,1,bra.length)
@@ -273,7 +273,7 @@ module CPEE
 
           def print_Conditional(node,res)
             eid = "e#{(@eid += 1)}"
-            s1 = res.add('d:choose', 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
+            s1 = res.add('d:choose', 'label' => node.label, 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
             otherwise = false
             node.sub.each do |branch|
               bid = "e#{(@eid += 1)}"

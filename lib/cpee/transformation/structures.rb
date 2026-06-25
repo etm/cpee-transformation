@@ -72,9 +72,10 @@ module CPEE
     class Link #{{{
       attr_accessor :from, :to
       attr_reader :condition, :attributes, :otherwise
-      def initialize(from,to,cond=nil,otherwise=false)
+      def initialize(from,to,cond=nil,otherwise=false,id=nil)
         @from  = from
         @to = to
+        @id = id
         @otherwise = otherwise
         @condition = cond
         @attributes = {}
@@ -160,12 +161,13 @@ module CPEE
       include Struct
       include Enumerable
       attr_reader :container
-      attr_reader :id, :sub, :mode
+      attr_reader :id, :sub, :mode, :label
       attr_reader :attributes
       attr_accessor :type
-      def initialize(id,mode,type)
+      def initialize(id,mode,type,label='')
         @container = true
         @id = id
+        @label = label
         @sub = []
         @mode = mode
         @type = type
