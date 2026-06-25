@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <manipulate id="a1" label="Initialize Counter" a:alt_id="1">
+    <code>data.counter = 0</code>
+  </manipulate>
+  <manipulate id="a3" label="Set Counter to 0" a:alt_id="2">
+    <code>data.counter = 0</code>
+  </manipulate>
+  <loop mode="pre_test" condition="data.counter &lt; 9" a:alt_id="3" eid="e1" language="text/javascript">
+    <call id="a7" endpoint="blinkyellowled" a:alt_id="4">
+      <parameters>
+        <label>Blink Yellow LED</label>
+        <method/>
+        <arguments>
+          <state>on</state>
+        </arguments>
+      </parameters>
+      <code>
+        <prepare>a</prepare>
+        <finalize output="result">b</finalize>
+        <update output="result">v</update>
+        <rescue output="result">d</rescue>
+      </code>
+    </call>
+    <manipulate id="a9" label="Increment Counter" a:alt_id="4">
+      <code>data.counter = data.counter + 1</code>
+    </manipulate>
+  </loop>
+</description>
