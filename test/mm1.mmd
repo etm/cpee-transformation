@@ -1,0 +1,17 @@
+    %% Output Intermediate
+    flowchart LR
+    se:startevent:((startevent))-->a1:task:(Get Ambient Light)
+    a1:task:(Get Ambient Light)-->gw1s:exclusivegateway:{x}
+    gw1s:exclusivegateway:{x}-->|"Too Low"|a5:task:(Increase Brightness)
+    a5:task:(Increase Brightness)-->gw1e:exclusivegateway:{x}
+    gw1s:exclusivegateway:{x}-->|"Too High"|a7:task:(Reduce Brightness)
+    a7:task:(Reduce Brightness)-->gw1e:exclusivegateway:{x}
+    gw1s:exclusivegateway:{x}-->|"Night"|gw2s:parallelgateway:{AND}
+    gw2s:parallelgateway:{AND}-->a15:task:(Switch Red LED Off)
+    a15:task:(Switch Red LED Off)-->gw2e:parallelgateway:{AND}
+    gw2s:parallelgateway:{AND}-->a17:task:(Switch Yellow LED Off)
+    a17:task:(Switch Yellow LED Off)-->gw2e:parallelgateway:{AND}
+    gw2s:parallelgateway:{AND}-->a19:task:(Switch White LED Off)
+    a19:task:(Switch White LED Off)-->gw2e:parallelgateway:{AND}
+    gw2e:parallelgateway:{AND}-->gw1e:exclusivegateway:{x}
+    gw1e:exclusivegateway:{x}-->ee:endevent:((endevent))

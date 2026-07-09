@@ -1,0 +1,1115 @@
+<?xml version="1.0"?>
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <parallel wait="-1" cancel="last" a:alt_id="1">
+    <parallel_branch>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Add "profiling about logic involved, significance and envisaged consequences of processing"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Check if it is possible to determine the period for which personal data will be stored</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="4">
+        <alternative condition="condition1" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Retrieve the period</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="condition2" language="text/javascript">
+          <call id="a13" endpoint="" a:alt_id="7">
+            <parameters>
+              <label>Retrieve the criteria used to determine the period</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a17" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Add "existence of the right to rectify of personal data"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a19" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Add "existence of the right to access personal data"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a21" endpoint="" a:alt_id="10">
+        <parameters>
+          <label>Add "existence of the right to erase personal data"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a23" endpoint="" a:alt_id="11">
+        <parameters>
+          <label>Add "existence of the right to data portability"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a25" endpoint="" a:alt_id="12">
+        <parameters>
+          <label>Add "existence of the right to withdraw"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a27" endpoint="" a:alt_id="13">
+        <parameters>
+          <label>Add "existence of the right to lodge a complaint to a supervisory authority"</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a29" endpoint="" a:alt_id="14">
+        <parameters>
+          <label>Check if data has been obtained from Data Subject</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="15">
+        <alternative condition="condition1" language="text/javascript">
+          <call id="a33" endpoint="" a:alt_id="16">
+            <parameters>
+              <label>Retrieve the source from which personal data are originated</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="condition2" language="text/javascript">
+          <call id="a37" endpoint="" a:alt_id="18">
+            <parameters>
+              <label>Retrieve the criteria used to determine the period</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a41" endpoint="" a:alt_id="19">
+        <parameters>
+          <label>Check if personal data can be transferred internationally</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="20">
+        <alternative condition="condition1" language="text/javascript">
+          <call id="a45" endpoint="" a:alt_id="21">
+            <parameters>
+              <label>Add "personal data will be transferred internationally"</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="condition2" language="text/javascript">
+          <call id="a49" endpoint="" a:alt_id="23">
+            <parameters>
+              <label>Add "personal data will be transferred internationally"</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a53" endpoint="" a:alt_id="24">
+        <parameters>
+          <label>Check if recipients are present</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="25">
+        <alternative condition="condition1" language="text/javascript">
+          <call id="a57" endpoint="" a:alt_id="26">
+            <parameters>
+              <label>Retrieve recipients</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="condition2" language="text/javascript">
+          <call id="a61" endpoint="" a:alt_id="28">
+            <parameters>
+              <label>Retrieve recipients</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a65" endpoint="" a:alt_id="29">
+        <parameters>
+          <label>Check if legitimate interests are presents</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="30">
+        <alternative condition="condition1" language="text/javascript">
+          <call id="a69" endpoint="" a:alt_id="31">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="condition2" language="text/javascript">
+          <call id="a73" endpoint="" a:alt_id="33">
+            <parameters>
+              <label>Retrieve legitimate interests</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a77" endpoint="" a:alt_id="34">
+        <parameters>
+          <label>Retrieve processing legal basis</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a79" endpoint="" a:alt_id="35">
+        <parameters>
+          <label>Retrieve processing purposses</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <parallel wait="-1" cancel="last" a:alt_id="36">
+        <parallel_branch>
+          <call id="a83" endpoint="" a:alt_id="37">
+            <parameters>
+              <label>Retrieve identity and contact details</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a85" endpoint="" a:alt_id="38">
+            <parameters>
+              <label>Ask DPO details</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a87" endpoint="" a:alt_id="39">
+            <parameters>
+              <label>Receive details From DPO</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+      <call id="a105" endpoint="" a:alt_id="42">
+        <parameters>
+          <label>Collect consent information</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a107" endpoint="" a:alt_id="43">
+        <parameters>
+          <label>Ask consent</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="44">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="45">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a113" endpoint="" a:alt_id="46">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a117" endpoint="" a:alt_id="47">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="48">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a123" endpoint="" a:alt_id="49">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a127" endpoint="" a:alt_id="50">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="52">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a133" endpoint="" a:alt_id="53">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a137" endpoint="" a:alt_id="54">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="55">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a143" endpoint="" a:alt_id="56">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a147" endpoint="" a:alt_id="57">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="58">
+            <alternative condition="condition1" language="text/javascript">
+              <call id="a153" endpoint="" a:alt_id="59">
+                <parameters>
+                  <label>Receive consent</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="condition2" language="text/javascript">
+              <call id="a157" endpoint="" a:alt_id="60">
+                <parameters>
+                  <label>Receive negation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </parallel_branch>
+  </parallel>
+</description>
