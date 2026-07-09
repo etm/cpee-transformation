@@ -31,6 +31,7 @@ module CPEE
          def initialize(text)
           @tree = Tree.new
           @start = nil
+          @nids = []
 
           @dataelements = {}
           @endpoints = {}
@@ -45,18 +46,29 @@ module CPEE
           end
         end
 
+        def id_find(nid)
+          nid = 'g0' unless nid
+          while @nids.include?(nid)
+            nid.next!
+          end
+          @nids << nid
+          nid
+        end
+
         def dive(node,n1=nil,condition=nil,otherwise=false)
           if node.children.empty?
             return n1
           end
           if n1.nil?
-            n1 = @start = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:startEvent,'',0,1)
+            nid = id_find(node.attributes['id'] || node.attributes['eid'])
+            n1 = @start = Node.new(0,nid,:startEvent,'',0,1)
           end
           node.children.each do |ele|
             case ele.qname.name
               when 'loop'
                 if ele.attributes['mode'] == 'pre_test'
-                  nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,2)
+                  nid = id_find(ele.attributes['eid'])
+                  nx = Node.new(0,nid,:exclusiveGateway,nil,2,2)
                   @graph.add_node nx
                   @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
 
@@ -66,50 +78,54 @@ module CPEE
                   @graph.add_link Link.new(bn.id, nx.id)
                   n1 = nx
                 else
-                  nx = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,2,1)
+                  nid = id_find(ele.attributes['eid'])
+                  nx = Node.new(0,nid,:exclusiveGateway,nil,2,1)
                   @graph.add_node nx
                   @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                   condition = nil
 
                   bn = dive ele, nx, ele.attributes['condition']
 
-                  no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,2)
+                  no = Node.new(0,nid + 'e',:exclusiveGateway,nil,1,2)
                   @graph.add_node no
                   @graph.add_link Link.new(bn.id, no.id)
                   @graph.add_link Link.new(no.id, nx.id, ele.attributes['condition'])
                   n1 = no
                 end
               when 'call'
-                no = Node.new(0,ele.attributes['id'],:task,ele.find("string(d:parameters/d:label)"),1,1)
+                nid = id_find(ele.attributes['id'])
+                no = Node.new(0,nid,:task,ele.find("string(d:parameters/d:label)"),1,1)
                 no.methods << ele.find("string(d:parameters/d:method)")
                 no.endpoints << ele.attributes['endpoint']
                 ele.find("d:parameters/d:arguments/d:*").each do |e|
                   no.arguments[e.qname.name] = e.text
                 end
-                if (sc = ele.find("d:code/d:finalize")).any?
+                if (sc = ele.find("d:code/d:*")).any?
                   no.script_type = 'application/x-ruby'
-                  no.script = sc.first.text
+                  no.script = sc.map{|e| [e.qname.name,e.text] }.to_h
                 end
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
                 @graph.add_node no
                 n1 = no
               when 'manipulate'
-                no = Node.new(0,ele.attributes['id'],:scriptTask,ele.attributes['label'].to_s,1,1)
-                no.script = ele.text
+                nid = id_find(ele.attributes['id'])
+                no = Node.new(0,nid,:scriptTask,ele.attributes['label'].to_s,1,1)
                 no.script_type = 'application/x-ruby'
+                no.script = ele.find("string(d:code)")
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 condition = nil
                 @graph.add_node no
                 n1 = no
               when 'parallel'
                 bra = ele.find('d:parallel_branch')
-                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:parallelGateway,nil,1,bra.length)
+                nid = id_find(ele.attributes['eid'])
+                ns = Node.new(0,nid,:parallelGateway,nil,1,bra.length)
                 ns.attributes[:wait] = ele.attributes['wait'] || -1
                 ns.attributes[:cancel] = ele.attributes['cancel'] || 'last'
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:parallelGateway,nil,1,bra.length)
+                ne = Node.new(0,nid + 'e',:parallelGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
@@ -118,11 +134,12 @@ module CPEE
                 end
                 n1 = ne
               when 'choose'
+                nid = id_find(ele.attributes['eid'])
                 bra = ele.find('d:alternative|d:otherwise')
-                ns = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                ns = Node.new(0,nid,:exclusiveGateway,ele.attributes['label'],1,bra.length)
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:exclusiveGateway,nil,1,bra.length)
+                ne = Node.new(0,nid + 'e',:exclusiveGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
@@ -135,7 +152,8 @@ module CPEE
                 end
                 n1 = ne
               when 'escape'
-                no = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:break,'',1,1)
+                nid = id_find(ele.attributes['eid'])
+                no = Node.new(0,nid,:break,'',1,1)
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 @graph.add_node no
                 condition = nil
@@ -165,6 +183,7 @@ module CPEE
 
         def generate
           @nids = []
+          @eid = 0
           res = XML::Smart.string("<description xmlns='http://cpee.org/ns/description/1.0' xmlns:a='http://cpee.org/ns/annotation/1.0'/>")
           res.register_namespace 'd', 'http://cpee.org/ns/description/1.0'
           res.register_namespace 'a', 'http://cpee.org/ns/annotation/1.0'
@@ -179,15 +198,16 @@ module CPEE
           end
 
           def print_Loop(node,res)
+            eid = "e#{(@eid += 1)}"
             if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'a:alt_id' => node.id)
+              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'a:alt_id' => node.id, 'eid' => eid)
               s1.attributes['language'] = node.sub[0].condition_type unless node.sub[0].condition_type.nil?
               node.sub[0].attributes.each do |k,v|
                 s1.attributes[k] = v
               end
               generate_in_list(node.sub[0],s1)
             else
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '))
+              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'eid' => eid)
               if node.sub.length == 1
                 generate_in_list(node.sub[0],s1)
               else
@@ -207,10 +227,11 @@ module CPEE
             @nids << nid
             ###
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              n = res.add('d:manipulate', node.script, 'id' => nid, 'a:alt_id' => node.id)
+              n = res.add('d:manipulate', 'id' => nid, 'a:alt_id' => node.id)
               n.attributes['label'] = node.label.gsub(/"/,"\\\"")
-              n.attributes['output'] = node.script_var unless node.script_var.nil?
-              n.attributes['language'] = node.script_type unless node.script_type.nil?
+              nc = n.add('d:code',node.script)
+              nc.attributes['output'] = node.script_var unless node.script_var.nil?
+              nc.attributes['language'] = node.script_type unless node.script_type.nil?
             else
               n   = res.add('d:call', 'id' => nid, 'endpoint' => node.endpoints.join(','), 'a:alt_id' => node.id)
               p   = n.add('d:parameters')
@@ -229,7 +250,7 @@ module CPEE
                 else
                   node.script.each do |k,v|
                     x = y.add('d:' + k,v)
-                    x.attributes['output'] = node.script_var unless node.script_var.nil?
+                    x.attributes['output'] = node.script_var unless node.script_var.nil? || k == 'prepare'
                     x.attributes['language'] = node.script_type unless node.script_type.nil?
                   end
                 end
@@ -240,28 +261,32 @@ module CPEE
           end
 
           def print_Parallel(node,res)
-            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id)
+            eid = "e#{(@eid += 1)}"
+            s1 = res.add('parallel','wait' => node.wait, 'cancel' => node.cancel, 'a:alt_id' => node.id, 'eid' => eid)
             node.sub.each do |branch|
-              s2 = s1.add('parallel_branch')
+              bid = "e#{(@eid += 1)}"
+              s2 = s1.add('parallel_branch', 'eid' => bid)
               generate_in_list(branch,s2)
             end
             res
           end
 
           def print_Conditional(node,res)
-            s1 = res.add('d:choose', 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id)
+            eid = "e#{(@eid += 1)}"
+            s1 = res.add('d:choose', 'label' => node.label, 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
             otherwise = false
             node.sub.each do |branch|
+              bid = "e#{(@eid += 1)}"
               s2 = if branch.condition.any?
-                a = s1.add('d:alternative','condition' => branch.condition.join(' or '))
+                a = s1.add('d:alternative','condition' => branch.condition.join(' or '), 'eid' => bid)
                 a.attributes['language'] = branch.condition_type unless branch.condition_type.nil?
                 a
               else
                 if branch.otherwise || !otherwise
                   otherwise = true
-                  s1.add('d:otherwise')
+                  s1.add('d:otherwise', 'eid' => bid)
                 else
-                  s1.add('d:alternative', 'condition' => '')
+                  s1.add('d:alternative', 'condition' => '', 'eid' => bid)
                 end
               end
               branch.attributes.each do |k,v|

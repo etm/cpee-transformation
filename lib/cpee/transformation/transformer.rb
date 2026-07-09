@@ -76,11 +76,11 @@ module CPEE
           when :parallelGateway
             flat ? nil : Parallel.new(node.id,node.type,node.attributes[:wait].nil? ? '-1' : node.attributes[:wait],node.attributes[:cancel].nil? ? 'last' : node.attributes[:cancel])
           when :exclusiveGateway
-            flat ? nil : Conditional.new(node.id,:exclusive,node.type)
+            flat ? nil : Conditional.new(node.id,:exclusive,node.type,node.label)
           when :eventBasedGateway
             flat ? nil : Parallel.new(node.id,node.type,1)
           when :inclusiveGateway
-            flat ? nil : Conditional.new(node.id,:inclusive,node.type)
+            flat ? nil : Conditional.new(node.id,:inclusive,node.type,node.label)
           when :break
             flat ? Break.new(node.id) : Break.new(node.id)
           when :endEvent, :startEvent, nil
@@ -124,7 +124,7 @@ module CPEE
                   branch.condition << li.condition if !li.condition.nil? && !li.condition&.strip&.empty?
                   branch.otherwise = li.otherwise if li.condition.nil?
                   branch.condition.uniq!
-                  branch.condition_type = "text/javascript"
+                  branch.condition_type = "text/x-ruby"
                 end
                 if branch.respond_to?(:attributes)
                   branch.attributes.merge!(li.attributes)

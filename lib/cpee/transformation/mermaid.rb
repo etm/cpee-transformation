@@ -49,6 +49,7 @@ module CPEE
 				def map_nodes(node)
 					case node
             when 'task'; :task
+            when 'script'; :scriptTask
             when 'parallelgateway';   :parallelGateway
             when 'exclusivegateway';  :exclusiveGateway
             when 'eventbasedgateway'; :eventBasedGateway
@@ -124,7 +125,7 @@ module CPEE
       class Mermaid < Default
 
         def generate
-          @gwc = 0
+          @nids = []
           @labels = {}
           @fromto = []
           @labels['se'] = "se:startevent:((startevent))"
@@ -132,6 +133,15 @@ module CPEE
           pn = generate_in_list(@tree,'se')
           set_fromto pn, 'ee'
           "flowchart LR\n" + @fromto.map{ |e| "#{@labels[e[0]]}-->#{e.length == 3 ? e[2] : ''}#{@labels[e[1]]}"}.join("\n")
+        end
+
+        def id_find(nid)
+          nid = 'g0' unless nid
+          while @nids.include?(nid)
+            nid.next!
+          end
+          @nids << nid
+          nid
         end
 
         private
@@ -147,7 +157,7 @@ module CPEE
           def print_Node(node,pn)
             nid = node.id
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              @labels[nid] = "#{nid}:scripttask:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:script:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             else
               @labels[nid] = "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
             end
@@ -163,7 +173,7 @@ module CPEE
           end
 
           def print_Parallel(node,pn)
-            nid = "gw#{(@gwc += 1)}"
+            nid = id_find(node.id)
             set_fromto pn, "#{nid}s"
             @labels["#{nid}s"] = "#{nid}s:parallelgateway:{AND}"
             @labels["#{nid}e"] = "#{nid}e:parallelgateway:{AND}"
@@ -175,7 +185,7 @@ module CPEE
           end
 
           def print_Conditional(node,pn)
-            nid = "gw#{(@gwc += 1)}"
+            nid = id_find(node.id)
             set_fromto pn, "#{nid}s"
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
             @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
@@ -195,7 +205,7 @@ module CPEE
           end
 
           def print_Loop(node,pn)
-            nid = "gw#{(@gwc += 1)}"
+            nid = id_find(node.id)
             set_fromto pn, "#{nid}s"
 
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"

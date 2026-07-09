@@ -1,0 +1,85 @@
+<description xmlns="http://cpee.org/ns/description/1.0"
+  xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <manipulate id="a1" label="Initialize Loop Counter" a:alt_id="1">
+    <code>data.loop_counter = 0</code>
+  </manipulate>
+  <manipulate id="a3" label="Set Loop Counter to 5" a:alt_id="2">
+    <code>data.loop_counter = 5</code>
+  </manipulate>
+  <loop mode="pre_test" condition="data.loop_condition == true" a:alt_id="3" eid="e1" language="text/javascript">
+    <call id="a7" endpoint="measurelightingconditions" a:alt_id="4">
+      <parameters>
+        <label>Measure Lighting Conditions</label>
+        <method/>
+        <arguments>
+          <mode>one</mode>
+        </arguments>
+      </parameters>
+      <code>
+        <prepare/>
+        <finalize output="result">data.ambient_light_lux = result.to_f</finalize>
+        <update output="result"/>
+        <rescue output="result"/>
+      </code>
+    </call>
+    <choose mode="exclusive" label="ffddf" a:alt_id="5" eid="e2">
+      <alternative condition="data.ambient_light_lux &lt; 100" eid="e3" language="text/javascript">
+        <call id="a13" endpoint="increasebrightness" a:alt_id="6">
+          <parameters>
+            <label>Increase Brightness</label>
+            <method/>
+            <arguments>
+              <intensity>70</intensity>
+            </arguments>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="data.ambient_light_lux &gt; 1200" eid="e4" language="text/javascript">
+        <call id="a15" endpoint="reducebrightness" a:alt_id="7">
+          <parameters>
+            <label>Reduce Brightness</label>
+            <method/>
+            <arguments>
+              <intensity>30</intensity>
+            </arguments>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="data.ambient_light_lux &lt;= 10" eid="e5" language="text/javascript">
+        <call id="a17" endpoint="turnlightsoff" a:alt_id="8">
+          <parameters>
+            <label>Turn Lights Off</label>
+            <method/>
+            <arguments>
+              <intensity>0</intensity>
+            </arguments>
+          </parameters>
+        </call>
+      </alternative>
+    </choose>
+    <call id="a19" endpoint="wait2seconds" a:alt_id="9">
+      <parameters>
+        <label>Wait 2 Seconds</label>
+        <method/>
+        <arguments>
+          <timeout>2.0</timeout>
+        </arguments>
+      </parameters>
+    </call>
+    <manipulate id="a25" label="Decrement Loop Counter" a:alt_id="4">
+      <code>data.loop_counter = data.loop_counter - 1</code>
+    </manipulate>
+    <manipulate id="a27" label="Check Loop Condition" a:alt_id="4">
+      <code>data.loop_condition = data.loop_counter &gt; 0</code>
+    </manipulate>
+  </loop>
+  <call id="a9" endpoint="switchlightoff" a:alt_id="12">
+    <parameters>
+      <label>Switch Light Off</label>
+      <method/>
+      <arguments>
+        <intensity>0</intensity>
+      </arguments>
+    </parameters>
+  </call>
+</description>
