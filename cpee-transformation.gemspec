@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-transformation"
-  s.version          = "1.0.0"
+  s.version          = "1.0.1"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Transformation between different formats"
@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.bindir           = 'tools'
   s.executables      = ['bpmn2_to_cpee.rb', 'bpmn2_to_mermaid.rb', 'bpmn2_to_ptml.rb', 'cpee_to_cpee.rb', 'cpee_to_mermaid.rb', 'cpee_to_ptml.rb', 'cpee_to_text_bf.rb', 'cpee_to_text_df-poe.rb', 'cpee_to_text_df-por.rb', 'cpee-trans', 'mermaid_to_cpee.rb', 'ptml_to_cpee.rb']
 
-  s.required_ruby_version = '>=3.4'
+  s.required_ruby_version = '>=3.2'
 
   s.authors          = ['Juergen eTM Mangler', 'Nataliia Klievtsova']
 
