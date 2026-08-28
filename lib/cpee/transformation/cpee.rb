@@ -56,7 +56,7 @@ module CPEE
         end
 
         def dive(node,n1=nil,condition=nil,otherwise=false)
-          if node.children.empty?
+          if node.children.empty? || node.text_only?
             return n1
           end
           if n1.nil?
