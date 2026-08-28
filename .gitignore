@@ -1,1 +1,6 @@
 *.pid
+.includelist
+.stats
+.statsauthors
+.statsrun
+pkg/
