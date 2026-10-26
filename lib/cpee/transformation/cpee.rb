@@ -286,20 +286,19 @@ module CPEE
           def print_Conditional(node,res)
             eid = "e#{(@eid += 1)}"
             s1 = res.add('d:choose', 'label' => node.label, 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
-            otherwise = false
+            ### the otherwise is the explicit one, else the last branch without condition
+            ### (keeps the order stable), compare by identity as empty branches are ==
+            ow = node.sub.reverse.find{ |b| b.condition.empty? && b.otherwise } || node.sub.reverse.find{ |b| b.condition.empty? }
             node.sub.each do |branch|
               bid = "e#{(@eid += 1)}"
               s2 = if branch.condition.any?
                 a = s1.add('d:alternative','condition' => branch.condition.join(' or '), 'eid' => bid)
                 a.attributes['language'] = branch.condition_type unless branch.condition_type.nil?
                 a
+              elsif branch.equal?(ow)
+                s1.add('d:otherwise', 'eid' => bid)
               else
-                if branch.otherwise || !otherwise
-                  otherwise = true
-                  s1.add('d:otherwise', 'eid' => bid)
-                else
-                  s1.add('d:alternative', 'condition' => '', 'eid' => bid)
-                end
+                s1.add('d:alternative', 'condition' => '', 'eid' => bid)
               end
               branch.attributes.each do |k,v|
                 s2.attributes[k] = v
