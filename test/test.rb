@@ -23,10 +23,17 @@ require_relative '../lib/cpee/transformation/mermaid' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 
 def tprint(f,count,tcount,failed=false)
-  if File.exist?(fname = File.join(File.dirname(f),File.basename(f,File.extname(f)) + '.bpmn'))
+  base = File.join(File.dirname(f),File.basename(f,File.extname(f)))
+  ### prefer bpmn, fall back to cpee xml
+  fname, source = if File.exist?(base + '.bpmn')
+    [base + '.bpmn', CPEE::Transformation::Source::BPMN2]
+  elsif File.exist?(base + '.xml')
+    [base + '.xml', CPEE::Transformation::Source::CPEE]
+  end
+  if fname
     tcount += 1
     begin
-      model = CPEE::Transformation::Source::BPMN2.new(File.read(fname))
+      model = source.new(File.read(fname))
       trans = CPEE::Transformation::Transformer.new(model)
       traces = trans.build_traces
       tree = trans.build_tree(false)

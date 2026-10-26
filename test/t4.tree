@@ -1,0 +1,28 @@
+TREE:
+  └ Loop
+    ├ Alternative ["true"]
+    │ ├ 2 (Collect Requirements)
+    │ ├ 3 (Send Requirements to Architect)
+    │ ├ 4 (Receive Draft)
+    │ ├ 5 (Refine Draft)
+    │ ├ Loop
+    │ │ ├ Alternative ["More Requirements"]
+    │ │ │ ├ 7 (Collect Requirements)
+    │ │ │ ├ 8 (Send Requirements to Architect)
+    │ │ │ ├ 9 (Receive Draft)
+    │ │ │ └ 10 (Refine Draft)
+    │ │ └ Alternative []
+    │ │   └ Break
+    │ ├ 11 (Create Material List)
+    │ ├ 12 (Order Materials)
+    │ ├ Parallel
+    │ │ ├ Branch
+    │ │ │ └ 15 (Process Order)
+    │ │ └ Branch
+    │ │   └ 16 (Send Messages to Friends)
+    │ ├ 17 (Build Tree House)
+    │ ├ 18 (Send Invitations)
+    │ ├ 19 (Create Guest List)
+    │ └ 20 (Buy Snacks)
+    └ Alternative []
+      └ Break
