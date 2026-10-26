@@ -1,53 +1,53 @@
 <?xml version="1.0"?>
-<description xmlns="http://cpee.org/ns/description/1.0">
-  <manipulate id="a1" output="result" language="application/javascript">data.a = 0</manipulate>
-  <choose mode="exclusive">
-    <alternative condition="data.a &lt; 3" language="text/javascript"/>
-    <alternative condition="data.a &lt; 0" language="text/javascript">
-      <call id="a4" endpoint="timeout">
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <manipulate id="a1" a:alt_id="sid-AE367C8A-F10A-4D12-A504-D9D1F26EC9DB" label="A">
+    <code output="result" language="application/javascript">data.a = 0</code>
+  </manipulate>
+  <choose label="" mode="exclusive" a:alt_id="sid-4B8E0290-6382-4813-912D-27E98758E2A8" eid="e1">
+    <alternative condition="data.a &lt; 3" eid="e2" language="text/x-ruby"/>
+    <alternative condition="data.a &lt; 0" eid="e3" language="text/x-ruby">
+      <call id="a4" endpoint="timeout" a:alt_id="sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819">
         <parameters>
-          <label>"B"</label>
-          <method>put</method>
-          <type>:serviceTask</type>
-          <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
+          <label>B</label>
+          <method/>
           <arguments>
             <timeout>1</timeout>
           </arguments>
         </parameters>
-        <finalize output="result" language="application/javascript">data.a += 1</finalize>
+        <code>
+          <finalize output="result" language="application/javascript">data.a += 1</finalize>
+        </code>
       </call>
     </alternative>
   </choose>
-  <loop mode="pre_test" condition="true">
-    <call id="a7" endpoint="timeout">
+  <loop mode="pre_test" condition="true" eid="e4">
+    <call id="a7" endpoint="timeout" a:alt_id="sid-69717BB0-7EFB-40A9-A450-CD4953893433">
       <parameters>
-        <label>"C"</label>
+        <label>C</label>
         <method/>
-        <type>:serviceTask</type>
-        <mid>'sid-69717BB0-7EFB-40A9-A450-CD4953893433'</mid>
         <arguments>
           <timeout>1</timeout>
         </arguments>
       </parameters>
     </call>
-    <choose mode="exclusive">
-      <alternative condition="">
-        <call id="a4" endpoint="timeout">
+    <choose label="" mode="exclusive" a:alt_id="sid-77017170-443E-4971-AA03-EDB3862CB3AC" eid="e5">
+      <alternative condition="" eid="e7">
+        <escape a:alt_id="-1"/>
+      </alternative>
+      <otherwise eid="e6">
+        <call id="a5" endpoint="timeout" a:alt_id="sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819">
           <parameters>
-            <label>"B"</label>
+            <label>B</label>
             <method/>
-            <type>:serviceTask</type>
-            <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
             <arguments>
               <timeout>1</timeout>
             </arguments>
           </parameters>
-          <finalize output="result" language="application/javascript">data.a += 1</finalize>
+          <code>
+            <finalize output="result" language="application/javascript">data.a += 1</finalize>
+          </code>
         </call>
-      </alternative>
-      <alternative condition="">
-        <escape/>
-      </alternative>
+      </otherwise>
     </choose>
   </loop>
 </description>

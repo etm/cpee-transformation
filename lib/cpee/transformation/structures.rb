@@ -411,6 +411,9 @@ module CPEE
         end
 
         def add_breaks(context,front=true)
+          ### traces that are a prefix of another trace were cut short at an earlier
+          ### visited node, they do not leave the loop, so they get no break
+          self.delete_if{ |t| self.any?{ |o| o.length > t.length && o[0...t.length] == t } }
           trueloops = self.find_all{ |t| t.last == t.first }.length
           tb = Break.new(context)
           if trueloops == self.length
