@@ -98,6 +98,11 @@ module CPEE
             res
           end
 
+          def print_Terminate(node,res)
+            res << "At this point the process is terminated. "
+            res
+          end
+
           def print_Loop(node,res)
             logic = Proc.new do
               if node.mode == :pre_test

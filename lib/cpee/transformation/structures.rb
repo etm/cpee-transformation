@@ -86,6 +86,11 @@ module CPEE
         super context, '-1', :break, 'BREAK', 1, []
       end
     end #}}}
+    class Terminate < Node #{{{
+      def initialize(context)
+        super context, '-2', :terminate, 'TERMINATE', 1, []
+      end
+    end #}}}
 
     class Alternative < Array #{{{
       include Container
@@ -261,6 +266,8 @@ module CPEE
       end
 
       def next_nodes(from)
+        ### a terminate ends the process, nothing follows
+        return [] if from.type == :terminate
         links = @links.find_all { |x| x.from == from.id }
         links.map{|x| @nodes[x.to] }
       end
@@ -290,7 +297,7 @@ module CPEE
             cname = e.class.to_s.gsub(/[^:]*::/,'')
             ret << indent + pchar + ' ' + cname + " #{cname == 'Alternative' ?  e.condition : ''}\n"
             ret << print_tree(e,indent + (last ? '  ' : '│ '),verbose)
-          elsif e.is_a?(Break)
+          elsif e.is_a?(Break) || e.is_a?(Terminate)
             ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
           else
             ret << indent + pchar + ' ' + e.niceid.to_s + (verbose ? " (#{e.label})" : "") + "\n"
@@ -415,14 +422,14 @@ module CPEE
           ### visited node, they do not leave the loop, so they get no break
           self.delete_if{ |t| self.any?{ |o| o.length > t.length && o[0...t.length] == t } }
           ### a trace whose last node occurs earlier in it is a loop (to the head or to
-          ### an inner loop), not a way out
-          trueloops = self.find_all{ |t| t[0..-2].include?(t.last) }.length
+          ### an inner loop), not a way out. a trace ending in terminate needs no break
+          trueloops = self.find_all{ |t| t[0..-2].include?(t.last) || t.last&.type == :terminate }.length
           tb = Break.new(context)
           if trueloops == self.length
             self << (front ? [nil,tb] : [tb,nil])
           else
             self.each do |t|
-              t << tb unless t[0..-2].include?(t.last) ### an explicit break
+              t << tb unless t[0..-2].include?(t.last) || t.last&.type == :terminate ### an explicit break
             end
           end
         end

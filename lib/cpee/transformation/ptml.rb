@@ -173,6 +173,13 @@ module CPEE
             res
           end
 
+          def print_Terminate(node,res)
+            rid = rand.to_s[2..11]
+            n = res.add('manualTask','id' => rid, 'name' => node.label)
+            set_edges(@last,rid,res)
+            res
+          end
+
           def print_Loop(node,res)
             if node.mode == :pre_test
               original_last = @last

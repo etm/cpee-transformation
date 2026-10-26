@@ -1,0 +1,20 @@
+TREE:
+  ├ 1 ("A")
+  ├ 2 ("B")
+  └ Loop
+    ├ Alternative []
+    │ └ Conditional
+    │   ├ Alternative ["data.a >= 3 && data.a < 6"]
+    │   │ ├ 6 ("D")
+    │   │ ├ 7 ("A")
+    │   │ ├ 8 ("B")
+    │   │ └ Break
+    │   ├ Alternative ["data.a < 3"]
+    │   │ ├ 10 ("C")
+    │   │ └ 11 ("B")
+    │   └ Alternative []
+    │     ├ 12 (e)
+    │     ├ 13 (f)
+    │     └ Terminate
+    └ Alternative []
+      └ Break

@@ -83,6 +83,8 @@ module CPEE
             flat ? nil : Conditional.new(node.id,:inclusive,node.type,node.label)
           when :break
             flat ? Break.new(node.id) : Break.new(node.id)
+          when :terminate
+            Terminate.new(node.id)
           when :endEvent, :startEvent, nil
             nil
           else

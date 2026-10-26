@@ -118,6 +118,10 @@ module CPEE
             res
           end #}}}
 
+          def print_Terminate(node,res) #{{{
+            res
+          end #}}}
+
       end
 
     end #}}}

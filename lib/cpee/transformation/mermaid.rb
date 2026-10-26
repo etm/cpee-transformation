@@ -172,6 +172,13 @@ module CPEE
             nid
           end
 
+          def print_Terminate(node,pn)
+            nid = node.id
+            @labels[nid] = "#{nid}:endevent:((terminate))"
+            set_fromto pn, nid
+            nid
+          end
+
           def print_Parallel(node,pn)
             nid = id_find(node.id)
             set_fromto pn, "#{nid}s"

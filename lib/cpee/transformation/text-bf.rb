@@ -83,6 +83,11 @@ module CPEE
             [nil]
           end
 
+          def print_Terminate(node,res)
+            res << get_next("at this point the process is terminated. ")
+            [nil]
+          end
+
           def print_Loop(node,res)
             post = []
 

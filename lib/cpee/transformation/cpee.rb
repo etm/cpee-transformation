@@ -61,14 +61,14 @@ module CPEE
           end
           if n1.nil?
             nid = id_find(node.attributes['id'] || node.attributes['eid'])
-            n1 = @start = Node.new(0,nid,:startEvent,'',0,1)
+            n1 = @start = Node.new(self.object_id,nid,:startEvent,'',0,1)
           end
           node.children.each do |ele|
             case ele.qname.name
               when 'loop'
                 if ele.attributes['mode'] == 'pre_test'
                   nid = id_find(ele.attributes['eid'])
-                  nx = Node.new(0,nid,:exclusiveGateway,nil,2,2)
+                  nx = Node.new(self.object_id,nid,:exclusiveGateway,nil,2,2)
                   @graph.add_node nx
                   @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
 
@@ -79,14 +79,14 @@ module CPEE
                   n1 = nx
                 else
                   nid = id_find(ele.attributes['eid'])
-                  nx = Node.new(0,nid,:exclusiveGateway,nil,2,1)
+                  nx = Node.new(self.object_id,nid,:exclusiveGateway,nil,2,1)
                   @graph.add_node nx
                   @graph.add_link Link.new(n1.id, nx.id, condition, otherwise)
                   condition = nil
 
                   bn = dive ele, nx, ele.attributes['condition']
 
-                  no = Node.new(0,nid + 'e',:exclusiveGateway,nil,1,2)
+                  no = Node.new(self.object_id,nid + 'e',:exclusiveGateway,nil,1,2)
                   @graph.add_node no
                   @graph.add_link Link.new(bn.id, no.id)
                   @graph.add_link Link.new(no.id, nx.id, ele.attributes['condition'])
@@ -94,7 +94,7 @@ module CPEE
                 end
               when 'call'
                 nid = id_find(ele.attributes['id'])
-                no = Node.new(0,nid,:task,ele.find("string(d:parameters/d:label)"),1,1)
+                no = Node.new(self.object_id,nid,:task,ele.find("string(d:parameters/d:label)"),1,1)
                 no.methods << ele.find("string(d:parameters/d:method)")
                 no.endpoints << ele.attributes['endpoint']
                 ele.find("d:parameters/d:arguments/d:*").each do |e|
@@ -110,7 +110,7 @@ module CPEE
                 n1 = no
               when 'manipulate'
                 nid = id_find(ele.attributes['id'])
-                no = Node.new(0,nid,:scriptTask,ele.attributes['label'].to_s,1,1)
+                no = Node.new(self.object_id,nid,:scriptTask,ele.attributes['label'].to_s,1,1)
                 no.script_type = 'application/x-ruby'
                 no.script = ele.find("string(d:code)")
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
@@ -120,12 +120,12 @@ module CPEE
               when 'parallel'
                 bra = ele.find('d:parallel_branch')
                 nid = id_find(ele.attributes['eid'])
-                ns = Node.new(0,nid,:parallelGateway,nil,1,bra.length)
+                ns = Node.new(self.object_id,nid,:parallelGateway,nil,1,bra.length)
                 ns.attributes[:wait] = ele.attributes['wait'] || -1
                 ns.attributes[:cancel] = ele.attributes['cancel'] || 'last'
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                ne = Node.new(0,nid + 'e',:parallelGateway,nil,1,bra.length)
+                ne = Node.new(self.object_id,nid + 'e',:parallelGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
@@ -136,10 +136,10 @@ module CPEE
               when 'choose'
                 nid = id_find(ele.attributes['eid'])
                 bra = ele.find('d:alternative|d:otherwise')
-                ns = Node.new(0,nid,:exclusiveGateway,ele.attributes['label'],1,bra.length)
+                ns = Node.new(self.object_id,nid,:exclusiveGateway,ele.attributes['label'],1,bra.length)
                 @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
                 condition = nil
-                ne = Node.new(0,nid + 'e',:exclusiveGateway,nil,1,bra.length)
+                ne = Node.new(self.object_id,nid + 'e',:exclusiveGateway,nil,1,bra.length)
                 @graph.add_node ns
                 @graph.add_node ne
                 bra.each do |br|
@@ -153,7 +153,14 @@ module CPEE
                 n1 = ne
               when 'escape'
                 nid = id_find(ele.attributes['eid'])
-                no = Node.new(0,nid,:break,'',1,1)
+                no = Node.new(self.object_id,nid,:break,'',1,1)
+                @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
+                @graph.add_node no
+                condition = nil
+                n1 = no
+              when 'terminate'
+                nid = id_find(ele.attributes['eid'])
+                no = Node.new(self.object_id,nid,:terminate,'',1,0)
                 @graph.add_link Link.new(n1.id, no.id, condition, otherwise)
                 @graph.add_node no
                 condition = nil
@@ -168,7 +175,7 @@ module CPEE
           doc = XML::Smart::string(text)
           doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
           bn = dive doc.root
-          ne = Node.new(0,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
+          ne = Node.new(self.object_id,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
           @graph.add_node ne
           @graph.add_link Link.new(bn.id, ne.id)
         end
@@ -194,6 +201,11 @@ module CPEE
         private
           def print_Break(node,res)
             res.add('escape', 'a:alt_id' => node.id)
+            res
+          end
+
+          def print_Terminate(node,res)
+            res.add('terminate', 'a:alt_id' => node.id)
             res
           end
 
