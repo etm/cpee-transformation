@@ -315,9 +315,9 @@ module CPEE
         end
 
         def remove(trcs)
-          trcs.each do |t|
-            self.delete(t)
-          end
+          ### a set, deleting one by one is quadratic for many traces
+          rem = trcs.to_set
+          self.reject!{ |t| rem.include?(t) }
         end
         def remove_by_endnode(enode)
           self.delete_if do |t|
@@ -419,8 +419,19 @@ module CPEE
 
         def add_breaks(context,front=true)
           ### traces that are a prefix of another trace were cut short at an earlier
-          ### visited node, they do not leave the loop, so they get no break
-          self.delete_if{ |t| self.any?{ |o| o.length > t.length && o[0...t.length] == t } }
+          ### visited node, they do not leave the loop, so they get no break.
+          ### sorted, all extensions of a trace directly follow it, so comparing
+          ### with the next different trace is enough
+          keys = self.map{ |t| t.map{ |n| n.object_id } }
+          prefix = {}
+          last = nextdiff = nil
+          (0...self.length).sort_by{ |i| keys[i] }.reverse_each do |i|
+            k = keys[i]
+            nextdiff = last unless k == last
+            prefix[i] = true if nextdiff && nextdiff.length > k.length && nextdiff[0...k.length] == k
+            last = k
+          end
+          self.reject!.with_index{ |t,i| prefix[i] }
           ### a trace whose last node occurs earlier in it is a loop (to the head or to
           ### an inner loop), not a way out. a trace ending in terminate needs no break
           trueloops = self.find_all{ |t| t[0..-2].include?(t.last) || t.last&.type == :terminate }.length
@@ -441,8 +452,10 @@ module CPEE
         end
         def loops_and_partial_loops
           lo = Traces.new self.find_all{ |t| t.first == t.last }
+          ### computed once, traces added below share their second node anyway
+          sn = lo.second_nodes.to_set
           self.each do |t|
-            lo << t if lo.second_nodes.include?(t[1])
+            lo << t if sn.include?(t[1])
           end
           lo.uniq!
           lo
