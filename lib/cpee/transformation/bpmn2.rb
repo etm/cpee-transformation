@@ -74,7 +74,10 @@ module CPEE
 
         def extract_nodelink(doc) #{{{
           doc.find("/bm:definitions/bm:process/bm:*[@id and @name and not(@itemSubjectRef) and not(name()='sequenceFlow')]").each do |e|
-            n = Node.new(self.object_id,e.attributes['id'],e.qname.name.to_sym,e.attributes['name'].strip,e.find('count(bm:incoming)'),e.find('count(bm:outgoing)'))
+            type = e.qname.name.to_sym
+            ### an end event with a terminate definition ends the whole process
+            type = :terminate if type == :endEvent && e.find('bm:terminateEventDefinition').any?
+            n = Node.new(self.object_id,e.attributes['id'],type,e.attributes['name'].strip,e.find('count(bm:incoming)'),e.find('count(bm:outgoing)'))
 
             if e.attributes['scriptFormat'] != ''
               n.script_type = e.attributes['scriptFormat']
