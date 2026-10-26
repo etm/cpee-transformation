@@ -116,12 +116,13 @@ module CPEE
             @start = n if n.type == :startEvent && @start == nil
           end
 
-          # extract all sequences to a links
+          # extract all sequences to a links, default flows of gateways are otherwise
+          defaults = doc.find("/bm:definitions/bm:process/bm:*[@default]/@default").map{ |d| d.value }
           doc.find("/bm:definitions/bm:process/bm:sequenceFlow").each do |e|
             source = e.attributes['sourceRef']
             target = e.attributes['targetRef']
             cond = e.find('bm:conditionExpression')
-            @graph.add_link Link.new(source, target, cond.empty? ? nil : cond.first.text.strip)
+            @graph.add_link Link.new(source, target, cond.empty? ? nil : cond.first.text.strip, defaults.include?(e.attributes['id']))
           end
 
           @graph.clean_up do |node|

@@ -219,10 +219,12 @@ module CPEE
               end
               generate_in_list(node.sub[0],s1)
             else
-              s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'eid' => eid)
               if node.sub.length == 1
+                s1 = res.add('loop', 'mode' => node.mode, 'condition' => node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && '), 'eid' => eid)
                 generate_in_list(node.sub[0],s1)
               else
+                ### the choose over all alternatives decides (escape), so loop forever
+                s1 = res.add('loop', 'mode' => node.mode, 'condition' => 'true', 'eid' => eid)
                 print_Conditional(node,s1)
               end
             end
@@ -285,7 +287,7 @@ module CPEE
 
           def print_Conditional(node,res)
             eid = "e#{(@eid += 1)}"
-            s1 = res.add('d:choose', 'label' => node.label, 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
+            s1 = res.add('d:choose', 'label' => node.respond_to?(:label) ? node.label : '', 'mode' => node.mode == :inclusive ? 'inclusive' : 'exclusive', 'a:alt_id' => node.id, 'eid' => eid)
             ### the otherwise is the explicit one, else the last branch without condition
             ### (keeps the order stable), compare by identity as empty branches are ==
             ow = node.sub.reverse.find{ |b| b.condition.empty? && b.otherwise } || node.sub.reverse.find{ |b| b.condition.empty? }
