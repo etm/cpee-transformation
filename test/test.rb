@@ -17,6 +17,7 @@
 # along with CPEE-TRANSFORMATION (file LICENSE in the main directory).  If not,
 # see <http://www.gnu.org/licenses/>.
 
+require 'timeout'
 require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
@@ -96,15 +97,22 @@ def sprint(f,count,tcount)
   return count, tcount
 end
 
-### bpmn -> cpee has to work
-def gprint(f,count,tcount)
+### source -> target has to work (and finish)
+def gprint(f,source,target,what,count,tcount)
   tcount += 1
   begin
-    to_cpee(CPEE::Transformation::Source::BPMN2,File.read(f))
-    puts "Passed (generate): " + f
+    Timeout.timeout(10) do
+      trans = CPEE::Transformation::Transformer.new(source.new(File.read(f)))
+      trans.build_traces
+      trans.build_tree(false)
+      trans.generate_model(target)
+    end
+    puts "Passed (#{what}): " + f
     count += 1
+  rescue Timeout::Error
+    puts "Failed (#{what}): #{f} (does not finish)"
   rescue StandardError, SystemStackError => e
-    puts "Failed (generate): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
+    puts "Failed (#{what}): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
   end
   return count, tcount
 end
@@ -118,11 +126,18 @@ else
   Dir.glob(File.join(__dir__,'**/*.tree')).each do |f|
     count, tcount, failed = tprint(f,count,tcount, failed)
   end
+  src = CPEE::Transformation::Source
+  tgt = CPEE::Transformation::Target
   Dir.glob(File.join(__dir__,'*.xml')).each do |f|
     count, tcount = sprint(f,count,tcount)
+    count, tcount = gprint(f,src::CPEE,tgt::Mermaid,'cpee to mermaid',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.bpmn')).each do |f|
-    count, tcount = gprint(f,count,tcount)
+    count, tcount = gprint(f,src::BPMN2,tgt::CPEE,'bpmn to cpee',count,tcount)
+  end
+  Dir.glob(File.join(__dir__,'*.mmd')).each do |f|
+    count, tcount = gprint(f,src::Mermaid,tgt::CPEE,'mermaid to cpee',count,tcount)
+    count, tcount = gprint(f,src::Mermaid,tgt::Mermaid,'mermaid to mermaid',count,tcount)
   end
 end
 

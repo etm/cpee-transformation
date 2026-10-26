@@ -267,7 +267,7 @@ module CPEE
 
       def next_nodes(from)
         ### a terminate ends the process, nothing follows
-        return [] if from.type == :terminate
+        return [] if from&.type == :terminate
         links = @links.find_all { |x| x.from == from.id }
         links.map{|x| @nodes[x.to] }
       end

@@ -103,8 +103,8 @@ module CPEE
 							# every line contains a link
 							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s.gsub(/(^"|"$)/, ''))
 
-              n1 = Node.new(0,lid,map_nodes(ltype),llabel.sub(/^\(/,'').sub(/\)$/,''),0,1)
-              n2 = Node.new(0,rid,map_nodes(rtype),rlabel.sub(/^\(/,'').sub(/\)$/,''),1,0)
+              n1 = Node.new(self.object_id,lid,map_nodes(ltype),llabel.sub(/^\(/,'').sub(/\)$/,''),0,1)
+              n2 = Node.new(self.object_id,rid,map_nodes(rtype),rlabel.sub(/^\(/,'').sub(/\)$/,''),1,0)
 
               @graph.add_node n1, :outgoing
               @graph.add_node n2, :incoming
@@ -136,7 +136,8 @@ module CPEE
         end
 
         def id_find(nid)
-          nid = 'g0' unless nid
+          ### copy, next! would otherwise also change the node id and the entry in @nids
+          nid = nid ? nid.dup : 'g0'
           while @nids.include?(nid)
             nid.next!
           end
@@ -218,22 +219,22 @@ module CPEE
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
             @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
 
+            single = node.sub.length == 1 || (node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0))
+            ### if the conditional over all alternatives decides (break), loop forever
+            cond = !single || node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')
+
             cn = if node.mode == :pre_test
               set_fromto "#{nid}s", "#{nid}e"
-              [ ["#{nid}e", "|\"#{node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')}\"|"], "#{nid}s"]
+              [ ["#{nid}e", "|\"#{cond}\"|"], "#{nid}s"]
             else
-              set_fromto ["#{nid}e","|\"#{node.sub[0].condition.empty? ? 'true' : node.sub[0].condition.join(' && ')}\"|"], "#{nid}s"
+              set_fromto ["#{nid}e","|\"#{cond}\"|"], "#{nid}s"
               ["#{nid}s", "#{nid}e"]
             end
 
-            pn = if node.sub.length == 2 && node.sub[1].condition.empty? && ((node.sub[1].length == 1 && node.sub[1][0].class.name.gsub(/\w+:+/,'') == 'Break') ||  node.sub[1].length == 0)
+            pn = if single
               generate_in_list(node.sub[0],cn[0])
             else
-              if node.sub.length == 1
-                generate_in_list(node.sub[0],cn[0])
-              else
-                print_Conditional(node,cn[0])
-              end
+              print_Conditional(node,cn[0])
             end
             set_fromto pn, cn[1]
 
