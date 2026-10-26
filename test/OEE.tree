@@ -1,26 +1,26 @@
 TREE:
-  ├ 8
+  ├ 8 (Initialize Values)
   └ Parallel
     ├ Branch
     │ └ Loop
-    │   ├ Alternative
-    │   │ └ 2
-    │   └ Alternative
+    │   ├ Alternative []
+    │   │ └ 2 (Get Start/Stop Machine)
+    │   └ Alternative []
     │     └ Break
     └ Branch
       └ Loop
-        ├ Alternative
-        │ ├ 3
-        │ ├ 9
-        │ ├ 4
-        │ ├ 5
-        │ ├ 14
+        ├ Alternative []
+        │ ├ 3 ()
+        │ ├ 9 (Get Total Pieces)
+        │ ├ 4 (Calculate Operational Time)
+        │ ├ 5 (Calculate OEE Value)
+        │ ├ 14 (Send OEE Value)
         │ └ Conditional
-        │   ├ Alternative
-        │   └ Alternative
-        │     ├ 13
-        │     ├ 11
-        │     ├ 10
-        │     └ 12
-        └ Alternative
+        │   ├ Alternative []
+        │   └ Alternative ["data.oee < 0.5 && data.repairing == false"]
+        │     ├ 13 (Set Machine Status to REPAIR)
+        │     ├ 11 (Send Email to Tenneco Engineer)
+        │     ├ 10 (Spawn OEE Crowdsourcing Subprocess)
+        │     └ 12 (Machine Fixed, Status no longer REPAIR)
+        └ Alternative []
           └ Break

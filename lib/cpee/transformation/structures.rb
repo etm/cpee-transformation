@@ -252,6 +252,9 @@ module CPEE
       def link(f,t)
         @links.find{ |x| x.from == f && x.to == t }
       end
+      def links_from(f)
+        @links.find_all{ |x| x.from == f }
+      end
 
       def add_link(l)
         @links << l

@@ -33,7 +33,7 @@ def tprint(f,count,tcount,failed=false)
 
       nt = tree.to_s
       ot = File.read(File.join(File.dirname(f),File.basename(f,File.extname(f)) + '.tree'))
-      if nt == ot
+      if nt.gsub(/[ \t]+$/,'') == ot.gsub(/[ \t]+$/,'')
         puts "Passed: " + fname
         count += 1
         failed = false

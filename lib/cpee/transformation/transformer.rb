@@ -113,7 +113,10 @@ module CPEE
               else
                 ### if traces.all_tail? && traces.length > 1 && !traces.all_loops?
                 ### we had traces.all_tail? here. why?
-                if !traces.all_tail? && traces.length > 1 && !traces.all_loops?
+                ### a direct link from the branch (e.g. loop gateway) to the first node wins
+                if (dl = @source.graph.link(branch.id,traces.first_node.id))
+                  dl
+                elsif !traces.all_tail? && traces.length > 1 && !traces.all_loops?
                   @source.graph.link(traces.first[-2].id,traces.first[-1].id)
                 else
                   @source.graph.link(branch.id,traces.first_node.id)
@@ -156,6 +159,8 @@ module CPEE
                 ### at the output time it is decided wether this can be optimized
                 branch << Loop.new(node.id)
                 branch.last.mode = :post_test if loops.all_tail?
+                ### there is no way out, so add a default otherwise with a break
+                loops.add_breaks(self.object_id,node.type == :exclusiveGateway)
                 ### remove the exclusive gateway because we no longer need it
                 ### if there is non (tail controlled, remove the loop target (last)
                 if node.type == :exclusiveGateway
@@ -267,6 +272,17 @@ module CPEE
                 puts '--> ebranch down to ' + (down + 1).to_s if debug
                 build_ttree nb, trcs, endnode, debug, down + 1
                 puts '--> ebranch up from ' + (down + 1).to_s if debug
+              else
+                ### empty branch (e.g. loops straight back), its target is already gone
+                ### so use the only gateway link that no other branch starts with
+                used = tracesgroup.reject{ |t| t.finished? }.map{ |t| t.first_node&.id }
+                lis = @source.graph.links_from(nb.id).reject{ |l| used.include?(l.to) }
+                if lis.length == 1 && nb.condition?
+                  li = lis.first
+                  nb.condition << li.condition if !li.condition.nil? && !li.condition&.strip&.empty?
+                  nb.otherwise = li.otherwise if li.condition.nil?
+                  nb.condition_type = "text/x-ruby"
+                end
               end
             end
             # remove all traces that don't start with endnode to account for loops

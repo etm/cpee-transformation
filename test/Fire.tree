@@ -1,6 +1,6 @@
 TREE:
   └ Loop
-    ├ Alternative
-    │ └ 1
-    └ Alternative
+    ├ Alternative []
+    │ └ 1 (Receive Temperature > 800 Warning)
+    └ Alternative []
       └ Break
