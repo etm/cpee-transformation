@@ -1,23 +1,45 @@
 <?xml version="1.0"?>
-<description xmlns="http://cpee.org/ns/description/1.0">
-  <loop pre_test="true" language="text/javascript">
-    <manipulate id="a1" output="result" language="application/javascript">data.a = 0</manipulate>
-    <choose mode="exclusive">
-      <alternative condition="data.a &lt; 3" language="text/javascript"/>
-      <alternative condition="data.a &lt; 0" language="text/javascript">
-        <call id="a4" endpoint="timeout">
+<description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <manipulate id="a1" a:alt_id="sid-AE367C8A-F10A-4D12-A504-D9D1F26EC9DB" label="A">
+    <code output="result" language="application/javascript">data.a = 0</code>
+  </manipulate>
+  <choose label="" mode="exclusive" a:alt_id="sid-4B8E0290-6382-4813-912D-27E98758E2A8" eid="e1">
+    <alternative condition="data.a &lt; 0" eid="e2" language="text/x-ruby">
+      <call id="a4" endpoint="timeout" a:alt_id="sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819">
+        <parameters>
+          <label>B</label>
+          <method/>
+          <arguments>
+            <timeout>1</timeout>
+          </arguments>
+        </parameters>
+      </call>
+      <manipulate id="a5" a:alt_id="sid-2B36B8D1-1C12-42B0-B9F4-95B8D987A952" label="BS">
+        <code output="result" language="application/javascript">data.a += 1</code>
+      </manipulate>
+    </alternative>
+    <otherwise eid="e3"/>
+  </choose>
+  <loop mode="pre_test" condition="data.a &lt; 0" a:alt_id="sid-13A34C12-BE7A-4B17-A6C9-064F97F5C720" eid="e4" language="text/x-ruby">
+    <manipulate id="a2" a:alt_id="sid-AE367C8A-F10A-4D12-A504-D9D1F26EC9DB" label="A">
+      <code output="result" language="application/javascript">data.a = 0</code>
+    </manipulate>
+    <choose label="" mode="exclusive" a:alt_id="sid-4B8E0290-6382-4813-912D-27E98758E2A8" eid="e5">
+      <alternative condition="data.a &lt; 0" eid="e6" language="text/x-ruby">
+        <call id="a6" endpoint="timeout" a:alt_id="sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819">
           <parameters>
-            <label>"B"</label>
+            <label>B</label>
             <method/>
-            <type>:serviceTask</type>
-            <mid>'sid-49FC5AAA-6F02-4F10-9379-6AB4AADDF819'</mid>
-            <parameters>
+            <arguments>
               <timeout>1</timeout>
-            </parameters>
+            </arguments>
           </parameters>
-          <manipulate output="result" language="application/javascript">data.a += 1</manipulate>
         </call>
+        <manipulate id="a7" a:alt_id="sid-2B36B8D1-1C12-42B0-B9F4-95B8D987A952" label="BS">
+          <code output="result" language="application/javascript">data.a += 1</code>
+        </manipulate>
       </alternative>
+      <otherwise eid="e7"/>
     </choose>
   </loop>
 </description>

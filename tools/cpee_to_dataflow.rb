@@ -12,7 +12,7 @@
 # PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with
-# cpee-transformation (file COPYING in the main directory).  If not, see
+# cpee-transformation (file LICENSE in the main directory).  If not, see
 # <http://www.gnu.org/licenses/>.
 
 def wrap(s1, s2, width=78, indent=ARGV.options.summary_width + 3)

@@ -13,7 +13,7 @@
 # for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with cpee-transformation (file COPYING in the main directory).  If not,
+# along with cpee-transformation (file LICENSE in the main directory).  If not,
 # see <http://www.gnu.org/licenses/>.
 
 require_relative 'target'
