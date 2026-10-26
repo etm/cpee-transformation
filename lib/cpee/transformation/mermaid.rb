@@ -56,6 +56,8 @@ module CPEE
             when 'inclusivegateway';  :inclusiveGateway
             when 'endevent';          :endEvent
             when 'startevent';        :startEvent
+            when 'escalate';          :break
+            when 'terminate';         :terminate
 						else
 							nil
 					end
@@ -166,16 +168,17 @@ module CPEE
             nid
           end
 
+          ### breaks and terminates all have the same node id, so make them unique
           def print_Break(node,pn)
-            nid = node.id
+            nid = id_find('b1')
             @labels[nid] = "#{nid}:escalate:((^))"
             set_fromto pn, nid
             nid
           end
 
           def print_Terminate(node,pn)
-            nid = node.id
-            @labels[nid] = "#{nid}:endevent:((terminate))"
+            nid = id_find('t1')
+            @labels[nid] = "#{nid}:terminate:((terminate))"
             set_fromto pn, nid
             nid
           end
@@ -198,14 +201,12 @@ module CPEE
             @labels["#{nid}s"] = "#{nid}s:exclusivegateway:{x}"
             @labels["#{nid}e"] = "#{nid}e:exclusivegateway:{x}"
             node.sub.each do |branch|
+              ### branches without condition (incl. otherwise) are plain edges, the reader
+              ### treats the last of them as otherwise
               pn = if branch.condition.any?
                 generate_in_list(branch,["#{nid}s","|\"#{branch.condition.join(' or ')}\"|"])
               else
-                if branch.otherwise
-                  generate_in_list(branch,["#{nid}s","|\"|\"|"])
-                else
-                  generate_in_list(branch,"#{nid}s")
-                end
+                generate_in_list(branch,"#{nid}s")
               end
               set_fromto pn, "#{nid}e"
             end
