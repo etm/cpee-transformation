@@ -17,7 +17,11 @@
 # see <http://www.gnu.org/licenses/>.
 
 require_relative 'structures'
+require_relative 'target'
+require_relative 'cpee'
 require 'xml/smart'
+require 'open3'
+require 'shellwords'
 
 module CPEE
 
@@ -142,6 +146,30 @@ module CPEE
 
     end
 
+    module Target #{{{
+
+      # bpmnexport from cpee-layout (npm install -g cpee-layout) lays out the
+      # generated CPEE model as drawn and writes it as BPMN with diagram
+      # interchange. opts[:bpmnexport] (trans.conf) is a command name, searched
+      # in PATH, or a path, relative to the server dir, optionally followed by
+      # arguments (e.g. -lr).
+      class BPMN2 < Default
+        class << self
+          attr_accessor :opts
+        end
+        @opts = {}
+
+        def generate
+          opts = self.class.opts
+          cmd, *args = Shellwords.split(opts[:bpmnexport] || 'bpmnexport')
+          cmd = File.expand_path(cmd, opts[:basepath] || Dir.pwd) if cmd.include?('/')
+          out, err, st = Open3.capture3(cmd, *args, '-', stdin_data: Target::CPEE.new(@tree).generate)
+          raise "#{cmd}: #{err}" unless st.success?
+          out
+        end
+      end
+
+    end #}}}
 
   end
 

@@ -50,6 +50,8 @@ module CPEE
           mtype, target = case @h['RIDDL_DECLARATION_PATH'].split('/')[-2]
             when 'cpee'
               ['text/xml', CPEE::Transformation::Target::CPEE]
+            when 'bpmn2'
+              ['text/xml', CPEE::Transformation::Target::BPMN2]
             when 'mermaid'
               ['text/plain', CPEE::Transformation::Target::Mermaid]
             when 'text-bf'
@@ -118,6 +120,8 @@ module CPEE
       end #}}}
 
       def self::implementation(opts)
+        # the hash itself, as --config is merged into it only afterwards
+        CPEE::Transformation::Target::BPMN2.opts = opts
         Proc.new do
           interface 'xml_cpee' do
             run ExtractDescription if post 'xmldedesc'

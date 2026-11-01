@@ -28,6 +28,7 @@ options = {
   :host => 'localhost',
   :port => 9295,
   :secure => false,
+  :bpmnexport => 'bpmnexport'
 }
 
 Riddl::Server.new(CPEE::Transformation::Service::SERVER, options) do

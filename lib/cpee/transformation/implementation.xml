@@ -31,10 +31,13 @@
     <tile>
       <layer name="xml_cpee">
         <apply-to>/cpee/bpmn2</apply-to>
+        <apply-to>/bpmn2/cpee</apply-to>
       </layer>
       <layer name="text_cpee">
         <apply-to>/cpee/mermaid</apply-to>
         <apply-to>/cpee/graphviz</apply-to>
+        <apply-to>/bpmn2/mermaid</apply-to>
+        <apply-to>/bpmn2/graphviz</apply-to>
       </layer>
       <layer name="xml_text">
         <apply-to>/mermaid/cpee</apply-to>
