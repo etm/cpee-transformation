@@ -5,17 +5,22 @@
 The Ruby dependencies (riddl, xml-smart, ...) are installed with the gem. The
 BPMN2 target additionally needs
 [cpee-layout](https://github.com/etm/cpee-layout) (Node.js >= 22.22), which is
-not a gem dependency and has to be installed separately:
+not a gem dependency. By default it is run through `npx`, which fetches it on
+first use (so the first BPMN2 request needs network access and is slow). To
+avoid that, install it and point `trans.conf` to it (see BPMN2 target):
 
 ```sh
 npm install -g cpee-layout
 ```
 
-Without it, everything except the `/bpmn2/...` routes works.
+Without Node.js, everything except the `/bpmn2/...` routes works.
 
 ## Service
 
-`server/trans` (port 9295) transforms process models. Routes are
+`cpee-trans new DIR` scaffolds the service into `DIR`: the server `trans` and
+its config `trans.conf`, which is read from the same directory.
+
+`trans` (port 9295) transforms process models. Routes are
 `/TARGET/SOURCE`, POSTed with the model as `description` and `type` set to
 `description` (the transformed model), `dataelements` or `endpoints` (lists of
 name/value pairs, from BPMN2 sources only).
@@ -40,18 +45,24 @@ curl -F 'description=@model.xml;type=text/xml' -F 'type=description' http://loca
 ### BPMN2 target
 
 The BPMN2 target generates the CPEE model and lays it out with `bpmnexport`
-from [cpee-layout](https://github.com/etm/cpee-layout) (`npm install -g
-cpee-layout`), so the result is BPMN with diagram interchange, laid out as
-drawn by cpee-layout. Where `bpmnexport` is found is set in `server/trans.conf`:
+from [cpee-layout](https://github.com/etm/cpee-layout), so the result is BPMN
+with diagram interchange, laid out as drawn by cpee-layout. How `bpmnexport` is
+run is set in `trans.conf`. The default (also without a setting) is
+
+```yaml
+:bpmnexport: npx -y -p cpee-layout@^1.2.0 bpmnexport
+```
+
+and after `npm install -g cpee-layout` it can be
 
 ```yaml
 :bpmnexport: bpmnexport
 ```
 
 A command name is searched in `PATH`, a path (containing `/`) is relative to
-the server directory, e.g. `../../cpee-layout/bin/bpmnexport` for a checkout
-next to this one. Arguments may follow, e.g. `bpmnexport -lr` for a left to
+the directory of `trans`, `~` works too, e.g.
+`~/Projects/cpee-layout/bin/bpmnexport` for a checkout. Arguments may follow, e.g. `bpmnexport -lr` for a left to
 right layout.
 
 `tools/cpee_to_bpmn2.rb FNAME` does the same on the command line, using the
-same `server/trans.conf`. If `bpmnexport` can't be run or fails, the request returns 500.
+`server/trans.conf` of the gem. If `bpmnexport` can't be run or fails, the request returns 500.

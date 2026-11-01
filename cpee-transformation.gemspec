@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-transformation"
-  s.version          = "1.0.3"
+  s.version          = "1.0.4"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Transformation between different formats"
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.require_path     = 'lib'
   s.extra_rdoc_files = ['README.md']
   s.bindir           = 'tools'
-  s.executables      = ['bpmn2_to_cpee.rb', 'bpmn2_to_mermaid.rb', 'bpmn2_to_ptml.rb', 'cpee_to_cpee.rb', 'cpee_to_mermaid.rb', 'cpee_to_ptml.rb', 'cpee_to_text_bf.rb', 'cpee_to_text_df-poe.rb', 'cpee_to_text_df-por.rb', 'cpee-trans', 'mermaid_to_cpee.rb', 'ptml_to_cpee.rb']
+  s.executables      = ['bpmn2_to_cpee.rb', 'bpmn2_to_mermaid.rb', 'bpmn2_to_ptml.rb', 'cpee_to_bpmn2.rb', 'cpee_to_cpee.rb', 'cpee_to_mermaid.rb', 'cpee_to_ptml.rb', 'cpee_to_text_bf.rb', 'cpee_to_text_df-poe.rb', 'cpee_to_text_df-por.rb', 'cpee-trans', 'mermaid_to_cpee.rb', 'ptml_to_cpee.rb']
 
   s.required_ruby_version = '>=3.2'
 
@@ -25,5 +25,13 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'xml-smart', '~> 0.4'
   s.add_runtime_dependency 'typhoeus', '~> 1.4'
   s.add_runtime_dependency 'highline', '~> 2.0'
+
+  s.post_install_message = <<~MSG
+    The BPMN2 target uses bpmnexport from cpee-layout (Node.js >= 22.22). By
+    default npx fetches it on first use. To avoid that, run
+      npm install -g cpee-layout
+    and set ":bpmnexport: bpmnexport" in trans.conf of your service
+    (scaffolded with cpee-trans new DIR).
+  MSG
 end
 
