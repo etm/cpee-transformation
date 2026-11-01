@@ -54,7 +54,7 @@ ARGV.options { |opt|
   opt.on("--interactive", "-i", "Interactive mode") { interactive = true }
   opt.on("--tree", "-t", "Print tree") { printtree = true }
   opt.on("")
-  opt.on(wrap("[FNAME]","convert cpee tree in file FNAME to cpee and output to console."))
+  opt.on(wrap("[FNAME]","convert cpee tree in file FNAME to ptml and output to console."))
   opt.parse!
 }
 
@@ -77,8 +77,6 @@ if interactive
 else
   tree = trans.build_tree(false)
 end
-
-pp tree
 
 if printtree
   puts tree.to_s

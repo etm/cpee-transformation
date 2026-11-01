@@ -22,6 +22,7 @@ require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
+require_relative '../lib/cpee/transformation/ptml' rescue nil
 
 def tprint(f,count,tcount,failed=false)
   base = File.join(File.dirname(f),File.basename(f,File.extname(f)))
@@ -63,11 +64,11 @@ end
 
 ### control flow elements of a cpee description, as an indented list
 SKELETON = %w(loop choose alternative otherwise parallel parallel_branch call manipulate escape terminate stop critical)
-def skeleton(node,depth=0,res=[])
+def skeleton(node,depth=0,res=[],cond=false)
   node.children.each do |c|
     next unless c.respond_to?(:qname) && SKELETON.include?(c.qname.name)
-    res << ('  ' * depth) + c.qname.name
-    skeleton(c,depth + 1,res)
+    res << ('  ' * depth) + c.qname.name + (cond && c.attributes['condition'] ? " [#{c.attributes['condition']}]" : '')
+    skeleton(c,depth + 1,res,cond)
   end
   res
 end
@@ -93,6 +94,60 @@ def sprint(f,count,tcount)
     end
   rescue StandardError, SystemStackError => e
     puts "Failed (stable): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
+  end
+  return count, tcount
+end
+
+### cpee -> cpee has to produce the structure (and conditions) of the input
+### (only for models in the current cpee format, not the old one)
+FAITHFUL = ['Coopis 2010.xml']
+def fprint(f,count,tcount)
+  tcount += 1
+  begin
+    doc = XML::Smart.open(f)
+    doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
+    input = skeleton(doc.find('//d:description').first,0,[],true)
+    output = skeleton(XML::Smart.string(to_cpee(CPEE::Transformation::Source::CPEE,File.read(f))).root,0,[],true)
+    if input == output
+      puts "Passed (faithful): " + f
+      count += 1
+    else
+      puts "Failed (faithful): " + f
+      puts input, '-' * 78, output
+    end
+  rescue StandardError, SystemStackError => e
+    puts "Failed (faithful): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
+  end
+  return count, tcount
+end
+
+### source -> ptml has to be a tree: one root, every other node exactly one
+### parent, no unknown parents, unique ids
+def pprint(f,source,what,count,tcount)
+  tcount += 1
+  begin
+    trans = CPEE::Transformation::Transformer.new(source.new(File.read(f)))
+    trans.build_traces
+    trans.build_tree(false)
+    doc = XML::Smart.string(trans.generate_model(CPEE::Transformation::Target::PTML))
+    nodes = doc.find('//processTree/*[not(self::parentsNode)]').map { |n| n.attributes['id'] }
+    root = doc.find('string(//processTree/@root)')
+    edges = doc.find('//parentsNode').map { |e| [e.attributes['sourceId'], e.attributes['targetId']] }
+    parents = edges.group_by { |s,t| t }
+    errors = []
+    errors << "root #{root} missing" unless nodes.include?(root)
+    errors << "duplicate ids" if nodes.uniq.length != nodes.length
+    nodes.each { |n| errors << "#{n} has #{parents[n]&.length.to_i} parents" if n != root && parents[n]&.length != 1 }
+    edges.each { |s,t| errors << "unknown parent '#{s}'" unless nodes.include?(s) }
+    edges.each { |s,t| errors << "#{s} is its own parent" if s == t }
+    if errors.empty?
+      puts "Passed (#{what}): " + f
+      count += 1
+    else
+      puts "Failed (#{what}): #{f} (#{errors.uniq.first(3).join(', ')})"
+    end
+  rescue StandardError, SystemStackError => e
+    puts "Failed (#{what}): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
   end
   return count, tcount
 end
@@ -130,10 +185,13 @@ else
   tgt = CPEE::Transformation::Target
   Dir.glob(File.join(__dir__,'*.xml')).each do |f|
     count, tcount = sprint(f,count,tcount)
+    count, tcount = fprint(f,count,tcount) if FAITHFUL.include?(File.basename(f))
     count, tcount = gprint(f,src::CPEE,tgt::Mermaid,'cpee to mermaid',count,tcount)
+    count, tcount = pprint(f,src::CPEE,'cpee to ptml',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.bpmn')).each do |f|
     count, tcount = gprint(f,src::BPMN2,tgt::CPEE,'bpmn to cpee',count,tcount)
+    count, tcount = pprint(f,src::BPMN2,'bpmn to ptml',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.mmd')).each do |f|
     count, tcount = gprint(f,src::Mermaid,tgt::CPEE,'mermaid to cpee',count,tcount)

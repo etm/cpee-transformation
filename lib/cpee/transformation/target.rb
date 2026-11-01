@@ -27,9 +27,20 @@ module CPEE
           @tree = tree
         end
 
+        ### SingleParallel markers are only printed by targets that know them
+        def ignore?(e,nam)
+          e.is_a?(SingleParallel) && !respond_to?("print_#{nam}".to_sym,true)
+        end
+
+        ### the elements of a list this target prints (e.g. to count them)
+        def visible(list)
+          list.reject { |e| ignore?(e,e.class.name.gsub(/\w+:+/,'')) }
+        end
+
         def generate_in_list(list,res)
           list.each do |e|
             nam = e.class.name.gsub(/\w+:+/,'')
+            next if ignore?(e,nam)
             res = send("print_#{nam}".to_sym,e,res) # always save last node
           end
           res
@@ -39,6 +50,7 @@ module CPEE
           post = []
           list.each do |e|
             nam = e.class.name.gsub(/\w+:+/,'')
+            next if ignore?(e,nam)
             post += send("print_#{nam}".to_sym,e,res)
           end
           post.compact!

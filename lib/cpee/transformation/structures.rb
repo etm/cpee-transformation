@@ -91,6 +91,26 @@ module CPEE
         super context, '-2', :terminate, 'TERMINATE', 1, []
       end
     end #}}}
+    ### a cpee parallel whose branches are not direct children (e.g. created
+    ### in a loop). Its content is a sequence between an open and a close
+    ### marker, so that cpee in and cpee out can be the same. Targets without a
+    ### print method for it ignore it.
+    class SingleParallel < Node #{{{
+      def initialize(context,id,open,attributes={})
+        super context, id, :singleParallel, '', 1, 1
+        @open = open
+        @attributes.merge!(attributes)
+      end
+      def open?; @open; end
+    end #}}}
+    ### a cpee parallel_branch that is not a direct child of a parallel, see
+    ### SingleParallel.
+    class SingleParallelBranch < SingleParallel #{{{
+      def initialize(context,id,open,attributes={})
+        super
+        @type = :singleParallelBranch
+      end
+    end #}}}
 
     class Alternative < Array #{{{
       include Container
@@ -299,6 +319,8 @@ module CPEE
             ret << print_tree(e,indent + (last ? '  ' : '│ '),verbose)
           elsif e.is_a?(Break) || e.is_a?(Terminate)
             ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + "\n"
+          elsif e.is_a?(SingleParallel)
+            ret << indent + pchar + ' ' + e.class.to_s.gsub(/[^:]*::/,'') + (e.open? ? '' : ' End') + "\n"
           else
             ret << indent + pchar + ' ' + e.niceid.to_s + (verbose ? " (#{e.label})" : "") + "\n"
           end

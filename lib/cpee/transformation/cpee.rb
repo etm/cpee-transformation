@@ -119,6 +119,12 @@ module CPEE
                 n1 = no
               when 'parallel'
                 bra = ele.find('d:parallel_branch')
+                if bra.empty? && ele.find('d:*').length == 1
+                  ### e.g. branches created in a loop: content is a sequence
+                  n1 = dive_single(SingleParallel, ele, n1, condition, otherwise)
+                  condition = nil
+                  next
+                end
                 nid = id_find(ele.attributes['eid'])
                 ns = Node.new(self.object_id,nid,:parallelGateway,nil,1,bra.length)
                 ns.attributes[:wait] = ele.attributes['wait'] || -1
@@ -151,6 +157,10 @@ module CPEE
                   end
                 end
                 n1 = ne
+              when 'parallel_branch'
+                ### only reached when not a direct child of a parallel
+                n1 = dive_single(SingleParallelBranch, ele, n1, condition, otherwise)
+                condition = nil
               when 'escape'
                 nid = id_find(ele.attributes['eid'])
                 no = Node.new(self.object_id,nid,:break,'',1,1)
@@ -171,10 +181,27 @@ module CPEE
         end
         private :dive
 
+        ### open marker, content as a sequence, close marker
+        def dive_single(klass,ele,n1,condition,otherwise)
+          attrs = {}
+          ele.attributes.each { |a| attrs[a.qname.name] = a.value unless a.qname.name == 'eid' }
+          nid = id_find(ele.attributes['eid'])
+          ns = klass.new(self.object_id,nid,true,attrs)
+          @graph.add_node ns
+          @graph.add_link Link.new(n1.id, ns.id, condition, otherwise)
+          bn = dive ele, ns
+          ne = klass.new(self.object_id,nid + 'e',false)
+          @graph.add_node ne
+          @graph.add_link Link.new(bn.id, ne.id)
+          ne
+        end
+        private :dive_single
+
         def extract_original(text)
           doc = XML::Smart::string(text)
           doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
-          bn = dive doc.root
+          # a model (root description) or a testset, which contains it
+          bn = dive(doc.find('//d:description').first || doc.root)
           ne = Node.new(self.object_id,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
           @graph.add_node ne
           @graph.add_link Link.new(bn.id, ne.id)
@@ -199,6 +226,21 @@ module CPEE
         end
 
         private
+          ### open: everything up to the close marker goes inside
+          def print_single(name,node,res)
+            if node.open?
+              res.add(name, node.attributes.merge('a:alt_id' => node.id, 'eid' => "e#{(@eid += 1)}"))
+            else
+              res.parent
+            end
+          end
+          def print_SingleParallel(node,res)
+            print_single('parallel',node,res)
+          end
+          def print_SingleParallelBranch(node,res)
+            print_single('parallel_branch',node,res)
+          end
+
           def print_Break(node,res)
             res.add('escape', 'a:alt_id' => node.id)
             res
