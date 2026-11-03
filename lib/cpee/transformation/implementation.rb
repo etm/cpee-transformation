@@ -123,12 +123,6 @@ module CPEE
         # the hash itself, as --config is merged into it only afterwards
         CPEE::Transformation::Target::BPMN2.opts = opts
         Proc.new do
-          startup do
-            if CPEE::Transformation::Target::BPMN2.update_npx_cache == false
-              puts 'Updating cpee-layout (bpmnexport) in the npx cache failed.'
-            end
-          end
-
           interface 'xml_cpee' do
             run ExtractDescription if post 'xmldedesc'
             run ExtractDataelements if post 'xmldadesc'

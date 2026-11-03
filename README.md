@@ -6,10 +6,8 @@ The Ruby dependencies (riddl, xml-smart, ...) are installed with the gem. The
 BPMN2 target additionally needs
 [cpee-layout](https://github.com/etm/cpee-layout) (Node.js >= 22.22), which is
 not a gem dependency. By default it is run through `npx`, which fetches it on
-first use. Each (re)start of `trans` refreshes the npx cache with the latest
-matching cpee-layout (needs network access, failures are only reported), so
-requests don't wait for the download. To avoid npx altogether, install it and
-point `trans.conf` to it (see BPMN2 target):
+first use (so the first BPMN2 request needs network access and is slow). To
+avoid that, install it and point `trans.conf` to it (see BPMN2 target):
 
 ```sh
 npm install -g cpee-layout
