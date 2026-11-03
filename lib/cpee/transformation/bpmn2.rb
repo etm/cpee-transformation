@@ -152,7 +152,8 @@ module CPEE
       # generated CPEE model as drawn and writes it as BPMN with diagram
       # interchange. opts[:bpmnexport] (trans.conf) is a command name, searched
       # in PATH, or a path, relative to the server dir, optionally followed by
-      # arguments (e.g. -lr). By default npx fetches cpee-layout on first use.
+      # arguments. By default npx fetches cpee-layout on first use. -lr is added
+      # when the source model has dir="lr" (set by the cockpit from its theme).
       class BPMN2 < Default
         BPMNEXPORT = 'npx -y -p cpee-layout@^1.2.0 bpmnexport'
 
@@ -165,6 +166,7 @@ module CPEE
           opts = self.class.opts
           cmd, *args = Shellwords.split(opts[:bpmnexport] || BPMNEXPORT)
           cmd = File.expand_path(cmd, opts[:basepath] || Dir.pwd) if cmd.include?('/')
+          args << '-lr' if @dir == 'lr' && !args.include?('-lr')
           out, err, st = Open3.capture3(cmd, *args, '-', stdin_data: Target::CPEE.new(@tree).generate)
           raise "#{cmd}: #{err}" unless st.success?
           out

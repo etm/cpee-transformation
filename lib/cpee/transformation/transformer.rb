@@ -308,7 +308,7 @@ module CPEE
       private :debug_print
 
       def generate_model(formater) #{{{
-        formater.new(@source.tree).generate
+        formater.new(@source.tree, @source.respond_to?(:dir) ? @source.dir : nil).generate
       end #}}}
 
     end

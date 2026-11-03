@@ -23,8 +23,9 @@ module CPEE
     module Target
 
       class Default
-        def initialize(tree)
+        def initialize(tree,dir=nil)
           @tree = tree
+          @dir = dir # layout direction of the source model (td, lr), if known
         end
 
         ### SingleParallel markers are only printed by targets that know them

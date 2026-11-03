@@ -61,8 +61,12 @@ and after `npm install -g cpee-layout` it can be
 
 A command name is searched in `PATH`, a path (containing `/`) is relative to
 the directory of `trans`, `~` works too, e.g.
-`~/Projects/cpee-layout/bin/bpmnexport` for a checkout. Arguments may follow, e.g. `bpmnexport -lr` for a left to
-right layout.
+`~/Projects/cpee-layout/bin/bpmnexport` for a checkout. Arguments may follow.
+
+The layout direction follows the model: the cockpit sets `dir="lr"` or
+`dir="td"` on the `<description>` root, depending on its theme, and `-lr` is
+added for `dir="lr"`. Putting `-lr` into `trans.conf` makes every BPMN left to
+right.
 
 `tools/cpee_to_bpmn2.rb FNAME` does the same on the command line, using the
 `server/trans.conf` of the gem. If `bpmnexport` can't be run or fails, the request returns 500.

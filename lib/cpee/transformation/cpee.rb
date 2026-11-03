@@ -26,7 +26,7 @@ module CPEE
     module Source #{{{
 
       class CPEE
-        attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces
+        attr_reader :tree, :start, :dataelements, :endpoints, :graph, :traces, :dir
 
          def initialize(text)
           @tree = Tree.new
@@ -201,7 +201,9 @@ module CPEE
           doc = XML::Smart::string(text)
           doc.register_namespace :d, 'http://cpee.org/ns/description/1.0'
           # a model (root description) or a testset, which contains it
-          bn = dive(doc.find('//d:description').first || doc.root)
+          root = doc.find('//d:description').first || doc.root
+          @dir = root.attributes['dir'] == 'lr' ? 'lr' : 'td' # layout direction of the cockpit theme
+          bn = dive(root)
           ne = Node.new(self.object_id,Digest::MD5.hexdigest(Kernel::rand().to_s),:endEvent,'',1,0)
           @graph.add_node ne
           @graph.add_link Link.new(bn.id, ne.id)
