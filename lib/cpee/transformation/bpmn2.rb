@@ -159,6 +159,16 @@ module CPEE
 
         class << self
           attr_accessor :opts
+
+          # If bpmnexport is run through npx, refresh the npx cache with the
+          # latest matching cpee-layout (called on server start), so requests
+          # don't wait for the download. Returns nil if npx isn't used.
+          def update_npx_cache
+            cmd, *args = Shellwords.split(opts[:bpmnexport] || BPMNEXPORT)
+            return nil unless File.basename(cmd) == 'npx'
+            args.unshift '--prefer-online' unless args.include?('--prefer-online')
+            system(cmd, *args, '--help', :out => File::NULL, :err => File::NULL) == true
+          end
         end
         @opts = {}
 
