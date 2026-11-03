@@ -64,6 +64,13 @@ module CPEE
 				end
 				private :map_nodes
 
+        ### strip one pair of brackets, surrounding whitespace, and one pair of
+        ### matching quotes: ( ) -> '', ("B") -> B, ('B') -> B
+        def clean_label(label) #{{{
+          label.to_s.sub(/^\(/,'').sub(/\)$/,'').strip.sub(/^(["'])(.*)\1$/m,'\2')
+        end #}}}
+        private :clean_label
+
         def extract_nodelink(text) #{{{
           first = nil
           text.each_line do |line|
@@ -91,22 +98,14 @@ module CPEE
                 rlabel = $3
               end
 
-              llabel = '' if llabel.nil?
-              rlabel = '' if rlabel.nil?
-              llabel.sub(/^'/,'')
-              llabel.sub(/'$/,'')
-              llabel.sub(/^"/,'')
-              llabel.sub(/"$/,'')
-              rlabel.sub(/^'/,'')
-              rlabel.sub(/'$/,'')
-              rlabel.sub(/^"/,'')
-              rlabel.sub(/"$/,'')
+              llabel = clean_label(llabel)
+              rlabel = clean_label(rlabel)
 
 							# every line contains a link
 							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s.gsub(/(^"|"$)/, ''))
 
-              n1 = Node.new(self.object_id,lid,map_nodes(ltype),llabel.sub(/^\(/,'').sub(/\)$/,''),0,1)
-              n2 = Node.new(self.object_id,rid,map_nodes(rtype),rlabel.sub(/^\(/,'').sub(/\)$/,''),1,0)
+              n1 = Node.new(self.object_id,lid,map_nodes(ltype),llabel,0,1)
+              n2 = Node.new(self.object_id,rid,map_nodes(rtype),rlabel,1,0)
 
               @graph.add_node n1, :outgoing
               @graph.add_node n2, :incoming
@@ -159,10 +158,13 @@ module CPEE
 
           def print_Node(node,pn)
             nid = node.id
+            ### empty () is a mermaid syntax error, so empty labels become ( )
+            label = node.label.to_s.strip
+            label = label.empty? ? ' ' : label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              @labels[nid] = "#{nid}:script:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:script:(#{label})"
             else
-              @labels[nid] = "#{nid}:task:(#{node.label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")})"
+              @labels[nid] = "#{nid}:task:(#{label})"
             end
             set_fromto pn, nid
             nid
