@@ -69,5 +69,5 @@ The layout direction follows the model: the cockpit sets `dir="lr"` or
 added for `dir="lr"`. Putting `-lr` into `trans.conf` makes every BPMN left to
 right.
 
-`tools/cpee_to_bpmn2.rb FNAME` does the same on the command line, using the
+`tools/trans_cpee-to-bpmn2 FNAME` does the same on the command line, using the
 `server/trans.conf` of the gem. If `bpmnexport` can't be run or fails, the request returns 500.

@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.require_path     = 'lib'
   s.extra_rdoc_files = ['README.md']
   s.bindir           = 'tools'
-  s.executables      = ['bpmn2_to_cpee.rb', 'bpmn2_to_mermaid.rb', 'bpmn2_to_ptml.rb', 'cpee_to_bpmn2.rb', 'cpee_to_cpee.rb', 'cpee_to_mermaid.rb', 'cpee_to_ptml.rb', 'cpee_to_text_bf.rb', 'cpee_to_text_df-poe.rb', 'cpee_to_text_df-por.rb', 'cpee-trans', 'mermaid_to_cpee.rb', 'ptml_to_cpee.rb']
+  s.executables      = ['trans_bpmn2-to-cpee', 'trans_bpmn2-to-mermaid', 'trans_bpmn2-to-ptml', 'trans_cpee-to-bpmn2', 'trans_cpee-to-cpee', 'trans_cpee-to-mermaid', 'trans_cpee-to-ptml', 'trans_cpee-to-text-bf', 'trans_cpee-to-text-df-poe', 'trans_cpee-to-text-df-por', 'cpee-trans', 'trans_mermaid-to-cpee', 'trans_ptml-to-cpee']
 
   s.required_ruby_version = '>=3.2'
 
