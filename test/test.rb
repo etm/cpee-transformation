@@ -21,6 +21,7 @@ require 'timeout'
 require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
+require_relative '../lib/cpee/transformation/graphviz' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 require_relative '../lib/cpee/transformation/ptml' rescue nil
 
@@ -172,6 +173,35 @@ def gprint(f,source,target,what,count,tcount)
   return count, tcount
 end
 
+### source -> graphviz -> cpee has to produce the same structure (and conditions)
+### as source -> mermaid -> cpee
+def rprint(f,source,count,tcount)
+  tcount += 1
+  begin
+    Timeout.timeout(20) do
+      trans = CPEE::Transformation::Transformer.new(source.new(File.read(f)))
+      trans.build_traces
+      trans.build_tree(false)
+      gv = to_cpee(CPEE::Transformation::Source::Graphviz,trans.generate_model(CPEE::Transformation::Target::Graphviz))
+      mm = to_cpee(CPEE::Transformation::Source::Mermaid,trans.generate_model(CPEE::Transformation::Target::Mermaid))
+      gs = skeleton(XML::Smart.string(gv).root,0,[],true)
+      ms = skeleton(XML::Smart.string(mm).root,0,[],true)
+      if gs == ms
+        puts "Passed (graphviz roundtrip): " + f
+        count += 1
+      else
+        puts "Failed (graphviz roundtrip): " + f
+        puts gs, '-' * 78, ms
+      end
+    end
+  rescue Timeout::Error
+    puts "Failed (graphviz roundtrip): #{f} (does not finish)"
+  rescue StandardError, SystemStackError => e
+    puts "Failed (graphviz roundtrip): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
+  end
+  return count, tcount
+end
+
 count = 0
 tcount = 0
 failed = false
@@ -187,15 +217,22 @@ else
     count, tcount = sprint(f,count,tcount)
     count, tcount = fprint(f,count,tcount) if FAITHFUL.include?(File.basename(f))
     count, tcount = gprint(f,src::CPEE,tgt::Mermaid,'cpee to mermaid',count,tcount)
+    count, tcount = gprint(f,src::CPEE,tgt::Graphviz,'cpee to graphviz',count,tcount)
+    count, tcount = rprint(f,src::CPEE,count,tcount)
     count, tcount = pprint(f,src::CPEE,'cpee to ptml',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.bpmn')).each do |f|
     count, tcount = gprint(f,src::BPMN2,tgt::CPEE,'bpmn to cpee',count,tcount)
+    count, tcount = rprint(f,src::BPMN2,count,tcount)
     count, tcount = pprint(f,src::BPMN2,'bpmn to ptml',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.mmd')).each do |f|
     count, tcount = gprint(f,src::Mermaid,tgt::CPEE,'mermaid to cpee',count,tcount)
     count, tcount = gprint(f,src::Mermaid,tgt::Mermaid,'mermaid to mermaid',count,tcount)
+  end
+  Dir.glob(File.join(__dir__,'*.dot')).each do |f|
+    count, tcount = gprint(f,src::Graphviz,tgt::CPEE,'graphviz to cpee',count,tcount)
+    count, tcount = gprint(f,src::Graphviz,tgt::Graphviz,'graphviz to graphviz',count,tcount)
   end
 end
 

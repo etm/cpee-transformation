@@ -223,8 +223,8 @@ module CPEE
           def print_Parallel(node,pn)
             nid = id_find(node.id)
             set_fromto pn, "#{nid}s"
-            @labels["#{nid}s"] = "#{nid}s:parallelgateway:{AND}"
-            @labels["#{nid}e"] = "#{nid}e:parallelgateway:{AND}"
+            @labels["#{nid}s"] = "#{nid}s:parallelgateway:{+}"
+            @labels["#{nid}e"] = "#{nid}e:parallelgateway:{+}"
             node.sub.each do |branch|
               pn = generate_in_list(branch,"#{nid}s")
               set_fromto pn, "#{nid}e"

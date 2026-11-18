@@ -229,8 +229,8 @@ module CPEE
           def print_Parallel(node,pn)
             nid = id_find(node.id)
             set_fromto pn, "#{nid}s"
-            @labels["#{nid}s"] = node_def("#{nid}s",'diamond','AND')
-            @labels["#{nid}e"] = node_def("#{nid}e",'diamond','AND')
+            @labels["#{nid}s"] = node_def("#{nid}s",'diamond','+')
+            @labels["#{nid}e"] = node_def("#{nid}e",'diamond','+')
             node.sub.each do |branch|
               pn = generate_in_list(branch,"#{nid}s")
               set_fromto pn, "#{nid}e"
