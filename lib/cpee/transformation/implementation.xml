@@ -41,6 +41,7 @@
       </layer>
       <layer name="xml_text">
         <apply-to>/mermaid/cpee</apply-to>
+        <apply-to>/graphviz/cpee</apply-to>
         <apply-to>/text-bf/cpee</apply-to>
         <apply-to>/text-df-PO-extended/cpee</apply-to>
         <apply-to>/text-df-PO-reduced/cpee</apply-to>

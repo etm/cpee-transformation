@@ -64,10 +64,39 @@ module CPEE
 				end
 				private :map_nodes
 
-        ### strip one pair of brackets, surrounding whitespace, and one pair of
-        ### matching quotes: ( ) -> '', ("B") -> B, ('B') -> B
+        ENTITIES = { 'quot' => '"', 'amp' => '&', 'lt' => '<', 'gt' => '>', 'apos' => "'", 'nbsp' => " " }
+
+        ### mermaid entity codes (#quot; #35;) and <br>, in one pass, so that
+        ### decoded text is not decoded again
+        def decode(text) #{{{
+          text.gsub(/<br\s*\/?>|#(\d+|[a-zA-Z]+);/i) do |m|
+            code = $1 ### the =~ below would overwrite $1
+            if code.nil?
+              "\n"
+            elsif code =~ /^\d+$/
+              code.to_i.chr(Encoding::UTF_8)
+            else
+              ENTITIES[code] || m
+            end
+          end
+        end #}}}
+        private :decode
+
+        ### only double quotes delimit a mermaid string, single quotes are text
+        def unquote(text) #{{{
+          text = text.to_s.strip
+          if text =~ /\A"(.*)"\z/m
+            decode($1).strip
+          else
+            ### older output escaped brackets instead of quoting
+            decode(text.gsub(/\\([()])/,'\1'))
+          end
+        end #}}}
+        private :unquote
+
+        ### strip one pair of brackets and unquote: ( ) -> '', (" ") -> '', ("B") -> B, ('B') -> 'B'
         def clean_label(label) #{{{
-          label.to_s.sub(/^\(/,'').sub(/\)$/,'').strip.sub(/^(["'])(.*)\1$/m,'\2')
+          unquote(label.to_s.sub(/^\(/,'').sub(/\)$/,''))
         end #}}}
         private :clean_label
 
@@ -102,7 +131,7 @@ module CPEE
               rlabel = clean_label(rlabel)
 
 							# every line contains a link
-							@graph.add_link Link.new(lid, rid, c.nil? ? nil : c.to_s.gsub(/(^"|"$)/, ''))
+							@graph.add_link Link.new(lid, rid, c.nil? ? nil : unquote(c))
 
               n1 = Node.new(self.object_id,lid,map_nodes(ltype),llabel,0,1)
               n2 = Node.new(self.object_id,rid,map_nodes(rtype),rlabel,1,0)
@@ -148,6 +177,15 @@ module CPEE
 
         private
 
+          ### always a double quoted mermaid string, with entity codes for what mermaid
+          ### (html, quotes) or the reader (-->, |) would interpret. "" is a mermaid
+          ### syntax error, so empty becomes " "
+          def text(s)
+            s = s.to_s.strip
+            s = s.empty? ? ' ' : s.gsub(/[#"&<>|]/) { |c| c == '"' ? '#quot;' : "##{c.ord};" }.gsub(/\r?\n/,'<br>')
+            "\"#{s}\""
+          end
+
           def set_fromto(pn,nid)
             if pn.is_a?(Array) && pn.length > 1
               @fromto << [pn[0],nid,pn[1]]
@@ -158,13 +196,10 @@ module CPEE
 
           def print_Node(node,pn)
             nid = node.id
-            ### empty () is a mermaid syntax error, so empty labels become ( )
-            label = node.label.to_s.strip
-            label = label.empty? ? ' ' : label.gsub(/\(/,"\\(").gsub(/\)/,"\\)")
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              @labels[nid] = "#{nid}:script:(#{label})"
+              @labels[nid] = "#{nid}:script:(#{text node.label})"
             else
-              @labels[nid] = "#{nid}:task:(#{label})"
+              @labels[nid] = "#{nid}:task:(#{text node.label})"
             end
             set_fromto pn, nid
             nid
@@ -206,7 +241,7 @@ module CPEE
               ### branches without condition (incl. otherwise) are plain edges, the reader
               ### treats the last of them as otherwise
               pn = if branch.condition.any?
-                generate_in_list(branch,["#{nid}s","|\"#{branch.condition.join(' or ')}\"|"])
+                generate_in_list(branch,["#{nid}s","|#{text branch.condition.join(' or ')}|"])
               else
                 generate_in_list(branch,"#{nid}s")
               end
@@ -228,9 +263,9 @@ module CPEE
 
             cn = if node.mode == :pre_test
               set_fromto "#{nid}s", "#{nid}e"
-              [ ["#{nid}e", "|\"#{cond}\"|"], "#{nid}s"]
+              [ ["#{nid}e", "|#{text cond}|"], "#{nid}s"]
             else
-              set_fromto ["#{nid}e","|\"#{cond}\"|"], "#{nid}s"
+              set_fromto ["#{nid}e","|#{text cond}|"], "#{nid}s"
               ["#{nid}s", "#{nid}e"]
             end
 

@@ -54,6 +54,8 @@ module CPEE
               ['text/xml', CPEE::Transformation::Target::BPMN2]
             when 'mermaid'
               ['text/plain', CPEE::Transformation::Target::Mermaid]
+            when 'graphviz'
+              ['text/plain', CPEE::Transformation::Target::Graphviz]
             when 'text-bf'
               ['text/plain', CPEE::Transformation::Target::Text_bf]
             when 'text-df-PO-extended'
