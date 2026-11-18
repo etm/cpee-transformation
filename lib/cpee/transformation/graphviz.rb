@@ -129,7 +129,6 @@ module CPEE
           set_fromto pn, 'ee'
           "digraph G {\n" +
           "  rankdir=LR;\n" +
-          "  node[style=rounded];\n" +
           @labels.values.map{ |e| "  #{e};\n" }.join +
           @fromto.map{ |e| "  #{quote e[0]} -> #{quote e[1]}#{e.length == 3 ? "[label=#{quote e[2]}]" : ''};\n" }.join +
           "}\n"
@@ -151,8 +150,8 @@ module CPEE
             '"' + s.to_s.gsub(/\\/,'\\\\\\\\').gsub(/"/,'\\"').gsub(/\n/,'\\n') + '"'
           end
 
-          def node_def(nid,shape,label)
-            "#{quote nid}[shape=#{shape} label=#{quote label}]"
+          def node_def(nid,shape,label,style=nil)
+            "#{quote nid}[shape=#{shape}#{style ? " style=#{style}" : ''} label=#{quote label}]"
           end
 
           def set_fromto(pn,nid)
@@ -169,7 +168,7 @@ module CPEE
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
               @labels[nid] = node_def(nid,'component',label)
             else
-              @labels[nid] = node_def(nid,'box',label)
+              @labels[nid] = node_def(nid,'box',label,'rounded')
             end
             set_fromto pn, nid
             nid
