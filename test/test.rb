@@ -22,6 +22,7 @@ require_relative '../lib/cpee/transformation/transformer' rescue nil
 require_relative '../lib/cpee/transformation/cpee' rescue nil
 require_relative '../lib/cpee/transformation/mermaid' rescue nil
 require_relative '../lib/cpee/transformation/graphviz' rescue nil
+require_relative '../lib/cpee/transformation/pnml' rescue nil
 require_relative '../lib/cpee/transformation/bpmn2' rescue nil
 require_relative '../lib/cpee/transformation/ptml' rescue nil
 
@@ -202,6 +203,50 @@ def rprint(f,source,count,tcount)
   return count, tcount
 end
 
+### cpee -> pnml has to be a workflow net: one marked start place without
+### incoming arcs, the final place without outgoing arcs, arcs between places
+### and transitions, unique ids, every node on a path from start to end
+def nprint(f,target,what,count,tcount)
+  tcount += 1
+  begin
+    trans = CPEE::Transformation::Transformer.new(CPEE::Transformation::Source::CPEE.new(File.read(f)))
+    trans.build_traces
+    trans.build_tree(false)
+    doc = XML::Smart.string(trans.generate_model(target))
+    doc.register_namespace 'p', 'http://www.pnml.org/version-2009/grammar/pnml'
+    places = doc.find('//p:page/p:place').map { |n| n.attributes['id'] }
+    transitions = doc.find('//p:page/p:transition').map { |n| n.attributes['id'] }
+    arcs = doc.find('//p:page/p:arc').map { |a| [a.attributes['source'], a.attributes['target']] }
+    marked = doc.find('//p:page/p:place[p:initialMarking]').map { |n| n.attributes['id'] }
+    final = doc.find('string(//p:finalmarkings/p:marking/p:place/@idref)')
+    errors = []
+    errors << "duplicate ids" if (places + transitions).uniq.length != (places + transitions).length
+    errors << "#{marked.length} marked places" if marked.length != 1
+    errors << "final place missing" unless places.include?(final)
+    arcs.each { |s,t| errors << "arc #{s} -> #{t} not between place and transition" unless (places.include?(s) && transitions.include?(t)) || (transitions.include?(s) && places.include?(t)) }
+    start = marked.first
+    errors << "start has incoming arcs" if arcs.any? { |s,t| t == start }
+    errors << "final place has outgoing arcs" if arcs.any? { |s,t| s == final }
+    reach = lambda do |from,edges|
+      seen = [from]
+      seen.each { |n| edges.each { |s,t| seen << t if s == n && !seen.include?(t) } }
+      seen
+    end
+    forward = reach.(start,arcs)
+    backward = reach.(final,arcs.map(&:reverse))
+    (places + transitions).each { |n| errors << "#{n} not between start and end" unless forward.include?(n) && backward.include?(n) }
+    if errors.empty?
+      puts "Passed (#{what}): " + f
+      count += 1
+    else
+      puts "Failed (#{what}): #{f} (#{errors.uniq.first(3).join(', ')})"
+    end
+  rescue StandardError, SystemStackError => e
+    puts "Failed (#{what}): #{f} (#{e.class}: #{e.message.lines.first&.strip})"
+  end
+  return count, tcount
+end
+
 count = 0
 tcount = 0
 failed = false
@@ -219,6 +264,8 @@ else
     count, tcount = gprint(f,src::CPEE,tgt::Mermaid,'cpee to mermaid',count,tcount)
     count, tcount = gprint(f,src::CPEE,tgt::Graphviz,'cpee to graphviz',count,tcount)
     count, tcount = rprint(f,src::CPEE,count,tcount)
+    count, tcount = nprint(f,tgt::PNML,'cpee to pnml',count,tcount)
+    count, tcount = nprint(f,tgt::PNML_with_lifecycle,'cpee to pnml with lifecycle',count,tcount)
     count, tcount = pprint(f,src::CPEE,'cpee to ptml',count,tcount)
   end
   Dir.glob(File.join(__dir__,'*.bpmn')).each do |f|

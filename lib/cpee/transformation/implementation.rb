@@ -22,6 +22,7 @@ require 'timeout'
 require_relative 'bpmn2'
 require_relative 'mermaid'
 require_relative 'graphviz'
+require_relative 'pnml'
 require_relative 'transformer'
 require_relative 'cpee'
 
@@ -56,6 +57,10 @@ module CPEE
               ['text/plain', CPEE::Transformation::Target::Mermaid]
             when 'graphviz'
               ['text/plain', CPEE::Transformation::Target::Graphviz]
+            when 'pnml'
+              ['text/xml', CPEE::Transformation::Target::PNML]
+            when 'pnml-with-lifecycle'
+              ['text/xml', CPEE::Transformation::Target::PNML_with_lifecycle]
             when 'text-bf'
               ['text/plain', CPEE::Transformation::Target::Text_bf]
             when 'text-df-PO-extended'

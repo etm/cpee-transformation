@@ -35,6 +35,8 @@ name/value pairs, from BPMN2 sources only).
 | `/bpmn2/graphviz`           | graphviz | BPMN2                      |
 | `/mermaid/cpee`             | CPEE     | mermaid                    |
 | `/graphviz/cpee`            | CPEE     | graphviz                   |
+| `/pnml/cpee`                | CPEE     | PNML                       |
+| `/pnml-with-lifecycle/cpee` | CPEE     | PNML, calling/receiving/done |
 | `/text-bf/cpee`             | CPEE     | text, text-bf              |
 | `/text-df-PO-extended/cpee` | CPEE     | text, text-df-PO-extended  |
 | `/text-df-PO-reduced/cpee`  | CPEE     | text, text-df-PO-reduced   |
