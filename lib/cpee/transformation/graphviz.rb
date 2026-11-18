@@ -53,7 +53,7 @@ module CPEE
 				def map_nodes(shape,label)
 					case [shape,label]
             in ['box' | 'rect' | 'rectangle', _];    :task
-            in ['component', _];                     :scriptTask
+            in ['record' | 'Mrecord', _];            :scriptTask
             in ['diamond', 'AND' | 'and' | '+'];     :parallelGateway
             in ['diamond', 'X' | 'x'];               :exclusiveGateway
             in ['diamond', '*'];                     :eventBasedGateway
@@ -73,11 +73,29 @@ module CPEE
         end #}}}
         private :unescape
 
+        def record_fields(raw) #{{{
+          raw = raw.strip
+          raw = raw[1..-2] if raw.start_with?('{') && raw =~ /(?<!\\)\}\z/
+          fields = ['']
+          raw.scan(/\\.|./m) do |c|
+            c == '|' ? fields << '' : fields.last << c
+          end
+          fields.map { |f| unescape(f.sub(/\A\s*<[^>]*>/,'')).strip }
+        end #}}}
+        private :record_fields
+
+        def record_label(raw) #{{{
+          fields = record_fields(raw)
+          fields.shift if fields.length > 1 && fields.first == 'S'
+          fields.join(' | ')
+        end #}}}
+        private :record_label
+
         ### key=value or key="value" pairs of an attribute list [...]
         def attributes(text) #{{{
           ret = {}
           text.to_s.scan(/(\w+)\s*=\s*(?:#{GRAPHVIZ_STRING}|([^\s,;\]]+))/) do |k,q,v|
-            ret[k] = q.nil? ? v : unescape(q)
+            ret[k] = q.nil? ? v : q
           end
           ret
         end #}}}
@@ -88,13 +106,19 @@ module CPEE
           links = []
           text.each_line do |line|
             if line =~ /^\s*#{GRAPHVIZ_STRING}\s*->\s*#{GRAPHVIZ_STRING}\s*(\[(.*)\])?\s*;?\s*$/
-              links << [unescape($1), unescape($2), attributes($4)['label']]
+              links << [unescape($1), unescape($2), unescape(attributes($4)['label'])]
             elsif line =~ /^\s*#{GRAPHVIZ_STRING}\s*\[(.*)\]\s*;?\s*$/
               id = unescape($1)
               attrs = attributes($2)
-              type = map_nodes(attrs['shape'],attrs['label'])
               ### without a label graphviz shows the id
-              label = attrs['label'] || id
+              label = if attrs['label'].nil?
+                id
+              elsif attrs['shape'] =~ /^M?record$/
+                record_label(attrs['label'])
+              else
+                unescape(attrs['label'])
+              end
+              type = map_nodes(attrs['shape'],label)
 
               n = Node.new(self.object_id,id,type,label,0,0)
               @graph.add_node n
@@ -154,6 +178,11 @@ module CPEE
             "#{quote nid}[shape=#{shape}#{style ? " style=#{style}" : ''} label=#{quote label}]"
           end
 
+          def script_def(nid,label)
+            fields = label.to_s.gsub(/[\\"{}|<>]/) { |c| "\\#{c}" }.gsub(/\n/,'\\n')
+            "#{quote nid}[shape=record style=rounded label=\"{S|#{fields}}\"]"
+          end
+
           def set_fromto(pn,nid)
             if pn.is_a?(Array) && pn.length > 1
               @fromto << [pn[0],nid,pn[1]]
@@ -166,7 +195,7 @@ module CPEE
             nid = node.id
             label = node.label.to_s.strip
             if node.endpoints.empty? && ((!node.script.nil? && node.script.strip != '') || node.type == :scriptTask)
-              @labels[nid] = node_def(nid,'component',label)
+              @labels[nid] = script_def(nid,label)
             else
               @labels[nid] = node_def(nid,'box',label,'rounded')
             end
