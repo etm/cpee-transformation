@@ -77,11 +77,12 @@ module CPEE
         end #}}}
 
         def extract_nodelink(doc) #{{{
-          doc.find("/bm:definitions/bm:process/bm:*[@id and @name and not(@itemSubjectRef) and not(name()='sequenceFlow')]").each do |e|
+          nonflow = %w{sequenceFlow laneSet textAnnotation association group dataObject dataObjectReference dataStoreReference property}
+          doc.find("/bm:definitions/bm:process/bm:*[@id and not(@itemSubjectRef) and not(#{nonflow.map{ |t| "local-name()='#{t}'" }.join(' or ')})]").each do |e|
             type = e.qname.name.to_sym
             ### an end event with a terminate definition ends the whole process
             type = :terminate if type == :endEvent && e.find('bm:terminateEventDefinition').any?
-            n = Node.new(self.object_id,e.attributes['id'],type,e.attributes['name'].strip,e.find('count(bm:incoming)'),e.find('count(bm:outgoing)'))
+            n = Node.new(self.object_id,e.attributes['id'],type,e.attributes['name'].to_s.strip,e.find('count(bm:incoming)'),e.find('count(bm:outgoing)'))
 
             if e.attributes['scriptFormat'] != ''
               n.script_type = e.attributes['scriptFormat']

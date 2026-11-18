@@ -1,9 +1,9 @@
 TREE:
-  ├ 1 (A)
-  ├ 5 (B)
-  ├ Loop 
+  ├ 0 (A)
+  ├ 4 (B)
+  ├ Loop
   │ ├ Alternative ["data.a < 3"]
-  │ │ └ 5 (B)
+  │ │ └ 4 (B)
   │ └ Alternative []
   │   └ Break
-  └ 7 (C)
+  └ 6 (C)

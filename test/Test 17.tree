@@ -1,12 +1,12 @@
 TREE:
-  ├ 1 (A)
-  └ Loop 
+  ├ 0 (A)
+  └ Loop
     ├ Alternative ["data.a < 3"]
-    │ ├ 5 (B)
-    │ └ Conditional 
+    │ ├ 4 (B)
+    │ └ Conditional
     │   ├ Alternative []
-    │   │ └ 8 (C)
+    │   │ └ 7 (C)
     │   └ Alternative []
-    │     └ 9 (D)
+    │     └ 8 (D)
     └ Alternative []
       └ Break

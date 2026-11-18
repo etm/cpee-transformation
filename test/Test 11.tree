@@ -1,14 +1,14 @@
 TREE:
-  ├ 4 (A)
-  ├ 5 (B)
-  └ Loop 
+  ├ 3 (A)
+  ├ 4 (B)
+  └ Loop
     ├ Alternative []
-    │ ├ 6 (C)
-    │ └ Conditional 
+    │ ├ 5 (C)
+    │ └ Conditional
     │   ├ Alternative ["data.a < 5"]
-    │   │ └ 5 (B)
+    │   │ └ 4 (B)
     │   └ Alternative []
     │     └ Break
     └ Alternative ["data.a < 3"]
-      ├ 4 (A)
-      └ 5 (B)
+      ├ 3 (A)
+      └ 4 (B)
