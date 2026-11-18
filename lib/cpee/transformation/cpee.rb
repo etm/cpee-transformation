@@ -56,12 +56,12 @@ module CPEE
         end
 
         def dive(node,n1=nil,condition=nil,otherwise=false)
-          if node.children.empty? || node.text_only?
-            return n1
-          end
           if n1.nil?
             nid = id_find(node.attributes['id'] || node.attributes['eid'])
             n1 = @start = Node.new(self.object_id,nid,:startEvent,'',0,1)
+          end
+          if node.children.empty? || node.text_only?
+            return n1
           end
           node.children.each do |ele|
             case ele.qname.name
