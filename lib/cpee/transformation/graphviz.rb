@@ -154,7 +154,7 @@ module CPEE
           "digraph G {\n" +
           "  rankdir=LR;\n" +
           @labels.values.map{ |e| "  #{e};\n" }.join +
-          @fromto.map{ |e| "  #{quote e[0]} -> #{quote e[1]}#{e.length == 3 ? "[label=#{quote e[2]}]" : ''};\n" }.join +
+          @fromto.map{ |e| "  #{quote e[0]} -> #{quote e[1]}#{edge_attrs e[2]};\n" }.join +
           "}\n"
         end
 
@@ -172,6 +172,14 @@ module CPEE
 
           def quote(s)
             '"' + s.to_s.gsub(/\\/,'\\\\\\\\').gsub(/"/,'\\"').gsub(/\n/,'\\n') + '"'
+          end
+
+          def edge_attrs(label)
+            case label
+              when nil then ''
+              when :default then '[dir=both arrowtail=tee]'
+              else "[label=#{quote label}]"
+            end
           end
 
           def node_def(nid,shape,label,style=nil)
@@ -235,11 +243,14 @@ module CPEE
             set_fromto pn, "#{nid}s"
             @labels["#{nid}s"] = node_def("#{nid}s",'diamond','x')
             @labels["#{nid}e"] = node_def("#{nid}e",'diamond','x')
+            conditional = node.sub.any? { |branch| branch.condition.any? }
             node.sub.each do |branch|
               ### branches without condition (incl. otherwise) are plain edges, the reader
               ### treats the last of them as otherwise
               pn = if branch.condition.any?
                 generate_in_list(branch,["#{nid}s",branch.condition.join(' or ')])
+              elsif conditional
+                generate_in_list(branch,["#{nid}s",:default])
               else
                 generate_in_list(branch,"#{nid}s")
               end
