@@ -177,7 +177,7 @@ module CPEE
           def edge_attrs(label)
             case label
               when nil then ''
-              when :default then '[dir=both arrowtail=tee]'
+              when :default then '[taillabel="/" labelangle=0 labeldistance=1]'
               else "[label=#{quote label}]"
             end
           end
