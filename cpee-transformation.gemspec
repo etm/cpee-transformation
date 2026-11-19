@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-transformation"
-  s.version          = "1.1.0"
+  s.version          = "1.1.1"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Transformation between different formats"
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.require_path     = 'lib'
   s.extra_rdoc_files = ['README.md']
   s.bindir           = 'tools'
-  s.executables      = ['trans_bpmn2-to-cpee', 'trans_bpmn2-to-mermaid', 'trans_bpmn2-to-ptml', 'trans_cpee-to-bpmn2', 'trans_cpee-to-cpee', 'trans_cpee-to-mermaid', 'trans_cpee-to-ptml', 'trans_cpee-to-text-bf', 'trans_cpee-to-text-df-poe', 'trans_cpee-to-text-df-por', 'cpee-trans', 'trans_mermaid-to-cpee', 'trans_ptml-to-cpee']
+  s.executables      = ['trans_bpmn2-to-cpee', 'trans_bpmn2-to-graphviz', 'trans_bpmn2-to-mermaid', 'trans_bpmn2-to-ptml', 'trans_cpee-to-bpmn2', 'trans_cpee-to-cpee', 'trans_cpee-to-graphviz', 'trans_cpee-to-mermaid', 'trans_cpee-to-pnml', 'trans_cpee-to-pnml-with-lifecycle', 'trans_cpee-to-ptml', 'trans_cpee-to-text-bf', 'trans_cpee-to-text-df-poe', 'trans_cpee-to-text-df-por', 'cpee-trans', 'trans_mermaid-to-cpee', 'trans_ptml-to-cpee']
 
   s.required_ruby_version = '>=3.2'
 
